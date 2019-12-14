@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Pengyou</string>
+    <string name="title_home_activity">Home</string>
+    <string name="title_dictionary_activity">Dictionary</string>
+</resources>
