@@ -37,11 +37,10 @@ class DictionaryActivity : AppCompatActivity() {
             override fun onQueryTextChange(newText: String?): Boolean {
 
                 if (newText!!.isNotBlank()) {
-                    val query = newText!! + '%'
-                    val searchResults = entryDao.findWords(query)
-                    if (searchResults.isNotEmpty()) {
-                        dictionaryResultList.adapter = SearchResultAdapter(searchResults)
-                    }
+                    val query = newText!!
+                    val searchResults = entryDao.findWords(query, query+'z')
+                    dictionaryResultList.adapter = SearchResultAdapter(searchResults)
+
                 }
                 return true
             }
