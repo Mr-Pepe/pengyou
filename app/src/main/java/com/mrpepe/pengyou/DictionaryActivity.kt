@@ -2,9 +2,12 @@ package com.mrpepe.pengyou
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.view.menu.ActionMenuItemView
+import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
@@ -31,6 +34,7 @@ class DictionaryActivity : AppCompatActivity() {
 
         dictionaryResultList.apply{
             layoutManager = viewManager
+            setHasFixedSize(true)
         }
 
         toolbar.dictionary_search_view.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
@@ -54,18 +58,36 @@ class DictionaryActivity : AppCompatActivity() {
 
 }
 
-class SearchResultAdapter(private val searchResults: List<String>) :
+class SearchResultAdapter(private val searchResults: List<Entry>) :
     RecyclerView.Adapter<ResultViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultViewHolder {
         return ResultViewHolder(
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.dictionary_search_result, parent, false) as TextView
+                .inflate(R.layout.dictionary_search_result, parent, false) as CardView
         )
     }
 
     override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
-        holder.textView.text = searchResults[position]
+        holder.headword.text = searchResults[position].simplified
+        holder.pinyin.text = searchResults[position].pinyin
+
+        var definitions = searchResults[position].definitions.split('/')
+
+        var text : String = ""
+        var iDefinition = 1
+
+        definitions.forEach {
+            if (iDefinition == 1)
+                text += "1. " + it
+            else
+                text += "\n$iDefinition. " + it
+
+            iDefinition++
+        }
+
+        holder.definitions.text = text
+
     }
 
     override fun getItemCount(): Int {
@@ -73,4 +95,8 @@ class SearchResultAdapter(private val searchResults: List<String>) :
     }
 }
 
-class ResultViewHolder(val textView: TextView) : RecyclerView.ViewHolder(textView)
+class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    internal var headword: TextView = itemView.findViewById(R.id.headword)
+    internal var pinyin: TextView = itemView.findViewById(R.id.pinyin)
+    internal var definitions: TextView = itemView.findViewById(R.id.definitions)
+}
