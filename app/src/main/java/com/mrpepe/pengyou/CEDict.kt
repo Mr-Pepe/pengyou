@@ -18,11 +18,11 @@ data class Entry(
     @ColumnInfo(name = "definitions") val definitions: String
 )
 
-@Entity(tableName = "permutations")
+@Entity(tableName = "permutations", indices = arrayOf(Index(value = ["permutation"], name = "search_index")))
 data class Permutation(
     @PrimaryKey val id: Int?,
     @ColumnInfo(name = "entry_id") val wordID: Int,
-    @ColumnInfo(name = "permutation", index = true) val definition: String
+    @ColumnInfo(name = "permutation") val definition: String
 )
 
 @Dao
@@ -34,7 +34,15 @@ interface EntryDAO {
     @Query("SELECT * FROM permutations")
     fun getSearchIndex(): List<Permutation>
 
-    @Query("SELECT DISTINCT * FROM entries JOIN permutations ON permutations.permutation >= :lowerString AND permutations.permutation < :upperString  AND permutations.entry_id = entries.id")
+    @Query("SELECT * " +
+                "FROM entries " +
+                "WHERE id IN (" +
+                    "SELECT DISTINCT entry_id " +
+                    "FROM permutations " +
+                    "WHERE " +
+                        "permutation >= :lowerString AND " +
+                        "permutation < :upperString)" +
+                "ORDER BY word_length")
     fun findWords(lowerString: String, upperString: String) : List<Entry>
 
 }
