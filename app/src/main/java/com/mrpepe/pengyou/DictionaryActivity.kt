@@ -44,7 +44,8 @@ class DictionaryActivity : AppCompatActivity() {
                     val query = newText!!
                     val searchResults = entryDao.findWords(query, query+'z')
                     dictionaryResultList.adapter = SearchResultAdapter(searchResults)
-
+                } else {
+                    dictionaryResultList.adapter = SearchResultAdapter(listOf<Entry>())
                 }
                 return true
             }
