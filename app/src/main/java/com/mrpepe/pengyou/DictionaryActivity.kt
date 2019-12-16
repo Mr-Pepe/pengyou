@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.menu.ActionMenuItemView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -41,11 +41,10 @@ class DictionaryActivity : AppCompatActivity() {
             override fun onQueryTextChange(newText: String?): Boolean {
 
                 if (newText!!.isNotBlank()) {
-                    val query = newText!!
-                    val searchResults = entryDao.findWords(query, query+'z')
-                    dictionaryResultList.adapter = SearchResultAdapter(searchResults)
+                    val searchResults = entryDao.findWords(newText, newText+'z')
+                    dictionaryResultList.adapter = SearchResultAdapter(searchResults, {entry : Entry -> entryClicked(entry)})
                 } else {
-                    dictionaryResultList.adapter = SearchResultAdapter(listOf<Entry>())
+                    dictionaryResultList.adapter = SearchResultAdapter(listOf<Entry>(), {entry : Entry -> entryClicked(entry)})
                 }
                 return true
             }
@@ -57,9 +56,12 @@ class DictionaryActivity : AppCompatActivity() {
         })
     }
 
+    private fun entryClicked(entry: Entry){
+        Toast.makeText(this, "Clicked: ${entry.simplified}", Toast.LENGTH_LONG).show()
+    }
 }
 
-class SearchResultAdapter(private val searchResults: List<Entry>) :
+class SearchResultAdapter(private val searchResults: List<Entry>, private val clickListener: (Entry) -> Unit) :
     RecyclerView.Adapter<ResultViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultViewHolder {
@@ -70,25 +72,7 @@ class SearchResultAdapter(private val searchResults: List<Entry>) :
     }
 
     override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
-        holder.headword.text = searchResults[position].simplified
-        holder.pinyin.text = searchResults[position].pinyin
-
-        var definitions = searchResults[position].definitions.split('/')
-
-        var text : String = ""
-        var iDefinition = 1
-
-        definitions.forEach {
-            if (iDefinition == 1)
-                text += "1. " + it
-            else
-                text += "\n$iDefinition. " + it
-
-            iDefinition++
-        }
-
-        holder.definitions.text = text
-
+        holder.bind(searchResults[position], clickListener)
     }
 
     override fun getItemCount(): Int {
@@ -97,7 +81,33 @@ class SearchResultAdapter(private val searchResults: List<Entry>) :
 }
 
 class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    internal var headword: TextView = itemView.findViewById(R.id.headword)
-    internal var pinyin: TextView = itemView.findViewById(R.id.pinyin)
-    internal var definitions: TextView = itemView.findViewById(R.id.definitions)
+    private var headword: TextView = itemView.findViewById(R.id.headword)
+    private var pinyin: TextView = itemView.findViewById(R.id.pinyin)
+    private var definitions: TextView = itemView.findViewById(R.id.definitions)
+
+    fun bind(entry: Entry, clickListener: (Entry) -> Unit) {
+        headword.text = entry.simplified
+        pinyin.text = entry.pinyin
+        definitions.text = extractDefinitions(entry.definitions)
+
+        itemView.setOnClickListener { clickListener(entry) }
+    }
+}
+
+private fun extractDefinitions(rawDefinitions: String) : String {
+    val definitions = rawDefinitions.split('/')
+
+    var text = ""
+    var iDefinition = 1
+
+    definitions.forEach {
+        text += when (iDefinition) {
+            1 -> "1. $it"
+            else -> "\n$iDefinition. $it"
+        }
+
+        iDefinition++
+    }
+
+    return text
 }
