@@ -1,4 +1,4 @@
-package com.mrpepe.pengyou
+package com.mrpepe.pengyou.dictionary
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
+import com.mrpepe.pengyou.R
 
 import kotlinx.android.synthetic.main.activity_dictionary.*
 import kotlinx.android.synthetic.main.activity_dictionary.view.*
@@ -42,9 +43,15 @@ class DictionaryActivity : AppCompatActivity() {
 
                 if (newText!!.isNotBlank()) {
                     val searchResults = entryDao.findWords(newText, newText+'z')
-                    dictionaryResultList.adapter = SearchResultAdapter(searchResults, {entry : Entry -> entryClicked(entry)})
+                    dictionaryResultList.adapter =
+                        SearchResultAdapter(
+                            searchResults,
+                            { entry: Entry -> entryClicked(entry) })
                 } else {
-                    dictionaryResultList.adapter = SearchResultAdapter(listOf<Entry>(), {entry : Entry -> entryClicked(entry)})
+                    dictionaryResultList.adapter =
+                        SearchResultAdapter(
+                            listOf<Entry>(),
+                            { entry: Entry -> entryClicked(entry) })
                 }
                 return true
             }
@@ -67,7 +74,11 @@ class SearchResultAdapter(private val searchResults: List<Entry>, private val cl
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultViewHolder {
         return ResultViewHolder(
             LayoutInflater.from(parent.context)
-                .inflate(R.layout.dictionary_search_result, parent, false) as CardView
+                .inflate(
+                    R.layout.dictionary_search_result,
+                    parent,
+                    false
+                ) as CardView
         )
     }
 
