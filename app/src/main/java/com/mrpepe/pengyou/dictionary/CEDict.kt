@@ -1,4 +1,4 @@
-package com.mrpepe.pengyou
+package com.mrpepe.pengyou.dictionary
 
 import androidx.room.*
 
