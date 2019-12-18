@@ -40,7 +40,7 @@ class WordDefinitionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        definitions.text = extractDefinitions(model.entry.definitions)
+        definitions.text = extractDefinitions(model.entry.definitions, true)
     }
 
 
