@@ -2,4 +2,14 @@
     <string name="app_name">Pengyou</string>
     <string name="title_home_activity">Home</string>
     <string name="title_dictionary_activity">Dictionary</string>
+    <string name="title_activity_word_view">WordViewActivity</string>
+    <string name="tab_definition_text">DEF</string>
+    <string name="tab_strokes_text">STROKES</string>
+    <string name="tab_components_text">COMP</string>
+    <string name="tab_usage_text">USAGE</string>
+    <string name="tab_words_text">WORDS</string>
+    <string name="tab_sentences_text">SENT</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

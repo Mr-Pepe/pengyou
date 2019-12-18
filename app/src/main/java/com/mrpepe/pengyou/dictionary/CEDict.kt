@@ -1,6 +1,7 @@
 package com.mrpepe.pengyou.dictionary
 
 import androidx.room.*
+import java.io.Serializable
 
 @Database(entities= arrayOf(Entry::class, Permutation::class), version = 1)
 abstract class CEDict : RoomDatabase() {
@@ -8,7 +9,7 @@ abstract class CEDict : RoomDatabase() {
 }
 
 @Entity(tableName = "entries")
-data class Entry(
+data class Entry (
     @PrimaryKey val id: Int?,
     @ColumnInfo(name = "simplified") val simplified: String,
     @ColumnInfo(name = "traditional") val traditional: String,
@@ -16,7 +17,7 @@ data class Entry(
     @ColumnInfo(name= "priority") val priority: Int,
     @ColumnInfo(name = "word_length") val wordLength: Int,
     @ColumnInfo(name = "definitions") val definitions: String
-)
+) : Serializable
 
 @Entity(tableName = "permutations", indices = arrayOf(Index(value = ["permutation"], name = "search_index")))
 data class Permutation(

@@ -1,5 +1,6 @@
 package com.mrpepe.pengyou.dictionary
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.mrpepe.pengyou.R
+import com.mrpepe.pengyou.extractDefinitions
 
 import kotlinx.android.synthetic.main.activity_dictionary.*
 import kotlinx.android.synthetic.main.activity_dictionary.view.*
@@ -65,6 +67,9 @@ class DictionaryActivity : AppCompatActivity() {
 
     private fun entryClicked(entry: Entry){
         Toast.makeText(this, "Clicked: ${entry.simplified}", Toast.LENGTH_LONG).show()
+        val intent = Intent(this, WordViewActivity::class.java)
+        intent.putExtra("entry", entry)
+        startActivity(intent)
     }
 }
 
@@ -105,20 +110,3 @@ class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     }
 }
 
-private fun extractDefinitions(rawDefinitions: String) : String {
-    val definitions = rawDefinitions.split('/')
-
-    var text = ""
-    var iDefinition = 1
-
-    definitions.forEach {
-        text += when (iDefinition) {
-            1 -> "1. $it"
-            else -> "\n$iDefinition. $it"
-        }
-
-        iDefinition++
-    }
-
-    return text
-}
