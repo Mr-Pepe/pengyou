@@ -6,8 +6,8 @@ import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.mrpepe.pengyou.R
-import com.mrpepe.pengyou.dictionary.ui.wordViewUI.WordViewPagerAdapter
-import com.mrpepe.pengyou.dictionary.ui.wordViewUI.WordViewViewModel
+import com.mrpepe.pengyou.dictionary.ui.wordView.WordViewPagerAdapter
+import com.mrpepe.pengyou.dictionary.ui.wordView.WordViewViewModel
 import kotlinx.android.synthetic.main.activity_word_view.*
 
 class WordViewActivity : AppCompatActivity() {
