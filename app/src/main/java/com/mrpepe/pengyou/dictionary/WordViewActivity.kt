@@ -26,5 +26,6 @@ class WordViewActivity : AppCompatActivity() {
         model.entry = intent.extras?.get("entry") as Entry
 
         headword.text = model.entry.simplified
+        pinyin.text = model.entry.pinyin
     }
 }

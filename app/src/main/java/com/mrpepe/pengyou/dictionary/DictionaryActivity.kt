@@ -104,7 +104,7 @@ class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(entry: Entry, clickListener: (Entry) -> Unit) {
         headword.text = entry.simplified
         pinyin.text = entry.pinyin
-        definitions.text = extractDefinitions(entry.definitions)
+        definitions.text = extractDefinitions(entry.definitions, false)
 
         itemView.setOnClickListener { clickListener(entry) }
     }
