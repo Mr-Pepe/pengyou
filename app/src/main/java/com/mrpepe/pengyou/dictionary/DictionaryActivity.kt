@@ -1,5 +1,6 @@
 package com.mrpepe.pengyou.dictionary
 
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,10 +10,14 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.mrpepe.pengyou.R
+import com.mrpepe.pengyou.dictionary.ui.wordView.WordViewViewModel
 import com.mrpepe.pengyou.extractDefinitions
 
 import kotlinx.android.synthetic.main.activity_dictionary.*
@@ -26,13 +31,8 @@ class DictionaryActivity : AppCompatActivity() {
         setContentView(R.layout.activity_dictionary)
         setSupportActionBar(toolbar)
 
-        val db = Room.databaseBuilder(applicationContext, CEDict::class.java, "cedict")
-            .allowMainThreadQueries()
-            .createFromAsset("cedict.db")
-            .build()
-
-        val entryDao = db.entryDao()
-
+        var model: DictionaryViewModel = ViewModelProvider.AndroidViewModelFactory(application)
+                                            .create(DictionaryViewModel::class.java)
         val viewManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
 
         dictionaryResultList.apply{
@@ -40,20 +40,23 @@ class DictionaryActivity : AppCompatActivity() {
             setHasFixedSize(true)
         }
 
+        val searchResultsObserver = Observer<List<Entry>> { searchResults ->
+            dictionaryResultList.adapter =
+                SearchResultAdapter(
+                    searchResults,
+                    { entry: Entry -> entryClicked(entry) })
+        }
+
+        model.init()
+        model.searchResults.observe(this, searchResultsObserver)
+
         toolbar.dictionary_search_view.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextChange(newText: String?): Boolean {
 
                 if (newText!!.isNotBlank()) {
-                    val searchResults = entryDao.findWords(newText, newText+'z')
-                    dictionaryResultList.adapter =
-                        SearchResultAdapter(
-                            searchResults,
-                            { entry: Entry -> entryClicked(entry) })
+                    model.searchFor(newText)
                 } else {
-                    dictionaryResultList.adapter =
-                        SearchResultAdapter(
-                            listOf<Entry>(),
-                            { entry: Entry -> entryClicked(entry) })
+                    model.resetSearchResults()
                 }
                 return true
             }
@@ -66,7 +69,6 @@ class DictionaryActivity : AppCompatActivity() {
     }
 
     private fun entryClicked(entry: Entry){
-        Toast.makeText(this, "Clicked: ${entry.simplified}", Toast.LENGTH_LONG).show()
         val intent = Intent(this, WordViewActivity::class.java)
         intent.putExtra("entry", entry)
         startActivity(intent)
