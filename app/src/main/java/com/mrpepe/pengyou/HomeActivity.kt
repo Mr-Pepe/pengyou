@@ -4,7 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import com.mrpepe.pengyou.dictionary.DictionaryActivity
+import com.mrpepe.pengyou.dictionary.searchView.SearchViewActivity
 
 class HomeActivity : AppCompatActivity() {
 
@@ -14,7 +14,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
     fun openDict(view: View){
-        val intent = Intent(this, DictionaryActivity::class.java)
+        val intent = Intent(this, SearchViewActivity::class.java)
         startActivity(intent)
     }
 }

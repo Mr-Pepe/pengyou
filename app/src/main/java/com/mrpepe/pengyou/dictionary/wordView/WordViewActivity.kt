@@ -1,4 +1,4 @@
-package com.mrpepe.pengyou.dictionary
+package com.mrpepe.pengyou.dictionary.wordView
 
 import android.os.Bundle
 import com.google.android.material.tabs.TabLayout
@@ -6,12 +6,12 @@ import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.mrpepe.pengyou.R
-import com.mrpepe.pengyou.dictionary.ui.wordView.WordViewPagerAdapter
-import com.mrpepe.pengyou.dictionary.ui.wordView.WordViewViewModel
+import com.mrpepe.pengyou.dictionary.Entry
+import com.mrpepe.pengyou.dictionary.searchView.SearchViewViewModel
 import kotlinx.android.synthetic.main.activity_word_view.*
 
 class WordViewActivity : AppCompatActivity() {
-    private lateinit var model : DictionaryViewModel
+    private lateinit var model : SearchViewViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

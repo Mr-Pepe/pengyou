@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".dictionary.DictionaryActivity"
+    tools:context=".dictionary.searchView.SearchViewActivity"
     tools:showIn="@layout/activity_dictionary">
 
     <androidx.recyclerview.widget.RecyclerView

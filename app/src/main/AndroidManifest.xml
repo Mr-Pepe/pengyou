@@ -10,11 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".dictionary.WordViewActivity"
+            android:name=".dictionary.wordView.WordViewActivity"
             android:label="@string/title_activity_word_view"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".dictionary.DictionaryActivity"
+            android:name=".dictionary.searchView.SearchViewActivity"
             android:label="@string/title_dictionary_activity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
