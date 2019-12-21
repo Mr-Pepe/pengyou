@@ -1,4 +1,4 @@
-package com.mrpepe.pengyou.dictionary
+package com.mrpepe.pengyou.dictionary.searchView
 
 import android.content.Intent
 import android.os.Bundle
@@ -13,15 +13,17 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
+import com.mrpepe.pengyou.dictionary.Entry
+import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
 import com.mrpepe.pengyou.extractDefinitions
 
 import kotlinx.android.synthetic.main.activity_dictionary.*
 import kotlinx.android.synthetic.main.activity_dictionary.view.*
 import kotlinx.android.synthetic.main.content_dictionary.*
 
-class DictionaryActivity : AppCompatActivity() {
+class SearchViewActivity : AppCompatActivity() {
 
-    private lateinit var model: DictionaryViewModel
+    private lateinit var model: SearchViewViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,9 +31,12 @@ class DictionaryActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         model = ViewModelProvider.AndroidViewModelFactory(application)
-                                            .create(DictionaryViewModel::class.java)
+                                            .create(SearchViewViewModel::class.java)
 
-        val adapter = SearchResultAdapter({ entry: Entry -> entryClicked(entry) })
+        val adapter =
+            SearchResultAdapter({ entry: Entry ->
+                entryClicked(entry)
+            })
 
         dictionaryResultList.layoutManager = LinearLayoutManager(this)
         dictionaryResultList.adapter = adapter
@@ -62,50 +67,6 @@ class DictionaryActivity : AppCompatActivity() {
         val intent = Intent(this, WordViewActivity::class.java)
         intent.putExtra("entry", entry)
         startActivity(intent)
-    }
-}
-
-class SearchResultAdapter(private val clickListener: (Entry) -> Unit) :
-    RecyclerView.Adapter<ResultViewHolder>() {
-
-    private var searchResults = emptyList<Entry>()
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultViewHolder {
-        return ResultViewHolder(
-            LayoutInflater.from(parent.context)
-                .inflate(
-                    R.layout.dictionary_search_result,
-                    parent,
-                    false
-                ) as CardView
-        )
-    }
-
-    override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
-        holder.bind(this.searchResults[position], clickListener)
-    }
-
-    override fun getItemCount(): Int {
-        return this.searchResults.size
-    }
-
-    internal fun setEntries(searchResults: List<Entry>) {
-        this.searchResults = searchResults
-        notifyDataSetChanged()
-    }
-}
-
-class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    private var headword: TextView = itemView.findViewById(R.id.headword)
-    private var pinyin: TextView = itemView.findViewById(R.id.pinyin)
-    private var definitions: TextView = itemView.findViewById(R.id.definitions)
-
-    fun bind(entry: Entry, clickListener: (Entry) -> Unit) {
-        headword.text = entry.simplified
-        pinyin.text = entry.pinyin
-        definitions.text = extractDefinitions(entry.definitions, false)
-
-        itemView.setOnClickListener { clickListener(entry) }
     }
 }
 

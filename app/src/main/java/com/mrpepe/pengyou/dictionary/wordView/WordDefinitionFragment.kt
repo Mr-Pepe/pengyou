@@ -1,4 +1,4 @@
-package com.mrpepe.pengyou.dictionary.ui.wordView
+package com.mrpepe.pengyou.dictionary.wordView
 
 
 import android.os.Bundle
