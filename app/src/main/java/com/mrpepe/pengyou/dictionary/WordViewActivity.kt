@@ -11,6 +11,7 @@ import com.mrpepe.pengyou.dictionary.ui.wordView.WordViewViewModel
 import kotlinx.android.synthetic.main.activity_word_view.*
 
 class WordViewActivity : AppCompatActivity() {
+    private lateinit var model : DictionaryViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
