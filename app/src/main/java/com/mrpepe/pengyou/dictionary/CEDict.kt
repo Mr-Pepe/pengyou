@@ -1,11 +1,37 @@
 package com.mrpepe.pengyou.dictionary
 
+import android.app.Application
+import android.content.Context
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import java.io.Serializable
 
 @Database(entities= arrayOf(Entry::class, Permutation::class), version = 1)
 abstract class CEDict : RoomDatabase() {
     abstract fun entryDao() : EntryDAO
+
+    companion object {
+        @Volatile
+        private var INSTANCE: CEDict? = null
+
+        fun getDatabase(context: Context): CEDict {
+            val tempInstance = INSTANCE
+            if (tempInstance != null) {
+                return tempInstance
+            }
+            synchronized(this){
+                val instance = Room.databaseBuilder(
+                    context.applicationContext,
+                    CEDict::class.java,
+                    "cedict"
+                ).createFromAsset("cedict.db")
+                    .build()
+                INSTANCE = instance
+                return instance
+            }
+        }
+    }
 }
 
 @Entity(tableName = "entries")
@@ -42,8 +68,9 @@ interface EntryDAO {
                     "FROM permutations " +
                     "WHERE " +
                         "permutation >= :lowerString AND " +
-                        "permutation < :upperString)" +
+                        "permutation < :upperString " +
+                    "LIMIT 1000)" +
                 "ORDER BY word_length")
-    fun findWords(lowerString: String, upperString: String) : List<Entry>
+    fun findWords(lowerString: String, upperString: String) : LiveData<List<Entry>>
 
 }

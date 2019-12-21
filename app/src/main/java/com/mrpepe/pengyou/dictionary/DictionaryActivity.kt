@@ -1,23 +1,18 @@
 package com.mrpepe.pengyou.dictionary
 
-import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import com.mrpepe.pengyou.R
-import com.mrpepe.pengyou.dictionary.ui.wordView.WordViewViewModel
 import com.mrpepe.pengyou.extractDefinitions
 
 import kotlinx.android.synthetic.main.activity_dictionary.*
@@ -26,29 +21,24 @@ import kotlinx.android.synthetic.main.content_dictionary.*
 
 class DictionaryActivity : AppCompatActivity() {
 
+    private lateinit var model: DictionaryViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dictionary)
         setSupportActionBar(toolbar)
 
-        var model: DictionaryViewModel = ViewModelProvider.AndroidViewModelFactory(application)
+        model = ViewModelProvider.AndroidViewModelFactory(application)
                                             .create(DictionaryViewModel::class.java)
-        val viewManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
 
-        dictionaryResultList.apply{
-            layoutManager = viewManager
-            setHasFixedSize(true)
-        }
+        val adapter = SearchResultAdapter({ entry: Entry -> entryClicked(entry) })
 
-        val searchResultsObserver = Observer<List<Entry>> { searchResults ->
-            dictionaryResultList.adapter =
-                SearchResultAdapter(
-                    searchResults,
-                    { entry: Entry -> entryClicked(entry) })
-        }
+        dictionaryResultList.layoutManager = LinearLayoutManager(this)
+        dictionaryResultList.adapter = adapter
 
-        model.init()
-        model.searchResults.observe(this, searchResultsObserver)
+        model.searchResults.observe(this, Observer { searchResults ->
+            searchResults?.let { adapter.setEntries(searchResults) }
+        })
 
         toolbar.dictionary_search_view.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextChange(newText: String?): Boolean {
@@ -56,7 +46,7 @@ class DictionaryActivity : AppCompatActivity() {
                 if (newText!!.isNotBlank()) {
                     model.searchFor(newText)
                 } else {
-                    model.resetSearchResults()
+                    adapter.setEntries(emptyList<Entry>())
                 }
                 return true
             }
@@ -75,8 +65,10 @@ class DictionaryActivity : AppCompatActivity() {
     }
 }
 
-class SearchResultAdapter(private val searchResults: List<Entry>, private val clickListener: (Entry) -> Unit) :
+class SearchResultAdapter(private val clickListener: (Entry) -> Unit) :
     RecyclerView.Adapter<ResultViewHolder>() {
+
+    private var searchResults = emptyList<Entry>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultViewHolder {
         return ResultViewHolder(
@@ -90,11 +82,16 @@ class SearchResultAdapter(private val searchResults: List<Entry>, private val cl
     }
 
     override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
-        holder.bind(searchResults[position], clickListener)
+        holder.bind(this.searchResults[position], clickListener)
     }
 
     override fun getItemCount(): Int {
-        return searchResults.size
+        return this.searchResults.size
+    }
+
+    internal fun setEntries(searchResults: List<Entry>) {
+        this.searchResults = searchResults
+        notifyDataSetChanged()
     }
 }
 

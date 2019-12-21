@@ -1,38 +1,28 @@
 package com.mrpepe.pengyou.dictionary
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import com.mrpepe.pengyou.dictionary.Entry
+import androidx.lifecycle.*
+import kotlinx.coroutines.launch
 
 class DictionaryViewModel(application: Application) : AndroidViewModel(application) {
-    lateinit var searchResults : MutableLiveData<List<Entry>>
-    lateinit var entryDao: EntryDAO
-    lateinit var db : RoomDatabase
 
-    fun init() {
+    private val repository : EntryRepository
+    val searchResults = MediatorLiveData<List<Entry>>()
+    var oldResults : LiveData<List<Entry>>
 
-        val db = Room.databaseBuilder(getApplication<Application>().applicationContext,
-                                        CEDict::class.java,
-                                    "cedict")
-            .allowMainThreadQueries()
-            .createFromAsset("cedict.db")
-            .build()
 
-        entryDao = db.entryDao()
-
-        searchResults = MutableLiveData()
-        searchResults.value = listOf<Entry>()
+    init {
+        val entryDao = CEDict.getDatabase(application).entryDao()
+        repository = EntryRepository(entryDao)
+        oldResults = repository.searchResults
+        searchResults.addSource(repository.searchResults) {value -> searchResults.value = value}
     }
 
-    fun searchFor(query: String) {
-        searchResults.setValue(entryDao.findWords(query, query+'z'))
-    }
-
-    fun resetSearchResults() {
-        searchResults.setValue(listOf<Entry>())
+    fun searchFor(query: String) = viewModelScope.launch {
+        repository.searchFor(query)
+        searchResults.removeSource(oldResults)
+        oldResults = repository.searchResults
+        searchResults.addSource(repository.searchResults) {value -> searchResults.postValue(value)}
     }
 }
+
