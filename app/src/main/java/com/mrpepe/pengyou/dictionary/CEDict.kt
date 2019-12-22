@@ -55,11 +55,17 @@ data class Permutation(
 @Dao
 interface EntryDAO {
 
-    @Query("SELECT * FROM entries")
-    fun getAllEntries(): List<Entry>
+    @Query("SELECT * FROM entries WHERE id=:id")
+    fun getEntryById(id: Int) : LiveData<Entry>
 
-    @Query("SELECT * FROM permutations")
-    fun getSearchIndex(): List<Permutation>
+    @Query("SELECT * " +
+                "FROM entries " +
+                "WHERE " +
+                    "simplified LIKE :wildcardQuery " +
+                    "AND " +
+                    "simplified != :query " +
+                "ORDER BY word_length")
+    fun getWordsContaining(query: String, wildcardQuery: String) : LiveData<List<Entry>>
 
     @Query("SELECT * " +
                 "FROM entries " +

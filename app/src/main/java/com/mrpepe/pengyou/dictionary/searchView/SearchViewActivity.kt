@@ -2,24 +2,17 @@ package com.mrpepe.pengyou.dictionary.searchView
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
-import com.mrpepe.pengyou.extractDefinitions
 
-import kotlinx.android.synthetic.main.activity_dictionary.*
-import kotlinx.android.synthetic.main.activity_dictionary.view.*
-import kotlinx.android.synthetic.main.content_dictionary.*
+import kotlinx.android.synthetic.main.activity_search_view.*
+import kotlinx.android.synthetic.main.activity_search_view.view.*
+import kotlinx.android.synthetic.main.search_result_list.*
 
 class SearchViewActivity : AppCompatActivity() {
 
@@ -27,7 +20,7 @@ class SearchViewActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dictionary)
+        setContentView(R.layout.activity_search_view)
         setSupportActionBar(toolbar)
 
         model = ViewModelProvider.AndroidViewModelFactory(application)
@@ -38,8 +31,8 @@ class SearchViewActivity : AppCompatActivity() {
                 entryClicked(entry)
             })
 
-        dictionaryResultList.layoutManager = LinearLayoutManager(this)
-        dictionaryResultList.adapter = adapter
+        searchResultList.layoutManager = LinearLayoutManager(this)
+        searchResultList.adapter = adapter
 
         model.searchResults.observe(this, Observer { searchResults ->
             searchResults?.let { adapter.setEntries(searchResults) }
