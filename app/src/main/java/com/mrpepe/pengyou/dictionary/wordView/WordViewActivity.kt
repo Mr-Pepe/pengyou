@@ -4,14 +4,16 @@ import android.os.Bundle
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.Entry
-import com.mrpepe.pengyou.dictionary.searchView.SearchViewViewModel
 import kotlinx.android.synthetic.main.activity_word_view.*
 
 class WordViewActivity : AppCompatActivity() {
-    private lateinit var model : SearchViewViewModel
+    lateinit var wordViewViewModel : WordViewViewModel
+    lateinit var wordViewFramentViewModel : WordViewFragmentViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,11 +24,22 @@ class WordViewActivity : AppCompatActivity() {
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
 
-        var model: WordViewViewModel = ViewModelProviders.of(this).get(WordViewViewModel::class.java)
+        wordViewFramentViewModel = ViewModelProviders.of(this)[WordViewFragmentViewModel::class.java]
+        wordViewViewModel = ViewModelProvider.AndroidViewModelFactory(application)
+                                    .create(WordViewViewModel::class.java)
 
-        model.entry = intent.extras?.get("entry") as Entry
+        if (!wordViewViewModel.isInitialized) {
+            wordViewViewModel.init(intent.extras?.get("entry") as Entry)
+        }
 
-        headword.text = model.entry.simplified
-        pinyin.text = model.entry.pinyin
+        wordViewViewModel.entry.observe(this, Observer { entry ->
+            headword.text = entry.simplified
+            pinyin.text = entry.pinyin
+            wordViewFramentViewModel.entry.value = entry
+        })
+
+        wordViewViewModel.wordsContaining.observe(this, Observer { wordsContaining ->
+            wordViewFramentViewModel.wordsContaining.value = wordsContaining
+        })
     }
 }

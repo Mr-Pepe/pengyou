@@ -16,7 +16,7 @@ class SearchResultAdapter(private val clickListener: (Entry) -> Unit) :
         return ResultViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(
-                    R.layout.dictionary_search_result,
+                    R.layout.search_result,
                     parent,
                     false
                 ) as CardView
