@@ -12,6 +12,7 @@ class WordViewViewModel(application: Application) : AndroidViewModel(application
     private lateinit var repository : WordViewRepository
     private var entryDao : EntryDAO = CEDict.getDatabase(application).entryDao()
 
+    var decompositions : MutableLiveData<List<Decomposition>> = MutableLiveData<List<Decomposition>>()
     val entry = MediatorLiveData<Entry>()
     val wordsContaining = MediatorLiveData<List<Entry>>()
 
@@ -22,7 +23,12 @@ class WordViewViewModel(application: Application) : AndroidViewModel(application
         entry.addSource(repository.entry) {value -> entry.value = value}
         wordsContaining.addSource(repository.wordsContaining) {value -> wordsContaining.value = value}
 
+//        viewModelScope.launch {
+            repository.decompose(initEntry.simplified)
+            decompositions.postValue(repository.decompositions)
+
+//        }
+
         isInitialized = true
     }
-
 }

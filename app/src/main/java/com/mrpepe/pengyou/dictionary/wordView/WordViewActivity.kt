@@ -41,5 +41,9 @@ class WordViewActivity : AppCompatActivity() {
         wordViewViewModel.wordsContaining.observe(this, Observer { wordsContaining ->
             wordViewFramentViewModel.wordsContaining.value = wordsContaining
         })
+
+        wordViewViewModel.decompositions.observe(this, Observer { decompositions ->
+            wordViewFramentViewModel.decompositions.value = decompositions
+        })
     }
 }

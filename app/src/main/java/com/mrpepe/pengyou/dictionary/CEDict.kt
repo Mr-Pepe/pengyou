@@ -1,13 +1,11 @@
 package com.mrpepe.pengyou.dictionary
 
-import android.app.Application
 import android.content.Context
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.room.*
 import java.io.Serializable
 
-@Database(entities= arrayOf(Entry::class, Permutation::class), version = 1)
+@Database(entities= arrayOf(Entry::class, Permutation::class, dbDecomposition::class), version = 1)
 abstract class CEDict : RoomDatabase() {
     abstract fun entryDao() : EntryDAO
 
@@ -26,6 +24,7 @@ abstract class CEDict : RoomDatabase() {
                     CEDict::class.java,
                     "cedict"
                 ).createFromAsset("cedict.db")
+                    .allowMainThreadQueries()
                     .build()
                 INSTANCE = instance
                 return instance
@@ -50,6 +49,14 @@ data class Permutation(
     @PrimaryKey val id: Int?,
     @ColumnInfo(name = "entry_id") val wordID: Int,
     @ColumnInfo(name = "permutation") val definition: String
+)
+
+@Entity(tableName = "decompositions")
+data class dbDecomposition (
+    @PrimaryKey val id: Int?,
+    @ColumnInfo(name = "character") val character: String,
+    @ColumnInfo(name = "decomposition_type") val decompositionType: String,
+    @ColumnInfo(name = "components") val components: String
 )
 
 @Dao
@@ -79,4 +86,9 @@ interface EntryDAO {
                 "ORDER BY word_length")
     fun findWords(lowerString: String, upperString: String) : LiveData<List<Entry>>
 
+    @Query("SELECT * FROM decompositions WHERE character = :query")
+    fun getDecomposition(query: String): List<dbDecomposition>
+
+    @Query("SELECT * FROM entries WHERE simplified = :query")
+    fun getEntryBySimplified(query: String): List<Entry>
 }
