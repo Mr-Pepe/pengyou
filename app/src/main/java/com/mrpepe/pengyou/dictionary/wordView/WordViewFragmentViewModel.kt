@@ -12,5 +12,6 @@ import com.mrpepe.pengyou.dictionary.EntryDAO
 class WordViewFragmentViewModel : ViewModel() {
     var wordsContaining = MutableLiveData<List<Entry>>()
     var entry = MutableLiveData<Entry>()
+    var decompositions = MutableLiveData<List<Decomposition>>()
 
 }

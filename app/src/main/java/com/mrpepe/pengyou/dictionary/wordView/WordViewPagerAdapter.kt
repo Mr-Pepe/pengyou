@@ -21,6 +21,7 @@ class WordViewPagerAdapter(private val context: Context, fm: FragmentManager) :
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> WordDefinitionFragment()
+            2 -> DecompositionFragment()
             3 -> WordsContainingFragment()
             else -> PlaceholderFragment.newInstance(position + 1)
         }
