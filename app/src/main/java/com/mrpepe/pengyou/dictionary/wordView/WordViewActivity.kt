@@ -45,5 +45,9 @@ class WordViewActivity : AppCompatActivity() {
         wordViewViewModel.decompositions.observe(this, Observer { decompositions ->
             wordViewFramentViewModel.decompositions.value = decompositions
         })
+
+        wordViewViewModel.strokeOrders.observe(this, Observer { strokeOrders ->
+            wordViewFramentViewModel.strokeOrders.value = strokeOrders
+        })
     }
 }

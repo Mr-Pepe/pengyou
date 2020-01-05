@@ -5,7 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.room.*
 import java.io.Serializable
 
-@Database(entities= arrayOf(Entry::class, Permutation::class, dbDecomposition::class), version = 1)
+@Database(entities= arrayOf(Entry::class,
+                            Permutation::class,
+                            DbDecomposition::class,
+                            StrokeOrder::class), version = 1)
 abstract class CEDict : RoomDatabase() {
     abstract fun entryDao() : EntryDAO
 
@@ -23,8 +26,8 @@ abstract class CEDict : RoomDatabase() {
                     context.applicationContext,
                     CEDict::class.java,
                     "cedict"
-                ).createFromAsset("cedict.db")
-                    .allowMainThreadQueries()
+                ).createFromAsset("data.db")
+//                    .allowMainThreadQueries()
                     .build()
                 INSTANCE = instance
                 return instance
@@ -52,11 +55,18 @@ data class Permutation(
 )
 
 @Entity(tableName = "decompositions")
-data class dbDecomposition (
+data class DbDecomposition (
     @PrimaryKey val id: Int?,
     @ColumnInfo(name = "character") val character: String,
     @ColumnInfo(name = "decomposition_type") val decompositionType: String,
     @ColumnInfo(name = "components") val components: String
+)
+
+@Entity(tableName = "stroke_orders")
+data class StrokeOrder (
+    @PrimaryKey val id: Int?,
+    @ColumnInfo(name = "character") val character: String,
+    @ColumnInfo(name = "json") val json: String
 )
 
 @Dao
@@ -87,8 +97,11 @@ interface EntryDAO {
     fun findWords(lowerString: String, upperString: String) : LiveData<List<Entry>>
 
     @Query("SELECT * FROM decompositions WHERE character = :query")
-    fun getDecomposition(query: String): List<dbDecomposition>
+    suspend fun getDecomposition(query: String): List<DbDecomposition>
+
+    @Query("SELECT * FROM stroke_orders WHERE character = :query")
+    suspend fun getStrokeOrder(query: String): List<StrokeOrder>
 
     @Query("SELECT * FROM entries WHERE simplified = :query")
-    fun getEntryBySimplified(query: String): List<Entry>
+    suspend fun getEntryBySimplified(query: String): List<Entry>
 }
