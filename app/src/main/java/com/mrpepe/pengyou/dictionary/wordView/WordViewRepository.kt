@@ -7,7 +7,8 @@ import com.mrpepe.pengyou.dictionary.EntryDAO
 class WordViewRepository(private val entryDao: EntryDAO, val initEntry: Entry) {
     var entry : LiveData<Entry>
     var wordsContaining : LiveData<List<Entry>>
-    var decompositions : MutableList<Decomposition> = mutableListOf<Decomposition>()
+    var decompositions : MutableList<Decomposition> = mutableListOf()
+    var strokeOrders : MutableList<String> = mutableListOf()
 
 
     init {
@@ -15,7 +16,7 @@ class WordViewRepository(private val entryDao: EntryDAO, val initEntry: Entry) {
         wordsContaining = entryDao.getWordsContaining(initEntry.simplified, "%${initEntry.simplified}%")
     }
 
-    fun decompose(word: String) {
+    suspend fun decompose(word: String) {
         word.forEach { character ->
             var decompositionList = entryDao.getDecomposition(character.toString())
 
@@ -34,9 +35,6 @@ class WordViewRepository(private val entryDao: EntryDAO, val initEntry: Entry) {
                     }
                 }
 
-
-
-
                 decompositions.add(
                     Decomposition(
                         character.toString(),
@@ -52,6 +50,19 @@ class WordViewRepository(private val entryDao: EntryDAO, val initEntry: Entry) {
                         listOf()
                     )
                 )
+            }
+        }
+    }
+
+    suspend fun getStrokeOrder(word: String) {
+        word.forEach { character ->
+            var strokeOrderList = entryDao.getStrokeOrder(character.toString())
+
+            if (strokeOrderList.isNotEmpty()) {
+
+                strokeOrders.add(strokeOrderList[0].json)
+            } else {
+                strokeOrders.add("")
             }
         }
     }
