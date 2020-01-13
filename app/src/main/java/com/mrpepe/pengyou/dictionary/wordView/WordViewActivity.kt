@@ -35,6 +35,12 @@ class WordViewActivity : AppCompatActivity() {
         wordViewViewModel.entry.observe(this, Observer { entry ->
             headword.text = entry.simplified
             pinyin.text = entry.pinyin
+
+            hsk.text = when (entry.hsk) {
+                7 -> ""
+                else -> "HSK " + entry.hsk.toString()
+            }
+            
             wordViewFramentViewModel.entry.value = entry
         })
 
