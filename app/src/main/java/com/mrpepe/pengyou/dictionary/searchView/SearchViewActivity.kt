@@ -27,14 +27,23 @@ class SearchViewActivity : AppCompatActivity() {
                                             .create(SearchViewViewModel::class.java)
 
         val adapter =
-            SearchResultAdapter({ entry: Entry ->
+            SearchResultAdapter{ entry: Entry ->
                 entryClicked(entry)
-            })
+            }
 
         searchResultList.layoutManager = LinearLayoutManager(this)
         searchResultList.adapter = adapter
 
         model.searchResults.observe(this, Observer { searchResults ->
+            resultCount.text = when (searchResults.size) {
+                0 -> when(toolbar.dictionary_search_view.query.isBlank()) {
+                    true -> ""
+                    false -> "0 Results"
+                }
+                in 1..999 -> searchResults.size.toString() + " Results"
+                else -> "999+ Results"
+            }
+
             searchResults?.let { adapter.setEntries(searchResults) }
         })
 
@@ -44,7 +53,8 @@ class SearchViewActivity : AppCompatActivity() {
                 if (newText!!.isNotBlank()) {
                     model.searchFor(newText)
                 } else {
-                    adapter.setEntries(emptyList<Entry>())
+                    adapter.setEntries(emptyList())
+                    resultCount.text = ""
                 }
                 return true
             }
