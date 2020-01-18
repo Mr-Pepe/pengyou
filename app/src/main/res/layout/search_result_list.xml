@@ -6,13 +6,26 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".dictionary.searchView.SearchViewActivity"
+    tools:layout_editor_absoluteY="56dp"
     tools:showIn="@layout/activity_search_view">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/searchResultList"
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/resultCount"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="resultCount" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/searchResultList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resultCount">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
