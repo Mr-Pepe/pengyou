@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.mrpepe.pengyou.PinyinConverter
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.Entry
 import kotlinx.android.synthetic.main.activity_word_view.*
@@ -34,7 +35,7 @@ class WordViewActivity : AppCompatActivity() {
 
         wordViewViewModel.entry.observe(this, Observer { entry ->
             headword.text = entry.simplified
-            pinyin.text = entry.pinyin
+            pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinConverter.PinyinMode.MARKS)
 
             hsk.text = when (entry.hsk) {
                 7 -> ""
