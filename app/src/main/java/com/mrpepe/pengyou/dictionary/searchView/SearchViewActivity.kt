@@ -51,7 +51,9 @@ class SearchViewActivity : AppCompatActivity() {
             override fun onQueryTextChange(newText: String?): Boolean {
 
                 if (newText!!.isNotBlank()) {
-                    model.searchFor(newText)
+                    model.searchFor(newText
+                                    .replace("ü", "u:")
+                                    .replace("v", "u:"))
                 } else {
                     adapter.setEntries(emptyList())
                     resultCount.text = ""
