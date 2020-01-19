@@ -49,18 +49,22 @@ class PinyinConverter() {
                         syllable.length > 1 &&
                         !syllable.matches("-?\\d+(\\.\\d+)?".toRegex())) {
 
-                        var nVowels = 0
                         var iVowel = -1
-
                         var iChar = -1
 
                         // https://en.wikipedia.org/wiki/Pinyin#Rules_for_placing_the_tone_mark
                         for (char in syllable) {
                             iChar++
 
-                            if (char.toLowerCase() in listOf('a', 'e', 'i', 'o', 'u', 'ü')) {
-                                nVowels++
-
+                            if (char.toLowerCase() in listOf('a', 'e')) {
+                                iVowel = iChar
+                                break
+                            }
+                            else if (char.toLowerCase() == 'o') {
+                                iVowel = iChar
+                                break
+                            }
+                            else if (char.toLowerCase() in listOf('i', 'u', 'ü')) {
                                 iVowel = iChar
                             }
 
@@ -82,7 +86,7 @@ class PinyinConverter() {
                     }
                 }
 
-                syllables.joinToString()
+                syllables.joinToString("")
 
             }
 
