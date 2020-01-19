@@ -3,6 +3,7 @@ package com.mrpepe.pengyou.dictionary.searchView
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.mrpepe.pengyou.PinyinConverter
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.extractDefinitions
@@ -15,7 +16,7 @@ class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(entry: Entry, clickListener: (Entry) -> Unit) {
         headword.text = entry.simplified
-        pinyin.text = entry.pinyin
+        pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinConverter.PinyinMode.MARKS)
         definitions.text = extractDefinitions(entry.definitions, false)
 
         hsk.text = when (entry.hsk) {
