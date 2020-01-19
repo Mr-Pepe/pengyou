@@ -42,7 +42,7 @@ data class Entry (
     @ColumnInfo(name = "simplified") val simplified: String,
     @ColumnInfo(name = "traditional") val traditional: String,
     @ColumnInfo(name = "pinyin") val pinyin: String,
-    @ColumnInfo(name= "priority") val priority: Int,
+    @ColumnInfo(name= "priority") val priority: Float,
     @ColumnInfo(name = "hsk") val hsk: Int,
     @ColumnInfo(name = "word_length") val wordLength: Int,
     @ColumnInfo(name = "definitions") val definitions: String
@@ -94,7 +94,7 @@ interface EntryDAO {
                         "permutation >= :lowerString AND " +
                         "permutation < :upperString " +
                     "LIMIT 1000)" +
-                "ORDER BY word_length, hsk")
+                "ORDER BY word_length, hsk, priority")
     fun findWords(lowerString: String, upperString: String) : LiveData<List<Entry>>
 
     @Query("SELECT * FROM decompositions WHERE character = :query")
