@@ -26,3 +26,90 @@ fun extractDefinitions(rawDefinitions: String, asList: Boolean) : SpannableStrin
 
     return text
 }
+
+class PinyinConverter() {
+    fun getFormattedPinyin(pinyin: String, mode: PinyinMode): String {
+        var result = pinyin.replace("u:", "ü")
+
+        return when (mode) {
+            PinyinMode.NUMBERS -> {
+                return result
+            }
+
+            PinyinMode.MARKS -> {
+                var syllables = result.split(" ").toMutableList()
+
+                syllables.forEachIndexed { iSyllable, syllable ->
+
+                    var tone = Character.getNumericValue(syllable.last())
+
+                    // Leave the syllable as is if it is alphanumeric, has only one character
+                    // or the last character is not a digit in the range 1..5
+                    if (tone in 1..5 &&
+                        syllable.length > 1 &&
+                        !syllable.matches("-?\\d+(\\.\\d+)?".toRegex())) {
+
+                        var nVowels = 0
+                        var iVowel = -1
+
+                        var iChar = -1
+
+                        // https://en.wikipedia.org/wiki/Pinyin#Rules_for_placing_the_tone_mark
+                        for (char in syllable) {
+                            iChar++
+
+                            if (char.toLowerCase() in listOf('a', 'e', 'i', 'o', 'u', 'ü')) {
+                                nVowels++
+
+                                iVowel = iChar
+                            }
+
+                        }
+
+                        var out = StringBuilder(syllable)
+                        if (iVowel != -1) {
+                            var substitute: Char = substitions.getValue(syllable[iVowel])[tone-1]
+                            out.setCharAt(iVowel, substitute)
+                        }
+
+                        // Remove trailing tone number
+                        out.deleteCharAt(out.length-1)
+
+                        syllables[iSyllable] = out.toString()
+
+                    }
+                    else {
+                    }
+                }
+
+                syllables.joinToString()
+
+            }
+
+
+        }
+    }
+
+
+
+    enum class PinyinMode {
+        NUMBERS,
+        MARKS
+    }
+
+    private val substitions = mapOf(
+        'a' to listOf<Char>('ā', 'á', 'ǎ', 'à', 'a'),
+        'e' to listOf<Char>('ē', 'é', 'ě', 'è', 'e'),
+        'i' to listOf<Char>('ī', 'í', 'ǐ', 'ì', 'i'),
+        'o' to listOf<Char>('ō', 'ó', 'ǒ', 'ò', 'o'),
+        'u' to listOf<Char>('ū', 'ú', 'ǔ', 'ù', 'u'),
+        'ü' to listOf<Char>('ǖ', 'ǘ', 'ǚ', 'ǜ', 'ü'),
+
+        'A' to listOf<Char>('Ā', 'Á', 'Ǎ', 'À', 'A'),
+        'E' to listOf<Char>('Ē', 'É', 'Ě', 'È', 'E'),
+        'I' to listOf<Char>('Ī', 'Í', 'Ĭ', 'Ì', 'I'),
+        'O' to listOf<Char>('Ō', 'Ó', 'Ǒ', 'Ò', 'O'),
+        'U' to listOf<Char>('Ū', 'Ú', 'Ǔ', 'Ù', 'U'),
+        'Ü' to listOf<Char>('Ǖ', 'Ǘ', 'Ǚ', 'Ǜ', 'Ü')
+    )
+}
