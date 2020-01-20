@@ -33,7 +33,7 @@ class PinyinConverter() {
 
         return when (mode) {
             PinyinMode.NUMBERS -> {
-                return result
+                return result.replace(",", ", ")
             }
 
             PinyinMode.MARKS -> {
@@ -86,7 +86,7 @@ class PinyinConverter() {
                     }
                 }
 
-                syllables.joinToString("")
+                syllables.joinToString("").replace(",", ", ")
 
             }
 

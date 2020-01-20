@@ -4,57 +4,69 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardBackgroundColor="@color/colorPrimaryDark"
+    app:cardBackgroundColor="?attr/colorBackgroundFloating"
     app:cardCornerRadius="2dp"
     app:cardElevation="2dp"
     app:cardUseCompatPadding="true">
 
-    <LinearLayout
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:shrinkColumns="0"
+        android:stretchColumns="0">
 
-        <LinearLayout
+        <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/headword"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="30sp"
-                tools:text="Headword" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/pinyin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="24sp"
-                tools:text="Pinyin" />
+                <TextView
+                    android:id="@+id/headword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    tools:text="Headword" />
 
-            <Space
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1" />
+                <TextView
+                    android:id="@+id/pinyin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    tools:text="Pinyin" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/hsk"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:textAlignment="viewEnd"
+                android:textSize="18sp"
+                tools:text="HSK 6" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/definitions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="24sp"
-                tools:text="hsk" />
+                android:maxLines="3"
+                android:minLines="1"
+                android:textSize="14sp"
+                tools:text="DefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitions" />
 
-        </LinearLayout>
+        </TableRow>
 
-        <TextView
-            android:id="@+id/definitions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="3"
-            android:minLines="1"
-            android:textSize="18sp" />
-
-    </LinearLayout>
+    </TableLayout>
 
 </androidx.cardview.widget.CardView>
