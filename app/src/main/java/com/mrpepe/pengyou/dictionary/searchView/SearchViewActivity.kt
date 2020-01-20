@@ -64,8 +64,9 @@ class SearchViewActivity : AppCompatActivity() {
                 in 1..999 -> searchResults.size.toString() + " Results"
                 else -> "999+ Results"
             }
-
+            
             searchResults?.let { adapter.setEntries(searchResults) }
+            searchResultList.scrollToPosition(0)
         })
 
         toolbar.dictionary_search_view.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
