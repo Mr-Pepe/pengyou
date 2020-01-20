@@ -82,7 +82,7 @@ interface EntryDAO {
                     "simplified LIKE :wildcardQuery " +
                     "AND " +
                     "simplified != :query " +
-                "ORDER BY word_length")
+                "ORDER BY hsk, word_length, priority")
     fun getWordsContaining(query: String, wildcardQuery: String) : LiveData<List<Entry>>
 
     @Query("SELECT * " +
@@ -93,9 +93,16 @@ interface EntryDAO {
                     "WHERE " +
                         "permutation >= :lowerString AND " +
                         "permutation < :upperString " +
-                    "LIMIT 1000)" +
+                    "LIMIT 1000) " +
                 "ORDER BY word_length, hsk, priority")
-    fun findWords(lowerString: String, upperString: String) : LiveData<List<Entry>>
+    fun searchInDictByChinese(lowerString: String, upperString: String) : LiveData<List<Entry>>
+
+    @Query("SELECT * " +
+            "FROM entries " +
+            "WHERE definitions LIKE :query " +
+            "ORDER BY word_length, hsk, priority " +
+            "LIMIT 1000")
+    fun searchInDictByEnglish(query: String) : LiveData<List<Entry>>
 
     @Query("SELECT * FROM decompositions WHERE character = :query")
     suspend fun getDecomposition(query: String): List<DbDecomposition>

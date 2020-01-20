@@ -2,7 +2,10 @@ package com.mrpepe.pengyou.dictionary.searchView
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,8 +18,26 @@ import kotlinx.android.synthetic.main.activity_search_view.view.*
 import kotlinx.android.synthetic.main.search_result_list.*
 
 class SearchViewActivity : AppCompatActivity() {
-
+    private lateinit var modeSwitch: MenuItem
     private lateinit var model: SearchViewViewModel
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.that_menu, menu)
+        modeSwitch = menu?.getItem(0)!!
+
+        model.searchLanguage.observe(this, Observer { mode ->
+            when (mode) {
+                SearchViewViewModel.SearchLanguage.ENGLISH -> {
+                    modeSwitch.icon = ContextCompat.getDrawable(getApplicationContext(),R.drawable.e);
+                }
+                SearchViewViewModel.SearchLanguage.CHINESE -> {
+                    modeSwitch.icon = ContextCompat.getDrawable(getApplicationContext(),R.drawable.c);
+                }
+            }
+        })
+
+        return true
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +93,19 @@ class SearchViewActivity : AppCompatActivity() {
         val intent = Intent(this, WordViewActivity::class.java)
         intent.putExtra("entry", entry)
         startActivity(intent)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.modeSwitch -> {
+                model.toggleLanguage()
+                var query = toolbar.dictionary_search_view.query
+                toolbar.dictionary_search_view.setQuery("", false)
+                toolbar.dictionary_search_view.setQuery(query, false)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }
 
