@@ -45,6 +45,7 @@ data class Entry (
     @ColumnInfo(name= "priority") val priority: Float,
     @ColumnInfo(name = "hsk") val hsk: Int,
     @ColumnInfo(name = "word_length") val wordLength: Int,
+    @ColumnInfo(name = "pinyin_length") val pinyinLength: Int,
     @ColumnInfo(name = "definitions") val definitions: String
 ) : Serializable
 
@@ -94,7 +95,7 @@ interface EntryDAO {
                         "permutation >= :lowerString AND " +
                         "permutation < :upperString " +
                     "LIMIT 1000) " +
-                "ORDER BY word_length, hsk, priority")
+                "ORDER BY word_length, hsk, pinyin_length, priority")
     fun searchInDictByChinese(lowerString: String, upperString: String) : LiveData<List<Entry>>
 
     @Query("SELECT * " +
