@@ -8,10 +8,18 @@ class SearchViewRepository(private val entryDao: EntryDAO) {
     var searchResults : LiveData<List<Entry>>
 
     init {
-        searchResults = entryDao.findWords("123456", "123456z")
+        searchResults = entryDao.searchInDictByChinese("123456", "123456z")
     }
 
-    fun searchFor(query: String) {
-        searchResults = entryDao.findWords(query, query + 'z')
+    fun searchFor(query: String, mode: SearchMode) {
+        searchResults = when (mode) {
+            SearchMode.CHINESEDICT -> entryDao.searchInDictByChinese(query, query + 'z')
+            SearchMode.ENGLISHDICT -> entryDao.searchInDictByEnglish("%${query}%")
+        }
+    }
+
+    enum class SearchMode {
+        CHINESEDICT,
+        ENGLISHDICT
     }
 }
