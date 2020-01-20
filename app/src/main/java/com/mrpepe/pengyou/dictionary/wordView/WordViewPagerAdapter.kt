@@ -13,9 +13,7 @@ class WordViewPagerAdapter(private val context: Context, fm: FragmentManager) :
         R.string.tab_definition_text,
         R.string.tab_strokes_text,
         R.string.tab_components_text,
-        R.string.tab_words_text,
-        R.string.tab_usage_text,
-        R.string.tab_sentences_text
+        R.string.tab_words_text
     )
 
     override fun getItem(position: Int): Fragment {
