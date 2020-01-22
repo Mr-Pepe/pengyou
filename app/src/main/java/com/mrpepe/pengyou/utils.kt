@@ -2,26 +2,33 @@ package com.mrpepe.pengyou
 
 import android.text.SpannableStringBuilder
 import androidx.core.text.bold
+import androidx.core.text.italic
 
 fun extractDefinitions(rawDefinitions: String, asList: Boolean) : SpannableStringBuilder {
-    val definitions = rawDefinitions.split('/')
 
     var text = SpannableStringBuilder()
-    var iDefinition = 1
 
-    definitions.forEach {
-        when (iDefinition) {
-            1 -> text.bold{ append("1") }.append(" $it ")
+    if (rawDefinitions.isBlank()) {
+        text.italic { append("No definition found, but this character might be used in other words.") }
+    }
+    else {
+        val definitions = rawDefinitions.split('/')
+        var iDefinition = 1
 
-            else -> {
-                if (asList)
-                    text.append("\n")
+        definitions.forEach {
+            when (iDefinition) {
+                1 -> text.bold { append("1") }.append(" $it ")
 
-                text.bold { append("$iDefinition") }.append(" $it ")
+                else -> {
+                    if (asList)
+                        text.append("\n")
+
+                    text.bold { append("$iDefinition") }.append(" $it ")
+                }
             }
-        }
 
-        iDefinition++
+            iDefinition++
+        }
     }
 
     return text
