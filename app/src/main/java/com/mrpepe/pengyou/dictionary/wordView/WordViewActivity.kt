@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.mrpepe.pengyou.HeadWordPainter
 import com.mrpepe.pengyou.PinyinConverter
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.Entry
@@ -34,7 +35,7 @@ class WordViewActivity : AppCompatActivity() {
         }
 
         wordViewViewModel.entry.observe(this, Observer { entry ->
-            headword.text = entry.simplified
+            headword.text = HeadWordPainter().paintHeadword(entry.simplified, entry.pinyin)
             pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinConverter.PinyinMode.MARKS)
 
             hsk.text = when (entry.hsk) {
