@@ -1,8 +1,16 @@
 package com.mrpepe.pengyou
 
+import android.content.res.Resources
+import android.text.SpannableString
 import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold
 import androidx.core.text.italic
+import androidx.core.text.set
+import com.mrpepe.pengyou.MainApplication
 
 fun extractDefinitions(rawDefinitions: String, asList: Boolean) : SpannableStringBuilder {
 
@@ -123,4 +131,40 @@ class PinyinConverter() {
         'U' to listOf<Char>('Ū', 'Ú', 'Ǔ', 'Ù', 'U'),
         'Ü' to listOf<Char>('Ǖ', 'Ǘ', 'Ǚ', 'Ǜ', 'Ü')
     )
+}
+
+class HeadWordPainter() {
+    fun paintHeadword(headword: String, pinyin: String) : SpannableString {
+        var syllables = pinyin.split(' ')
+
+        var output = SpannableString(headword)
+
+        headword.forEachIndexed { i_Headword, character ->
+            var syllable = syllables[i_Headword]
+
+            var color =  R.color.notone
+
+            if (syllable.length > 1 &&
+                (Character.getNumericValue(syllable.last()) in 1..5) &&
+                !(Character.getNumericValue(character) in 0..9)) {
+
+                color = when (Character.getNumericValue(syllable.last())) {
+                    1 -> R.color.tone1
+                    2 -> R.color.tone2
+                    3 -> R.color.tone3
+                    4 -> R.color.tone4
+                    5 -> R.color.tone5
+                    else -> R.color.notone
+                }
+            }
+
+            var foreGroundColor = ForegroundColorSpan(ResourcesCompat.getColor(
+                                                            MainApplication.applicationContext().resources,
+                                                            color, null))
+
+            output.setSpan(foreGroundColor, i_Headword, i_Headword+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+
+        return output
+    }
 }
