@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.activity_word_view.*
 
 class WordViewActivity : AppCompatActivity() {
     lateinit var wordViewViewModel : WordViewViewModel
-    lateinit var wordViewFramentViewModel : WordViewFragmentViewModel
+    lateinit var wordViewFragmentViewModel : WordViewFragmentViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +26,7 @@ class WordViewActivity : AppCompatActivity() {
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
 
-        wordViewFramentViewModel = ViewModelProviders.of(this)[WordViewFragmentViewModel::class.java]
+        wordViewFragmentViewModel = ViewModelProviders.of(this)[WordViewFragmentViewModel::class.java]
         wordViewViewModel = ViewModelProvider.AndroidViewModelFactory(application)
                                     .create(WordViewViewModel::class.java)
 
@@ -43,19 +43,19 @@ class WordViewActivity : AppCompatActivity() {
                 else -> "HSK " + entry.hsk.toString()
             }
             
-            wordViewFramentViewModel.entry.value = entry
+            wordViewFragmentViewModel.entry.value = entry
         })
 
         wordViewViewModel.wordsContaining.observe(this, Observer { wordsContaining ->
-            wordViewFramentViewModel.wordsContaining.value = wordsContaining
+            wordViewFragmentViewModel.wordsContaining.value = wordsContaining
         })
 
         wordViewViewModel.decompositions.observe(this, Observer { decompositions ->
-            wordViewFramentViewModel.decompositions.value = decompositions
+            wordViewFragmentViewModel.decompositions.value = decompositions
         })
 
         wordViewViewModel.strokeOrders.observe(this, Observer { strokeOrders ->
-            wordViewFramentViewModel.strokeOrders.value = strokeOrders
+            wordViewFragmentViewModel.strokeOrders.value = strokeOrders
         })
     }
 }
