@@ -1,20 +1,16 @@
 package com.mrpepe.pengyou
 
-import android.content.res.Resources
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold
 import androidx.core.text.italic
-import androidx.core.text.set
-import com.mrpepe.pengyou.MainApplication
 
 fun extractDefinitions(rawDefinitions: String, asList: Boolean) : SpannableStringBuilder {
 
-    var text = SpannableStringBuilder()
+    val text = SpannableStringBuilder()
 
     if (rawDefinitions.isBlank()) {
         text.italic { append("No definition found, but this character might be used in other words.") }
@@ -42,9 +38,9 @@ fun extractDefinitions(rawDefinitions: String, asList: Boolean) : SpannableStrin
     return text
 }
 
-class PinyinConverter() {
+class PinyinConverter {
     fun getFormattedPinyin(pinyin: String, mode: PinyinMode): String {
-        var result = pinyin.replace("u:", "ü")
+        val result = pinyin.replace("u:", "ü")
 
         return when (mode) {
             PinyinMode.NUMBERS -> {
@@ -52,11 +48,11 @@ class PinyinConverter() {
             }
 
             PinyinMode.MARKS -> {
-                var syllables = result.split(" ").toMutableList()
+                val syllables = result.split(" ").toMutableList()
 
                 syllables.forEachIndexed { iSyllable, syllable ->
 
-                    var tone = Character.getNumericValue(syllable.last())
+                    val tone = Character.getNumericValue(syllable.last())
 
                     // Leave the syllable as is if it is alphanumeric, has only one character
                     // or the last character is not a digit in the range 1..5
@@ -85,9 +81,9 @@ class PinyinConverter() {
 
                         }
 
-                        var out = StringBuilder(syllable)
+                        val out = StringBuilder(syllable)
                         if (iVowel != -1) {
-                            var substitute: Char = substitions.getValue(syllable[iVowel])[tone-1]
+                            val substitute: Char = substitions.getValue(syllable[iVowel])[tone-1]
                             out.setCharAt(iVowel, substitute)
                         }
 
@@ -96,8 +92,6 @@ class PinyinConverter() {
 
                         syllables[iSyllable] = out.toString()
 
-                    }
-                    else {
                     }
                 }
 
@@ -117,54 +111,85 @@ class PinyinConverter() {
     }
 
     private val substitions = mapOf(
-        'a' to listOf<Char>('ā', 'á', 'ǎ', 'à', 'a'),
-        'e' to listOf<Char>('ē', 'é', 'ě', 'è', 'e'),
-        'i' to listOf<Char>('ī', 'í', 'ǐ', 'ì', 'i'),
-        'o' to listOf<Char>('ō', 'ó', 'ǒ', 'ò', 'o'),
-        'u' to listOf<Char>('ū', 'ú', 'ǔ', 'ù', 'u'),
-        'ü' to listOf<Char>('ǖ', 'ǘ', 'ǚ', 'ǜ', 'ü'),
+        'a' to listOf('ā', 'á', 'ǎ', 'à', 'a'),
+        'e' to listOf('ē', 'é', 'ě', 'è', 'e'),
+        'i' to listOf('ī', 'í', 'ǐ', 'ì', 'i'),
+        'o' to listOf('ō', 'ó', 'ǒ', 'ò', 'o'),
+        'u' to listOf('ū', 'ú', 'ǔ', 'ù', 'u'),
+        'ü' to listOf('ǖ', 'ǘ', 'ǚ', 'ǜ', 'ü'),
 
-        'A' to listOf<Char>('Ā', 'Á', 'Ǎ', 'À', 'A'),
-        'E' to listOf<Char>('Ē', 'É', 'Ě', 'È', 'E'),
-        'I' to listOf<Char>('Ī', 'Í', 'Ĭ', 'Ì', 'I'),
-        'O' to listOf<Char>('Ō', 'Ó', 'Ǒ', 'Ò', 'O'),
-        'U' to listOf<Char>('Ū', 'Ú', 'Ǔ', 'Ù', 'U'),
-        'Ü' to listOf<Char>('Ǖ', 'Ǘ', 'Ǚ', 'Ǜ', 'Ü')
+        'A' to listOf('Ā', 'Á', 'Ǎ', 'À', 'A'),
+        'E' to listOf('Ē', 'É', 'Ě', 'È', 'E'),
+        'I' to listOf('Ī', 'Í', 'Ĭ', 'Ì', 'I'),
+        'O' to listOf('Ō', 'Ó', 'Ǒ', 'Ò', 'O'),
+        'U' to listOf('Ū', 'Ú', 'Ǔ', 'Ù', 'U'),
+        'Ü' to listOf('Ǖ', 'Ǘ', 'Ǚ', 'Ǜ', 'Ü')
     )
 }
 
-class HeadWordPainter() {
+class HeadWordPainter {
     fun paintHeadword(headword: String, pinyin: String) : SpannableString {
-        var syllables = pinyin.split(' ')
+        val syllables = pinyin.split(' ')
 
-        var output = SpannableString(headword)
+        val output = SpannableString(headword)
 
-        headword.forEachIndexed { i_Headword, character ->
-            var syllable = syllables[i_Headword]
+        // Kotlin uses UTF-16 encoded strings which have surrogate pairs that need extra handling
+        if (syllables.size == headword.lengthSurrogate()) {
+            var iSyllable = 0
+            var iHeadword = 0
 
-            var color =  R.color.notone
-
-            if (syllable.length > 1 &&
-                (Character.getNumericValue(syllable.last()) in 1..5) &&
-                !(Character.getNumericValue(character) in 0..9)) {
-
-                color = when (Character.getNumericValue(syllable.last())) {
-                    1 -> R.color.tone1
-                    2 -> R.color.tone2
-                    3 -> R.color.tone3
-                    4 -> R.color.tone4
-                    5 -> R.color.tone5
-                    else -> R.color.notone
+            while (iHeadword < headword.length) {
+                val spanStart = iHeadword
+                val spanEnd = iHeadword + when (headword.hasSurrogatePairAt(iHeadword)) {
+                    true -> 2
+                    false -> 1
                 }
+
+                val pinyinSyllable = syllables[iSyllable]
+
+                var color = R.color.notone
+
+                if (pinyinSyllable.length > 1 &&
+                    (Character.getNumericValue(pinyinSyllable.last()) in 1..5) &&
+                    !headword[iHeadword].isDigit()) {
+
+                    color = when (Character.getNumericValue(pinyinSyllable.last())) {
+                        1 -> R.color.tone1
+                        2 -> R.color.tone2
+                        3 -> R.color.tone3
+                        4 -> R.color.tone4
+                        5 -> R.color.tone5
+                        else -> R.color.notone
+                    }
+                }
+
+                val foreGroundColor = ForegroundColorSpan(
+                    ResourcesCompat.getColor(
+                        MainApplication.applicationContext().resources,
+                        color, null
+                    )
+                )
+
+                output.setSpan(
+                    foreGroundColor,
+                    spanStart,
+                    spanEnd,
+                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+
+                iSyllable += 1
+                iHeadword = spanEnd
             }
-
-            var foreGroundColor = ForegroundColorSpan(ResourcesCompat.getColor(
-                                                            MainApplication.applicationContext().resources,
-                                                            color, null))
-
-            output.setSpan(foreGroundColor, i_Headword, i_Headword+1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
 
         return output
     }
 }
+
+fun String.countSurrogatePairs() = withIndex().count {
+    hasSurrogatePairAt(it.index)
+}
+
+// Returns the actual length of a string considering surrogate pairs
+fun String.lengthSurrogate() = this.length - this.countSurrogatePairs()
+
