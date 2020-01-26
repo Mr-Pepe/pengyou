@@ -1,5 +1,7 @@
 package com.mrpepe.pengyou
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -9,11 +11,22 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold
 import androidx.core.text.italic
+import com.mrpepe.pengyou.dictionary.CEDict
+import com.mrpepe.pengyou.dictionary.Entry
+import com.mrpepe.pengyou.dictionary.EntryDAO
+import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
-fun extractDefinitions(rawDefinitions: String, asList: Boolean, linkWords: Boolean) : SpannableStringBuilder {
+
+fun extractDefinitions(entry: Entry, asList: Boolean, linkWords: Boolean, context: Context?) : SpannableStringBuilder {
+
+    val rawDefinitions = entry.definitions
 
     val text = SpannableStringBuilder()
 
@@ -39,22 +52,62 @@ fun extractDefinitions(rawDefinitions: String, asList: Boolean, linkWords: Boole
 
 
             if ("CL:" in definition) {
+                val measureWords = definition.replace("CL:", "").split(',')
 
-                val fields = definition.replace("CL:", "").split('[')
-                val pinyin = PinyinConverter().getFormattedPinyin(fields[1].replace("]", ""), PinyinConverter.PinyinMode.MARKS)
+                if (measureWords.size > 1)
+                    text.append("Measure words: ")
+                else
+                    text.append("Measure word: ")
 
-                val headword = SpannableString(when(fields[0].split('|').size) {
-                    1 -> fields[0].split('|')[0]
-                    2 -> fields[0].split('|')[1]
-                    else -> ""
-                })
+                measureWords.forEachIndexed { iMeasureWord, measureWord ->
+                    val fields = measureWord.split('[')
+                    val rawPinyin = fields[1].replace("]", "")
+                    val pinyin = PinyinConverter().getFormattedPinyin(
+                        rawPinyin,
+                        PinyinConverter.PinyinMode.MARKS
+                    )
 
-                if (linkWords)
-                    headword.setSpan(wordLink, 0, headword.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    var simplified = ""
+                    var traditional = ""
 
-                text.append("Measure word: ")
-                text.append(headword)
-                text.append(" [$pinyin]")
+                    val headword = SpannableString(
+                        when (fields[0].split('|').size) {
+                            1 -> fields[0].split('|')[0]
+                            2 -> fields[0].split('|')[1]
+                            else -> ""
+                        }
+                    )
+
+                    val headwords = fields[0].split('|')
+
+                    when (headwords.size) {
+                        1 -> {
+                            simplified = headwords[0]
+                            traditional = headwords[0]
+                        }
+                        2 -> {
+                            simplified = headwords[1]
+                            traditional = headwords[0]
+                        }
+                    }
+
+                    if (linkWords)
+                        headword.setSpan(
+                            WordLink(
+                                entry,
+                                context!!,
+                                simplified,
+                                traditional,
+                                rawPinyin
+                            ), 0, headword.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                        )
+
+                    text.append(headword)
+                    text.append(" [$pinyin]")
+
+                    if (iMeasureWord < measureWords.size - 1)
+                        text.append(", ")
+                }
             }
             else {
                 text.append(definition)
@@ -68,16 +121,54 @@ fun extractDefinitions(rawDefinitions: String, asList: Boolean, linkWords: Boole
     return text
 }
 
-val wordLink = object: ClickableSpan() {
-        override fun onClick(widget: View) {
-            Toast.makeText(MainApplication.applicationContext(), "Clicked", Toast.LENGTH_SHORT).show()
+class WordLink(val entry: Entry,
+               val context: Context,
+               private val simplified: String,
+               private val traditional: String,
+               private val pinyin: String): ClickableSpan() {
+
+    override fun onClick(widget: View) {
+
+
+        val entryDao : EntryDAO = CEDict.getDatabase(MainApplication.getContext()).entryDao()
+
+        val scope = MainScope()
+
+        scope.launch {
+
+            val entries = entryDao.getEntryBySimplifiedTraditionalPinyin(simplified, traditional, pinyin)
+
+            when (entries.size) {
+                0 -> Toast.makeText(
+                    MainApplication.getContext(),
+                    "Couldn't find linked word.",
+                    Toast.LENGTH_SHORT
+                ).show()
+                1 -> {
+                    val intent =
+                        Intent(MainApplication.getCurrentActivity(), WordViewActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    intent.putExtra("entry", entries[0])
+                    startActivity(context, intent, null)
+                }
+                else -> Toast
+                        .makeText(
+                            MainApplication.getContext(),
+                            "Too many entries found for the linked word.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+            }
         }
 
-        override fun updateDrawState(ds: TextPaint) {
-            super.updateDrawState(ds)
-            ds.color = Color.BLUE
-            ds.isUnderlineText = false
-        }
+
+    }
+
+    override fun updateDrawState(ds: TextPaint) {
+        super.updateDrawState(ds)
+        ds.color = Color.BLUE
+        ds.isUnderlineText = false
+    }
 }
 
 class PinyinConverter {
@@ -125,7 +216,7 @@ class PinyinConverter {
 
                         val out = StringBuilder(syllable)
                         if (iVowel != -1) {
-                            val substitute: Char = substitions.getValue(syllable[iVowel])[tone-1]
+                            val substitute: Char = substitutions.getValue(syllable[iVowel])[tone-1]
                             out.setCharAt(iVowel, substitute)
                         }
 
@@ -152,7 +243,7 @@ class PinyinConverter {
         MARKS
     }
 
-    private val substitions = mapOf(
+    private val substitutions = mapOf(
         'a' to listOf('ā', 'á', 'ǎ', 'à', 'a'),
         'e' to listOf('ē', 'é', 'ě', 'è', 'e'),
         'i' to listOf('ī', 'í', 'ǐ', 'ì', 'i'),
@@ -207,7 +298,7 @@ class HeadWordPainter {
 
                 val foreGroundColor = ForegroundColorSpan(
                     ResourcesCompat.getColor(
-                        MainApplication.applicationContext().resources,
+                        MainApplication.getContext().resources,
                         color, null
                     )
                 )
