@@ -11,10 +11,12 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        val intent = Intent(this, SearchViewActivity::class.java)
+        startActivity(intent)
     }
 
     fun openDict(view: View){
-        val intent = Intent(this, SearchViewActivity::class.java)
-        startActivity(intent)
+
     }
 }
