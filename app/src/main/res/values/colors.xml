@@ -7,7 +7,7 @@
     <color name="tone1">#FF0000</color>
     <color name="tone2">#03C700</color>
     <color name="tone3">#1B3FD1</color>
-    <color name="tone4">#F7E401</color>
+    <color name="tone4">#FFC107</color>
     <color name="tone5">#757774</color>
     <color name="notone">#000000</color>
 </resources>
