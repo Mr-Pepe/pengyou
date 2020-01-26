@@ -2,6 +2,7 @@ package com.mrpepe.pengyou.dictionary.wordView
 
 import android.app.Application
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -47,7 +48,8 @@ class WordDefinitionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         model.entry.observe(this, Observer { entry ->
-            definitions.text = extractDefinitions(entry.definitions, true)
+            definitions.movementMethod = LinkMovementMethod.getInstance()
+            definitions.text = extractDefinitions(entry, true, true, context = activity)
         })
     }
 }
