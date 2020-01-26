@@ -113,4 +113,9 @@ interface EntryDAO {
 
     @Query("SELECT * FROM entries WHERE simplified = :query")
     suspend fun getEntryBySimplified(query: String): List<Entry>
+
+    @Query("SELECT * FROM entries WHERE simplified = :simplified AND traditional = :traditional AND pinyin = :pinyin")
+    suspend fun getEntryBySimplifiedTraditionalPinyin(simplified: String,
+                                                      traditional: String,
+                                                      pinyin: String): List<Entry>
 }

@@ -18,7 +18,7 @@ class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(entry: Entry, clickListener: (Entry) -> Unit) {
         headword.text = HeadWordPainter().paintHeadword(entry.simplified, entry.pinyin)
         pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinConverter.PinyinMode.MARKS)
-        definitions.text = extractDefinitions(entry.definitions, false)
+        definitions.text = extractDefinitions(entry, asList = false, linkWords = false, context = null)
 
         hsk.text = when (entry.hsk) {
             7 -> ""

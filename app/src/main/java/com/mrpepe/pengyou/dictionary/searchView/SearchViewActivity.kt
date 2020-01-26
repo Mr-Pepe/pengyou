@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.mrpepe.pengyou.BaseActivity
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
@@ -17,7 +18,7 @@ import kotlinx.android.synthetic.main.activity_search_view.*
 import kotlinx.android.synthetic.main.activity_search_view.view.*
 import kotlinx.android.synthetic.main.search_result_list.*
 
-class SearchViewActivity : AppCompatActivity() {
+class SearchViewActivity : BaseActivity() {
     private lateinit var modeSwitch: MenuItem
     private lateinit var model: SearchViewViewModel
 
@@ -95,6 +96,7 @@ class SearchViewActivity : AppCompatActivity() {
     private fun entryClicked(entry: Entry){
         val intent = Intent(this, WordViewActivity::class.java)
         intent.putExtra("entry", entry)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
     }
 

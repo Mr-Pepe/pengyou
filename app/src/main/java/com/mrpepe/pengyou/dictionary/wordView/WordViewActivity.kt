@@ -7,13 +7,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.mrpepe.pengyou.BaseActivity
 import com.mrpepe.pengyou.HeadWordPainter
 import com.mrpepe.pengyou.PinyinConverter
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.Entry
 import kotlinx.android.synthetic.main.activity_word_view.*
 
-class WordViewActivity : AppCompatActivity() {
+class WordViewActivity : BaseActivity() {
     lateinit var wordViewViewModel : WordViewViewModel
     lateinit var wordViewFragmentViewModel : WordViewFragmentViewModel
 
