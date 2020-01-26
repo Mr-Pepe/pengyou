@@ -88,6 +88,8 @@ class SearchViewActivity : AppCompatActivity() {
                 return true
             }
         })
+
+        dictionary_search_view.requestFocus()
     }
 
     private fun entryClicked(entry: Entry){
