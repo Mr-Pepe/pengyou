@@ -1,14 +1,19 @@
 package com.mrpepe.pengyou
 
+import android.graphics.Color
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.TextPaint
+import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.view.View
+import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold
 import androidx.core.text.italic
 
-fun extractDefinitions(rawDefinitions: String, asList: Boolean) : SpannableStringBuilder {
+fun extractDefinitions(rawDefinitions: String, asList: Boolean, linkWords: Boolean) : SpannableStringBuilder {
 
     val text = SpannableStringBuilder()
 
@@ -16,26 +21,63 @@ fun extractDefinitions(rawDefinitions: String, asList: Boolean) : SpannableStrin
         text.italic { append("No definition found, but this character might be used in other words.") }
     }
     else {
-        val definitions = rawDefinitions.split('/')
         var iDefinition = 1
 
-        definitions.forEach {
-            when (iDefinition) {
-                1 -> text.bold { append("1") }.append(" $it ")
+        rawDefinitions.split('/').forEach {definition ->
 
-                else -> {
-                    if (asList)
-                        text.append("\n")
-
-                    text.bold { append("$iDefinition") }.append(" $it ")
-                }
+            if (iDefinition == 1) {
+                text.bold { append("1 ") }
             }
+            else {
+                if (asList)
+                    text.append("\n")
+                else
+                    text.append(" ")
+
+                text.bold { append("$iDefinition ") }
+            }
+
+
+            if ("CL:" in definition) {
+
+                val fields = definition.replace("CL:", "").split('[')
+                val pinyin = PinyinConverter().getFormattedPinyin(fields[1].replace("]", ""), PinyinConverter.PinyinMode.MARKS)
+
+                val headword = SpannableString(when(fields[0].split('|').size) {
+                    1 -> fields[0].split('|')[0]
+                    2 -> fields[0].split('|')[1]
+                    else -> ""
+                })
+
+                if (linkWords)
+                    headword.setSpan(wordLink, 0, headword.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                text.append("Measure word: ")
+                text.append(headword)
+                text.append(" [$pinyin]")
+            }
+            else {
+                text.append(definition)
+            }
+
 
             iDefinition++
         }
     }
 
     return text
+}
+
+val wordLink = object: ClickableSpan() {
+        override fun onClick(widget: View) {
+            Toast.makeText(MainApplication.applicationContext(), "Clicked", Toast.LENGTH_SHORT).show()
+        }
+
+        override fun updateDrawState(ds: TextPaint) {
+            super.updateDrawState(ds)
+            ds.color = Color.BLUE
+            ds.isUnderlineText = false
+        }
 }
 
 class PinyinConverter {
