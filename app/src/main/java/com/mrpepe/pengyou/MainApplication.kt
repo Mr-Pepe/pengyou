@@ -1,7 +1,9 @@
 package com.mrpepe.pengyou
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.database.CursorIndexOutOfBoundsException
 
 class MainApplication : Application() {
 
@@ -11,14 +13,21 @@ class MainApplication : Application() {
 
     companion object {
         private var instance: MainApplication? = null
+        private var currentActivity: Activity? = null
 
-        fun applicationContext() : Context {
+        fun getContext() : Context {
             return instance!!.applicationContext
+        }
+
+        fun setCurrentActivity(currentActivity: Activity?) {
+            this.currentActivity = currentActivity
+        }
+
+        fun getCurrentActivity(): Activity? {
+            return currentActivity
         }
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        val context: Context = MainApplication.applicationContext()
-    }
+
+
 }

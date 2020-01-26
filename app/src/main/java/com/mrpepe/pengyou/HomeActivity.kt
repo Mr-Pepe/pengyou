@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.view.View
 import com.mrpepe.pengyou.dictionary.searchView.SearchViewActivity
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

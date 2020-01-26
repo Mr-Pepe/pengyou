@@ -49,7 +49,7 @@ class WordDefinitionFragment : Fragment() {
 
         model.entry.observe(this, Observer { entry ->
             definitions.movementMethod = LinkMovementMethod.getInstance()
-            definitions.text = extractDefinitions(entry.definitions, true, true)
+            definitions.text = extractDefinitions(entry, true, true, context = activity)
         })
     }
 }
