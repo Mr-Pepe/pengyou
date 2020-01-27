@@ -1,14 +1,14 @@
 package com.mrpepe.pengyou.dictionary.wordView
 
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.mrpepe.pengyou.BaseActivity
-import com.mrpepe.pengyou.HeadWordPainter
+import com.mrpepe.pengyou.HeadwordFormatter
 import com.mrpepe.pengyou.PinyinConverter
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.Entry
@@ -36,7 +36,7 @@ class WordViewActivity : BaseActivity() {
         }
 
         wordViewViewModel.entry.observe(this, Observer { entry ->
-            headword.text = HeadWordPainter().paintHeadword(entry.simplified, entry.pinyin)
+            headword.text = HeadwordFormatter().format(entry, HeadwordFormatter.FormatMode.BOTH)
             pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinConverter.PinyinMode.MARKS)
 
             hsk.text = when (entry.hsk) {

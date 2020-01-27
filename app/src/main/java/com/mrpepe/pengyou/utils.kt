@@ -260,7 +260,23 @@ class PinyinConverter {
     )
 }
 
-class HeadWordPainter {
+class HeadwordFormatter {
+
+    fun format(entry: Entry, mode: FormatMode): SpannableStringBuilder {
+        val headwordText = SpannableStringBuilder()
+        val simplified = HeadwordFormatter().paintHeadword(entry.simplified, entry.pinyin)
+        val traditional = HeadwordFormatter().paintHeadword(entry.traditional, entry.pinyin)
+
+        if (mode == FormatMode.SIMPLIFIED || mode == FormatMode.BOTH)
+            headwordText.append(simplified)
+        if (mode == FormatMode.BOTH)
+            headwordText.append(" | ")
+        if (mode == FormatMode.BOTH || mode == FormatMode.TRADITIONAL)
+            headwordText.append(traditional)
+
+        return headwordText
+    }
+
     fun paintHeadword(headword: String, pinyin: String) : SpannableString {
         val syllables = pinyin.split(' ')
 
@@ -316,6 +332,12 @@ class HeadWordPainter {
         }
 
         return output
+    }
+
+    enum class FormatMode {
+        SIMPLIFIED,
+        TRADITIONAL,
+        BOTH
     }
 }
 
