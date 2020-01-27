@@ -3,12 +3,12 @@ package com.mrpepe.pengyou.dictionary.searchView
 import android.text.SpannableStringBuilder
 import android.view.View
 import android.widget.TextView
+import androidx.core.content.res.TypedArrayUtils.getString
+import androidx.core.text.bold
 import androidx.recyclerview.widget.RecyclerView
-import com.mrpepe.pengyou.HeadwordFormatter
-import com.mrpepe.pengyou.PinyinConverter
-import com.mrpepe.pengyou.R
+import com.mrpepe.pengyou.*
 import com.mrpepe.pengyou.dictionary.Entry
-import com.mrpepe.pengyou.extractDefinitions
+import java.lang.StringBuilder
 
 class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var headword: TextView = itemView.findViewById(R.id.headword)
@@ -19,7 +19,22 @@ class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(entry: Entry, clickListener: (Entry) -> Unit) {
         headword.text = HeadwordFormatter().format(entry, HeadwordFormatter.FormatMode.BOTH)
         pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinConverter.PinyinMode.MARKS)
-        definitions.text = extractDefinitions(entry, asList = false, linkWords = false, context = null)
+
+        // TODO: Handle empty definition list
+        val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, false, null)
+
+        if (formattedDefinitions.isEmpty())
+            definitions.text = MainApplication.getContext().getString(R.string.no_definition_found)
+        else {
+            val text = SpannableStringBuilder()
+
+            formattedDefinitions.forEachIndexed { iDefinition, definition ->
+                text.bold { append("${iDefinition + 1} ") }
+                text.append("$definition ")
+            }
+
+            definitions.text = text
+        }
 
         hsk.text = when (entry.hsk) {
             7 -> ""
