@@ -10,6 +10,7 @@
     <string name="tab_words_text">WORDS</string>
     <string name="tab_sentences_text">SENT</string>
     <string name="search_view_query_hint">Search Dictionary</string>
+    <string name="no_definition_found">"No definition found, but this character might be used in other words."</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

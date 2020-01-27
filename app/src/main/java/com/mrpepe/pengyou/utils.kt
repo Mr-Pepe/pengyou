@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.bold
 import androidx.core.text.italic
+import androidx.core.text.toSpannable
 import com.mrpepe.pengyou.dictionary.CEDict
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
@@ -23,103 +24,95 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
+class DefinitionFormatter {
 
-fun extractDefinitions(entry: Entry, asList: Boolean, linkWords: Boolean, context: Context?) : SpannableStringBuilder {
+    fun formatDefinitions(entry: Entry, linkWords: Boolean, context: Context?): List<SpannableStringBuilder> {
+        val rawDefinitions = entry.definitions
+        val definitions = mutableListOf<SpannableStringBuilder>()
 
-    val rawDefinitions = entry.definitions
-
-    val text = SpannableStringBuilder()
-
-    if (rawDefinitions.isBlank()) {
-        text.italic { append("No definition found, but this character might be used in other words.") }
-    }
-    else {
-        var iDefinition = 1
-
-        rawDefinitions.split('/').forEach {definition ->
-
-            if (iDefinition == 1) {
-                text.bold { append("1 ") }
-            }
-            else {
-                if (asList)
-                    text.append("\n")
-                else
-                    text.append(" ")
-
-                text.bold { append("$iDefinition ") }
+        if (rawDefinitions.isBlank()) {
+            return definitions
+        }
+        else {
+            rawDefinitions.split('/').forEach { rawDefinition ->
+                definitions.add(formatDefinition(entry, rawDefinition, linkWords, context))
             }
 
-            // Definition of measure words
-            if ("CL:" in definition) {
-                val measureWords = definition.replace("CL:", "").split(',')
-
-                if (measureWords.size > 1)
-                    text.append("Measure words: ")
-                else
-                    text.append("Measure word: ")
-
-                measureWords.forEachIndexed { iMeasureWord, measureWord ->
-                    val fields = measureWord.split('[')
-                    val rawPinyin = fields[1].replace("]", "")
-                    val pinyin = PinyinConverter().getFormattedPinyin(
-                        rawPinyin,
-                        PinyinConverter.PinyinMode.MARKS
-                    )
-
-                    var simplified = ""
-                    var traditional = ""
-
-                    val headword = SpannableString(
-                        when (fields[0].split('|').size) {
-                            1 -> fields[0].split('|')[0]
-                            2 -> fields[0].split('|')[1]
-                            else -> ""
-                        }
-                    )
-
-                    val headwords = fields[0].split('|')
-
-                    when (headwords.size) {
-                        1 -> {
-                            simplified = headwords[0]
-                            traditional = headwords[0]
-                        }
-                        2 -> {
-                            simplified = headwords[1]
-                            traditional = headwords[0]
-                        }
-                    }
-
-                    if (linkWords)
-                        headword.setSpan(
-                            WordLink(
-                                entry,
-                                context!!,
-                                simplified,
-                                traditional,
-                                rawPinyin
-                            ), 0, headword.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                        )
-
-                    text.append(headword)
-                    text.append(" [$pinyin]")
-
-                    if (iMeasureWord < measureWords.size - 1)
-                        text.append(", ")
-                }
-            }
-            else {
-                text.append(definition)
-            }
-
-
-            iDefinition++
+            return definitions
         }
     }
 
-    return text
+    private fun formatDefinition(entry: Entry, rawDefinition: String, linkWords: Boolean, context: Context?) : SpannableStringBuilder {
+
+        var definition = SpannableStringBuilder()
+
+        // Definition of measure words
+        if ("measure word:" in rawDefinition) {
+            val measureWords = rawDefinition.replace("measure word:", "").split(',')
+
+            if (measureWords.size > 1)
+                definition.append("Measure words: ")
+            else
+                definition.append("Measure word: ")
+
+            measureWords.forEachIndexed { iMeasureWord, measureWord ->
+                val fields = measureWord.split('[')
+                val rawPinyin = fields[1].replace("]", "")
+                val pinyin = PinyinConverter().getFormattedPinyin(
+                    rawPinyin,
+                    PinyinConverter.PinyinMode.MARKS
+                )
+
+                var simplified = ""
+                var traditional = ""
+
+                val headword = SpannableString(
+                    when (fields[0].split('|').size) {
+                        1 -> fields[0].split('|')[0]
+                        2 -> fields[0].split('|')[1]
+                        else -> ""
+                    }
+                )
+
+                val headwords = fields[0].split('|')
+
+                when (headwords.size) {
+                    1 -> {
+                        simplified = headwords[0]
+                        traditional = headwords[0]
+                    }
+                    2 -> {
+                        simplified = headwords[1]
+                        traditional = headwords[0]
+                    }
+                }
+
+                if (linkWords)
+                    headword.setSpan(
+                        WordLink(
+                            entry,
+                            context!!,
+                            simplified,
+                            traditional,
+                            rawPinyin
+                        ), 0, headword.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+
+                definition.append(headword)
+                definition.append(" [$pinyin]")
+
+                if (iMeasureWord < measureWords.size - 1)
+                    definition.append(", ")
+            }
+        }
+        else {
+            definition.append(rawDefinition)
+        }
+
+        return definition
+    }
 }
+
 
 class WordLink(val entry: Entry,
                val context: Context,
