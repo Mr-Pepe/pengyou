@@ -50,7 +50,7 @@ fun extractDefinitions(entry: Entry, asList: Boolean, linkWords: Boolean, contex
                 text.bold { append("$iDefinition ") }
             }
 
-
+            // Definition of measure words
             if ("CL:" in definition) {
                 val measureWords = definition.replace("CL:", "").split(',')
 
