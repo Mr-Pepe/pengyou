@@ -101,7 +101,7 @@ interface EntryDAO {
     @Query("SELECT * " +
             "FROM entries " +
             "WHERE definitions LIKE :query " +
-            "ORDER BY word_length, hsk, priority " +
+            "ORDER BY hsk, priority " +
             "LIMIT 1000")
     fun searchInDictByEnglish(query: String) : LiveData<List<Entry>>
 
