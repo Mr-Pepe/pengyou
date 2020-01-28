@@ -78,8 +78,8 @@ class DefinitionFormatter {
                         val tmpPinyin = StringBuilder()
                         var tmpInPinyin = false
 
-                        for (i in iChar until rawDefinition.length) {
-                            if (rawDefinition[i] == ']') {
+                        for (i in iChar+1 until rawDefinition.length) {
+                            if (rawDefinition[i] == ']' || rawDefinition[i] == '§') {
                                 break
                             }
                             else if (tmpInPinyin) {
@@ -174,8 +174,33 @@ class WordLink(val entry: Entry,
 
             var entries = listOf<Entry>()
 
-            if (pinyin.isNotBlank())
-                entries = entryDao.getEntryBySimplifiedTraditionalPinyin(simplified, traditional, pinyin)
+            // The search order is:
+            // 1. Search by exact simplified, exact traditional, case sensitive pinyin
+            // 2. Search by exact simplified, exact traditional, case insensitive pinyin
+            // 3. Search by exact simplified, exact traditional
+            // 4. Search by simplified, traditional
+
+            if (pinyin.isNotBlank()) {
+                // The database query is case insensitive, so the result is checked afterwards
+                val tmpEntries =
+                    entryDao.getEntryBySimplifiedTraditionalPinyin(simplified, traditional, pinyin)
+
+                if (tmpEntries.size > 1) {
+                    for (tmpEntry in tmpEntries) {
+                        if (tmpEntry.simplified == simplified &&
+                            tmpEntry.traditional == traditional &&
+                            tmpEntry.pinyin == pinyin) {
+
+                            entries = listOf(tmpEntry)
+                            break
+                        }
+                    }
+
+                }
+                if (entries.isEmpty()) {
+                    entries = tmpEntries
+                }
+            }
 
             // If no pinyin was provided or no exact match found
             if (entries.isEmpty())
