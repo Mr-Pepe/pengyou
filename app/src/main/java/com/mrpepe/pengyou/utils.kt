@@ -13,96 +13,139 @@ import android.view.View
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.text.bold
-import androidx.core.text.italic
-import androidx.core.text.toSpannable
 import com.mrpepe.pengyou.dictionary.CEDict
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
 import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
 import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 
 class DefinitionFormatter {
 
-    fun formatDefinitions(entry: Entry, linkWords: Boolean, context: Context?): List<SpannableStringBuilder> {
+    fun formatDefinitions(entry: Entry, linkWords: Boolean, context: Context?, mode: ChineseMode): List<SpannableStringBuilder> {
         val rawDefinitions = entry.definitions
         val definitions = mutableListOf<SpannableStringBuilder>()
 
-        if (rawDefinitions.isBlank()) {
-            return definitions
+        return if (rawDefinitions.isBlank()) {
+            definitions
         }
         else {
             rawDefinitions.split('/').forEach { rawDefinition ->
-                definitions.add(formatDefinition(entry, rawDefinition, linkWords, context))
+                definitions.add(formatDefinition(entry, rawDefinition, linkWords, context, mode))
             }
 
-            return definitions
+            definitions
         }
     }
 
-    private fun formatDefinition(entry: Entry, rawDefinition: String, linkWords: Boolean, context: Context?) : SpannableStringBuilder {
+    private fun formatDefinition(entry: Entry, rawDefinition: String, linkWords: Boolean, context: Context?, mode: ChineseMode) : SpannableStringBuilder {
 
-        var definition = SpannableStringBuilder()
+        val definition = SpannableStringBuilder()
 
-        // Definition of measure words
-        if ("measure word:" in rawDefinition) {
-            val measureWords = rawDefinition.replace("measure word:", "").split(',')
+        var chineseWord = StringBuilder()
+        var pinyin = StringBuilder()
+        var simplified: String
+        var traditional = ""
 
-            if (measureWords.size > 1)
-                definition.append("Measure words: ")
-            else
-                definition.append("Measure word: ")
+        var inPinyin = false
+        var inChinese = false
 
-            measureWords.forEachIndexed { iMeasureWord, measureWord ->
-                val fields = measureWord.split('[')
-                val rawPinyin = fields[1].replace("]", "")
-                val pinyin = PinyinConverter().getFormattedPinyin(
-                    rawPinyin,
-                    PinyinConverter.PinyinMode.MARKS
-                )
 
-                var simplified = ""
-                var traditional = ""
+        if ('§' in rawDefinition || '[' in rawDefinition) {
+            rawDefinition.forEachIndexed { iChar, char ->
 
-                val headword = SpannableString(
-                    when (fields[0].split('|').size) {
-                        1 -> fields[0].split('|')[0]
-                        2 -> fields[0].split('|')[1]
-                        else -> ""
+                // Find Chinese links
+                if (inChinese) {
+                    if (char == '§') {
+                        if (traditional.isBlank()) {
+                            simplified = chineseWord.toString()
+                            traditional = chineseWord.toString()
+                        }
+                        else {
+                            simplified = chineseWord.toString()
+                        }
+
+                        var word = SpannableString("")
+
+                        if (mode == ChineseMode.SIMPLIFIED || mode == ChineseMode.BOTH) {
+                            word = SpannableString(simplified)
+                        }
+                        else if (mode == ChineseMode.TRADITIONAL){
+                            word = SpannableString(traditional)
+                        }
+
+                        // Try to find pinyin corresponding to this word
+                        val tmpPinyin = StringBuilder()
+                        var tmpInPinyin = false
+
+                        for (i in iChar until rawDefinition.length) {
+                            if (rawDefinition[i] == ']') {
+                                break
+                            }
+                            else if (tmpInPinyin) {
+                                tmpPinyin.append(rawDefinition[i])
+                            }
+                            else if (rawDefinition[i] == '[') {
+                                tmpInPinyin = true
+                            }
+                        }
+
+                        if (linkWords)
+                            word.setSpan(
+                                WordLink(
+                                    entry,
+                                    context!!,
+                                    simplified,
+                                    traditional,
+                                    tmpPinyin.toString()
+                                ), 0, word.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+
+                        definition.append(word)
+
+                        simplified = ""
+                        traditional = ""
+                        chineseWord.clear()
+                        inChinese = false
                     }
-                )
-
-                val headwords = fields[0].split('|')
-
-                when (headwords.size) {
-                    1 -> {
-                        simplified = headwords[0]
-                        traditional = headwords[0]
+                    else if (char == '|') {
+                        traditional = chineseWord.toString()
+                        chineseWord.clear()
                     }
-                    2 -> {
-                        simplified = headwords[1]
-                        traditional = headwords[0]
+                    else {
+                        chineseWord.append(char)
                     }
                 }
+                else if (char == '§'){
+                    inChinese = true
+                }
+                // Find Pinyin
+                else if (inPinyin) {
+                    if (char == ']') {
+                        definition.append(
+                            PinyinConverter().getFormattedPinyin(
+                                pinyin.toString(),
+                                PinyinMode.MARKS
+                            )
+                        )
+                        definition.append(char)
+                        inPinyin = false
+                        pinyin.clear()
+                    }
+                    else {
+                        pinyin.append(char)
+                    }
+                }
+                else if (char == '[') {
+                    inPinyin = true
+                    if (definition.last() != ' ')
+                        definition.append(' ')
 
-                if (linkWords)
-                    headword.setSpan(
-                        WordLink(
-                            entry,
-                            context!!,
-                            simplified,
-                            traditional,
-                            rawPinyin
-                        ), 0, headword.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                    )
+                    definition.append(char)
+                }
+                else definition.append(char)
 
-                definition.append(headword)
-                definition.append(" [$pinyin]")
 
-                if (iMeasureWord < measureWords.size - 1)
-                    definition.append(", ")
             }
         }
         else {
@@ -129,7 +172,21 @@ class WordLink(val entry: Entry,
 
         scope.launch {
 
-            val entries = entryDao.getEntryBySimplifiedTraditionalPinyin(simplified, traditional, pinyin)
+            var entries = listOf<Entry>()
+
+            if (pinyin.isNotBlank())
+                entries = entryDao.getEntryBySimplifiedTraditionalPinyin(simplified, traditional, pinyin)
+
+            // If no pinyin was provided or no exact match found
+            if (entries.isEmpty())
+                entries = entryDao.getEntryBySimplifiedTraditional(simplified, traditional)
+
+            // If still nothing found look for entries containing simplified or traditional
+            if (entries.isEmpty())
+                entries = entryDao.searchChineseBySimplifiedTraditional(simplified,
+                                                          simplified + 'z',
+                                                                        traditional,
+                                                         traditional + 'z')
 
             when (entries.size) {
                 0 -> Toast.makeText(
@@ -229,13 +286,6 @@ class PinyinConverter {
         }
     }
 
-
-
-    enum class PinyinMode {
-        NUMBERS,
-        MARKS
-    }
-
     private val substitutions = mapOf(
         'a' to listOf('ā', 'á', 'ǎ', 'à', 'a'),
         'e' to listOf('ē', 'é', 'ě', 'è', 'e'),
@@ -253,24 +303,29 @@ class PinyinConverter {
     )
 }
 
+enum class PinyinMode {
+    NUMBERS,
+    MARKS
+}
+
 class HeadwordFormatter {
 
-    fun format(entry: Entry, mode: FormatMode): SpannableStringBuilder {
+    fun format(entry: Entry, mode: ChineseMode): SpannableStringBuilder {
         val headwordText = SpannableStringBuilder()
         val simplified = HeadwordFormatter().paintHeadword(entry.simplified, entry.pinyin)
         val traditional = HeadwordFormatter().paintHeadword(entry.traditional, entry.pinyin)
 
-        if (mode == FormatMode.SIMPLIFIED || mode == FormatMode.BOTH)
+        if (mode == ChineseMode.SIMPLIFIED || mode == ChineseMode.BOTH)
             headwordText.append(simplified)
-        if (mode == FormatMode.BOTH)
+        if (mode == ChineseMode.BOTH)
             headwordText.append(" | ")
-        if (mode == FormatMode.BOTH || mode == FormatMode.TRADITIONAL)
+        if (mode == ChineseMode.BOTH || mode == ChineseMode.TRADITIONAL)
             headwordText.append(traditional)
 
         return headwordText
     }
 
-    fun paintHeadword(headword: String, pinyin: String) : SpannableString {
+    private fun paintHeadword(headword: String, pinyin: String) : SpannableString {
         val syllables = pinyin.split(' ')
 
         val output = SpannableString(headword)
@@ -327,12 +382,15 @@ class HeadwordFormatter {
         return output
     }
 
-    enum class FormatMode {
-        SIMPLIFIED,
-        TRADITIONAL,
-        BOTH
-    }
 }
+
+
+enum class ChineseMode {
+    SIMPLIFIED,
+    TRADITIONAL,
+    BOTH
+}
+
 
 fun String.countSurrogatePairs() = withIndex().count {
     hasSurrogatePairAt(it.index)

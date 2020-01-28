@@ -14,6 +14,7 @@ import androidx.core.text.bold
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.mrpepe.pengyou.ChineseMode
 import com.mrpepe.pengyou.DefinitionFormatter
 import com.mrpepe.pengyou.MainApplication
 
@@ -54,7 +55,7 @@ class WordDefinitionFragment : Fragment() {
         model.entry.observe(this, Observer { entry ->
             definitions.movementMethod = LinkMovementMethod.getInstance()
 
-            val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, true, activity)
+            val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, true, activity, ChineseMode.BOTH)
 
             if (formattedDefinitions.isEmpty())
                 definitions.text = MainApplication.getContext().getString(R.string.no_definition_found)
