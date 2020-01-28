@@ -2,6 +2,7 @@ package com.mrpepe.pengyou.dictionary.searchView
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -24,6 +25,7 @@ class SearchViewActivity : BaseActivity() {
     private var searchHistory = listOf<Entry>()
     private var searchResults = listOf<Entry>()
     lateinit var adapter : SearchResultAdapter
+    private var lastClickTime : Long = 0
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.that_menu, menu)
@@ -117,11 +119,19 @@ class SearchViewActivity : BaseActivity() {
             }
         }
 
-        searchResultList.scrollToPosition(0)
+        if (scrollToStart)
+            searchResultList.scrollToPosition(0)
     }
 
     private fun entryClicked(entry: Entry){
+        if (SystemClock.elapsedRealtime() - lastClickTime < 500) {
+            return
+        }
+        lastClickTime = SystemClock.elapsedRealtime()
+
+
         model.addToSearchHistory(entry.id.toString())
+        dictionary_search_view.clearFocus()
 
         val intent = Intent(this, WordViewActivity::class.java)
         intent.putExtra("entry", entry)
