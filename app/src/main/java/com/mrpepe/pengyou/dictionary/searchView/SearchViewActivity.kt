@@ -21,6 +21,9 @@ import kotlinx.android.synthetic.main.search_result_list.*
 class SearchViewActivity : BaseActivity() {
     private lateinit var modeSwitch: MenuItem
     private lateinit var model: SearchViewViewModel
+    private var searchHistory = listOf<Entry>()
+    private var searchResults = listOf<Entry>()
+    lateinit var adapter : SearchResultAdapter
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.that_menu, menu)
@@ -48,7 +51,7 @@ class SearchViewActivity : BaseActivity() {
         model = ViewModelProvider.AndroidViewModelFactory(application)
                                             .create(SearchViewViewModel::class.java)
 
-        val adapter =
+        adapter =
             SearchResultAdapter{ entry: Entry ->
                 entryClicked(entry)
             }
@@ -56,18 +59,14 @@ class SearchViewActivity : BaseActivity() {
         searchResultList.layoutManager = LinearLayoutManager(this)
         searchResultList.adapter = adapter
 
-        model.searchResults.observe(this, Observer { searchResults ->
-            resultCount.text = when (searchResults.size) {
-                0 -> when(toolbar.dictionary_search_view.query.isBlank()) {
-                    true -> ""
-                    false -> "0 Results"
-                }
-                in 1..999 -> searchResults.size.toString() + " Results"
-                else -> "999+ Results"
-            }
-            
-            searchResults?.let { adapter.setEntries(searchResults) }
-            searchResultList.scrollToPosition(0)
+        model.searchResults.observe(this, Observer {
+            searchResults = it
+            updateSearchResults()
+        })
+
+        model.searchHistory.observe(this, Observer {
+            searchHistory = it
+            updateSearchResults()
         })
 
         toolbar.dictionary_search_view.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
@@ -78,8 +77,8 @@ class SearchViewActivity : BaseActivity() {
                                     .replace("ü", "u:")
                                     .replace("v", "u:"))
                 } else {
-                    adapter.setEntries(emptyList())
-                    resultCount.text = ""
+                    searchResults = listOf()
+                    updateSearchResults()
                 }
                 return true
             }
@@ -93,7 +92,34 @@ class SearchViewActivity : BaseActivity() {
         dictionary_search_view.requestFocus()
     }
 
+    override fun onResume() {
+        super.onResume()
+        updateSearchResults()
+    }
+
+    private fun updateSearchResults() {
+
+        when (toolbar.dictionary_search_view.query.isBlank()) {
+            true -> {
+                resultCount.text = searchHistory.size.toString() + " recently viewed entries"
+                adapter.setEntries(searchHistory)
+            }
+            false -> {
+                resultCount.text = when (searchResults.size) {
+                    0 -> "0 results"
+                    in 1..999 -> searchResults.size.toString() + " results"
+                    else -> "999+ results"
+                }
+                adapter.setEntries(searchResults)
+            }
+        }
+
+        searchResultList.scrollToPosition(0)
+    }
+
     private fun entryClicked(entry: Entry){
+        model.addToSearchHistory(entry.id.toString())
+
         val intent = Intent(this, WordViewActivity::class.java)
         intent.putExtra("entry", entry)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
