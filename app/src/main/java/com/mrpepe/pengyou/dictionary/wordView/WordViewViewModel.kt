@@ -19,18 +19,20 @@ class WordViewViewModel(application: Application) : AndroidViewModel(application
 
 
     fun init(initEntry: Entry) {
-        repository = WordViewRepository(entryDao, initEntry)
-
-        entry.addSource(repository.entry) {value -> entry.value = value}
-        wordsContaining.addSource(repository.wordsContaining) {value -> wordsContaining.value = value}
-
         viewModelScope.launch {
+            repository = WordViewRepository(entryDao, initEntry)
+
+            entry.addSource(repository.entry) {value -> entry.value = value}
+            wordsContaining.addSource(repository.wordsContaining) {value -> wordsContaining.value = value}
+
             repository.decompose(initEntry.simplified)
             decompositions.postValue(repository.decompositions)
             repository.getStrokeOrder(initEntry.simplified)
             strokeOrders.postValue(repository.strokeOrders)
+
+
+            isInitialized = true
         }
 
-        isInitialized = true
     }
 }
