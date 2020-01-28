@@ -26,6 +26,7 @@ class SearchViewActivity : BaseActivity() {
     private var searchResults = listOf<Entry>()
     lateinit var adapter : SearchResultAdapter
     private var lastClickTime : Long = 0
+    private var searchViewHadFocus = false
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.that_menu, menu)
@@ -97,6 +98,11 @@ class SearchViewActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         updateSearchResults(false)
+
+        if (searchViewHadFocus) {
+            dictionary_search_view.requestFocus()
+            searchViewHadFocus = false
+        }
     }
 
     private fun updateSearchResults(scrollToStart: Boolean) {
@@ -131,7 +137,9 @@ class SearchViewActivity : BaseActivity() {
 
 
         model.addToSearchHistory(entry.id.toString())
-        dictionary_search_view.clearFocus()
+        if (dictionary_search_view.hasFocus())
+            searchViewHadFocus = true
+            dictionary_search_view.clearFocus()
 
         val intent = Intent(this, WordViewActivity::class.java)
         intent.putExtra("entry", entry)
