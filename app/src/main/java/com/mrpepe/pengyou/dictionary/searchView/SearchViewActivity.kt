@@ -61,12 +61,12 @@ class SearchViewActivity : BaseActivity() {
 
         model.searchResults.observe(this, Observer {
             searchResults = it
-            updateSearchResults()
+            updateSearchResults(true)
         })
 
         model.searchHistory.observe(this, Observer {
             searchHistory = it
-            updateSearchResults()
+            updateSearchResults(true)
         })
 
         toolbar.dictionary_search_view.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
@@ -78,7 +78,7 @@ class SearchViewActivity : BaseActivity() {
                                     .replace("v", "u:"))
                 } else {
                     searchResults = listOf()
-                    updateSearchResults()
+                    updateSearchResults(true)
                 }
                 return true
             }
@@ -94,10 +94,10 @@ class SearchViewActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        updateSearchResults()
+        updateSearchResults(false)
     }
 
-    private fun updateSearchResults() {
+    private fun updateSearchResults(scrollToStart: Boolean) {
 
         when (toolbar.dictionary_search_view.query.isBlank()) {
             true -> {
