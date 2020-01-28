@@ -77,6 +77,9 @@ interface EntryDAO {
     @Query("SELECT * FROM entries WHERE id=:id")
     fun getEntryById(id: Int) : LiveData<Entry>
 
+    @Query("SELECT * FROM entries WHERE id=:id")
+    suspend fun getEntryByIdAsync(id: Int) : Entry
+
     @Query("SELECT * " +
                 "FROM entries " +
                 "WHERE " +
