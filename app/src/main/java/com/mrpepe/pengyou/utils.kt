@@ -3,6 +3,7 @@ package com.mrpepe.pengyou
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.os.SystemClock
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -163,8 +164,16 @@ class WordLink(val entry: Entry,
                private val traditional: String,
                private val pinyin: String): ClickableSpan() {
 
+    companion object {
+        var lastTimeClicked : Long = 0
+    }
+
     override fun onClick(widget: View) {
 
+        if (SystemClock.elapsedRealtime() - lastTimeClicked < 500)
+            return
+
+        lastTimeClicked = SystemClock.elapsedRealtime()
 
         val entryDao : EntryDAO = CEDict.getDatabase(MainApplication.getContext()).entryDao()
 
@@ -235,8 +244,6 @@ class WordLink(val entry: Entry,
 
             }
         }
-
-
     }
 
     override fun updateDrawState(ds: TextPaint) {
