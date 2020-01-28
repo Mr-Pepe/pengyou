@@ -101,14 +101,17 @@ class SearchViewActivity : BaseActivity() {
 
         when (toolbar.dictionary_search_view.query.isBlank()) {
             true -> {
-                resultCount.text = searchHistory.size.toString() + " recently viewed entries"
+                resultCount.text = when (searchHistory.size) {
+                    0 -> ""
+                    else -> "Recently viewed: " + searchHistory.size.toString()
+                }
                 adapter.setEntries(searchHistory)
             }
             false -> {
                 resultCount.text = when (searchResults.size) {
-                    0 -> "0 results"
-                    in 1..999 -> searchResults.size.toString() + " results"
-                    else -> "999+ results"
+                    0 -> "Search results: 0"
+                    in 1..999 -> "Search results: " + searchResults.size.toString()
+                    else -> "Search results: 999+"
                 }
                 adapter.setEntries(searchResults)
             }
