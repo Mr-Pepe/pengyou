@@ -118,4 +118,22 @@ interface EntryDAO {
     suspend fun getEntryBySimplifiedTraditionalPinyin(simplified: String,
                                                       traditional: String,
                                                       pinyin: String): List<Entry>
+
+    @Query("SELECT * FROM entries WHERE simplified = :simplified AND traditional = :traditional")
+    suspend fun getEntryBySimplifiedTraditional(simplified: String,
+                                                traditional: String): List<Entry>
+
+    @Query("SELECT * " +
+                "FROM entries " +
+                "WHERE " +
+                    "simplified >= :lowerSimplified AND " +
+                    "simplified < :upperSimplified " +
+                    " OR " +
+                    "traditional >= :lowerTraditional AND " +
+                    "traditional < :upperTraditional " +
+                "ORDER BY word_length, hsk, pinyin_length, priority")
+    suspend fun searchChineseBySimplifiedTraditional(lowerSimplified: String,
+                                                     upperSimplified: String,
+                                                     lowerTraditional: String,
+                                                     upperTraditional: String) : List<Entry>
 }

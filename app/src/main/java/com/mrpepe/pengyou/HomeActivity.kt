@@ -16,7 +16,8 @@ class HomeActivity : BaseActivity() {
         startActivity(intent)
     }
 
-    fun openDict(view: View){
-
+    fun openDict(){
+        val intent = Intent(this, SearchViewActivity::class.java)
+        startActivity(intent)
     }
 }

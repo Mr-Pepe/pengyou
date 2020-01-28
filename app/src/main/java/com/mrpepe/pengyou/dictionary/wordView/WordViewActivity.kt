@@ -7,10 +7,7 @@ import androidx.viewpager.widget.ViewPager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.mrpepe.pengyou.BaseActivity
-import com.mrpepe.pengyou.HeadwordFormatter
-import com.mrpepe.pengyou.PinyinConverter
-import com.mrpepe.pengyou.R
+import com.mrpepe.pengyou.*
 import com.mrpepe.pengyou.dictionary.Entry
 import kotlinx.android.synthetic.main.activity_word_view.*
 
@@ -36,8 +33,8 @@ class WordViewActivity : BaseActivity() {
         }
 
         wordViewViewModel.entry.observe(this, Observer { entry ->
-            headword.text = HeadwordFormatter().format(entry, HeadwordFormatter.FormatMode.BOTH)
-            pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinConverter.PinyinMode.MARKS)
+            headword.text = HeadwordFormatter().format(entry, ChineseMode.BOTH)
+            pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinMode.MARKS)
 
             hsk.text = when (entry.hsk) {
                 7 -> ""

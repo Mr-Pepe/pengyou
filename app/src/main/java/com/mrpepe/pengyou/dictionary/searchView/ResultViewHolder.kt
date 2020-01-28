@@ -17,11 +17,11 @@ class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var hsk: TextView = itemView.findViewById(R.id.hsk)
 
     fun bind(entry: Entry, clickListener: (Entry) -> Unit) {
-        headword.text = HeadwordFormatter().format(entry, HeadwordFormatter.FormatMode.BOTH)
-        pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinConverter.PinyinMode.MARKS)
+        headword.text = HeadwordFormatter().format(entry, ChineseMode.BOTH)
+        pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinMode.MARKS)
 
         // TODO: Handle empty definition list
-        val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, false, null)
+        val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, false, null, ChineseMode.BOTH)
 
         if (formattedDefinitions.isEmpty())
             definitions.text = MainApplication.getContext().getString(R.string.no_definition_found)
