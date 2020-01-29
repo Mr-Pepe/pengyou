@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -98,6 +99,15 @@ class SearchViewActivity : BaseActivity() {
 
         searchViewFragmentViewModel.newHistoryEntry.observe(this, Observer { id ->
             searchViewViewModel.addToSearchHistory(id)
+        })
+
+        dictionary_search_view.setOnQueryTextFocusChangeListener( object : View.OnFocusChangeListener {
+            override fun onFocusChange(v: View?, hasFocus: Boolean) {
+                when (hasFocus) {
+                    true -> tabs.visibility = View.VISIBLE
+                    false -> tabs.visibility = View.INVISIBLE
+                }
+            }
         })
 
         dictionary_search_view.requestFocus()
