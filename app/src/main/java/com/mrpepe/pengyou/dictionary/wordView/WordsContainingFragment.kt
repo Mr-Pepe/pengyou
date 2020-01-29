@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -20,6 +21,7 @@ class WordsContainingFragment : Fragment() {
 
     private lateinit var model: WordViewFragmentViewModel
     private lateinit var searchResultList: RecyclerView
+    private lateinit var resultCount: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +40,7 @@ class WordsContainingFragment : Fragment() {
         val root = inflater.inflate(R.layout.search_result_list, container, false)
 
         searchResultList = root.searchResultList
+        resultCount = root.resultCount
 
         return root
     }
@@ -46,15 +49,19 @@ class WordsContainingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val adapter =
-            SearchResultAdapter({ entry: Entry ->
+            SearchResultAdapter{ entry: Entry ->
                 entryClicked(entry)
-            })
+            }
 
         searchResultList.layoutManager = LinearLayoutManager(activity)
         searchResultList.adapter = adapter
 
         model.wordsContaining.observe(this, Observer { wordsContaining ->
             wordsContaining?.let { adapter.setEntries(wordsContaining) }
+            resultCount.text = when(wordsContaining.size) {
+                0 -> ""
+                else -> "Appears in ${wordsContaining.size} words"
+            }
         })
     }
 
