@@ -1,4 +1,4 @@
-package com.mrpepe.pengyou.dictionary.wordView
+package com.mrpepe.pengyou.dictionary.searchView
 
 import android.content.Context
 import androidx.fragment.app.Fragment
@@ -7,22 +7,17 @@ import androidx.fragment.app.FragmentPagerAdapter
 import com.mrpepe.pengyou.PlaceholderFragment
 import com.mrpepe.pengyou.R
 
-class WordViewPagerAdapter(private val context: Context, fm: FragmentManager) :
+class SearchViewPagerAdapter(private val context: Context, fm: FragmentManager) :
     FragmentPagerAdapter(fm) {
 
     private val TAB_TITLES = arrayOf(
-        R.string.tab_definition_text,
-        R.string.tab_strokes_text,
-        R.string.tab_components_text,
-        R.string.tab_words_text
+        R.string.tab_keyboard,
+        R.string.tab_handwriting
     )
 
     override fun getItem(position: Int): Fragment {
         return when (position) {
-            0 -> WordDefinitionFragment()
-            1 -> StrokeOrderFragment()
-            2 -> DecompositionFragment()
-            3 -> WordsContainingFragment()
+            0 -> SearchResultFragment()
             else -> PlaceholderFragment.newInstance(position + 1)
         }
     }

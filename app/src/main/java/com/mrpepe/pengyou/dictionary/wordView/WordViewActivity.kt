@@ -1,7 +1,6 @@
 package com.mrpepe.pengyou.dictionary.wordView
 
 import android.os.Bundle
-import android.text.SpannableStringBuilder
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.lifecycle.Observer
@@ -19,7 +18,7 @@ class WordViewActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_word_view)
         val sectionsPagerAdapter = WordViewPagerAdapter(this, supportFragmentManager)
-        val viewPager: ViewPager = findViewById(R.id.view_pager)
+        val viewPager: ViewPager = findViewById(R.id.word_view_pager)
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
