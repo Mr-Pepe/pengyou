@@ -9,6 +9,8 @@
     <string name="tab_usage_text">USAGE</string>
     <string name="tab_words_text">WORDS</string>
     <string name="tab_sentences_text">SENT</string>
+    <string name="tab_keyboard">KEYBOARD</string>
+    <string name="tab_handwriting">HANDWRITING</string>
     <string name="search_view_query_hint">Search Dictionary</string>
     <string name="no_definition_found">"No definition found, but this character might be used in other words."</string>
     <string name="search_history">com.mrpepe.pengyou.search_history</string>
