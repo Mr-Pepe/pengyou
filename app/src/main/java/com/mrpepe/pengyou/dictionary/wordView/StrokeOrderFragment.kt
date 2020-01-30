@@ -22,11 +22,12 @@ class StrokeOrderFragment : Fragment() {
     private lateinit var model: WordViewFragmentViewModel
     private lateinit var webView : WebView
     var character : String = "我"
+    var webViewLoaded : Boolean = false
 
-    private val BASE_URL = "file:///android_asset/example.html"
+    private val BASE_URL = "file:///android_asset/stroke_order/stroke_order.html"
     private val JAVASCRIPT_OBJ = "Android"
 
-    private lateinit var currentStrokeOrder : String
+    private var currentStrokeOrder = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +46,7 @@ class StrokeOrderFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_stroke_order, container, false)
-
-        return root
+        return inflater.inflate(R.layout.fragment_stroke_order, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -56,30 +55,29 @@ class StrokeOrderFragment : Fragment() {
         webView = my_web_view
         webView.settings.javaScriptEnabled = true
         webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageFinished(view: WebView?, url: String?) {
-                if (url == BASE_URL) {
-//                    injectJavaScriptFunction()
-                }
-            }
-        }
-
         webView.loadUrl(BASE_URL)
 
         model.strokeOrders.observe(this, Observer {strokeOrders ->
             currentStrokeOrder = strokeOrders[0].replace("\'", "\"")
-
+            drawCharacter()
         })
 
+        webView.evaluateJavascript(
+            "javascript: " +
+                    "drawCharacter()", null
+        )
+
+
+
+//        webView.evaluateJavascript(
+//            "javascript: " +
+//                    "createCharacter()", null
+//        )
+
         animateStrokeButton.setOnClickListener {
-            webView.evaluateJavascript(
-                "javascript: " +
-                        "drawCharacter()", null
-            )
+
         }
     }
-
-
 
     override fun onDestroy() {
         webView.removeJavascriptInterface(JAVASCRIPT_OBJ)
@@ -98,6 +96,21 @@ class StrokeOrderFragment : Fragment() {
             val json : JsonObject = Parser.default().parse(StringBuilder(currentStrokeOrder)) as JsonObject
 
             return json.toJsonString()
+        }
+
+        @JavascriptInterface
+        fun isLoaded() {
+            webViewLoaded = true
+            drawCharacter()
+        }
+    }
+
+    private fun drawCharacter() {
+        if (webViewLoaded && currentStrokeOrder != "") {
+            webView.evaluateJavascript(
+                "javascript: " +
+                        "drawCharacter()", null
+            )
         }
     }
 }
