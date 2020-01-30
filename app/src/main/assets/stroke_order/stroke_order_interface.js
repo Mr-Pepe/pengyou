@@ -1,18 +1,36 @@
-function drawCharacter() {
+var writer;
 
-    var writer = HanziWriter.create('draw_board', '轮', {
+
+function showCharacter() {
+
+    var width = 300;
+    var height = 300
+    var padding = 5;
+
+    writer = HanziWriter.create('draw_board', '', {
       charDataLoader: function() {
         data = JSON.parse(Android.getJSON())
         console.log(data)
         return data
       },
-      width: 200,
-      height: 200,
-      padding: 5,
-      delayBetweenLoops: 3000
+      width: width,
+      height: height,
+      padding: padding,
+      showOutline: true,
+      showCharacter: false
     });
-
-    writer.loopCharacterAnimation();
-
 }
+
+function animate(){
+    writer.animateCharacter();
+}
+
+function showOutline() {
+    writer.showOutline();
+}
+
+function hideOutline() {
+    writer.hideOutline();
+}
+
 

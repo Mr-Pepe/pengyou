@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.mrpepe.pengyou.R
+import com.mrpepe.pengyou.runJavaScript
 import kotlinx.android.synthetic.main.fragment_stroke_order.*
 import java.lang.Exception
 import java.lang.StringBuilder
@@ -28,6 +28,8 @@ class StrokeOrderFragment : Fragment() {
     private val JAVASCRIPT_OBJ = "Android"
 
     private var currentStrokeOrder = ""
+
+    private var outlineMode = OutlineMode.SHOW
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,26 +58,31 @@ class StrokeOrderFragment : Fragment() {
         webView.settings.javaScriptEnabled = true
         webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
         webView.loadUrl(BASE_URL)
+        webView.settings.loadWithOverviewMode = true
+        webView.settings.useWideViewPort = true
 
         model.strokeOrders.observe(this, Observer {strokeOrders ->
             currentStrokeOrder = strokeOrders[0].replace("\'", "\"")
-            drawCharacter()
+            showCharacter()
         })
 
-        webView.evaluateJavascript(
-            "javascript: " +
-                    "drawCharacter()", null
-        )
+        buttonPlay.setOnClickListener {
+            webView.runJavaScript("animate()")
+        }
 
-
-
-//        webView.evaluateJavascript(
-//            "javascript: " +
-//                    "createCharacter()", null
-//        )
-
-        animateStrokeButton.setOnClickListener {
-
+        buttonOutline.setOnClickListener {
+            when (outlineMode) {
+                OutlineMode.SHOW -> {
+                    outlineMode = OutlineMode.HIDE
+                    webView.runJavaScript("hideOutline()")
+                    buttonOutline.text = getString(R.string.button_outline_show)
+                }
+                OutlineMode.HIDE -> {
+                    outlineMode = OutlineMode.SHOW
+                    webView.runJavaScript("showOutline()")
+                    buttonOutline.text = getString(R.string.button_outline_hide)
+                }
+            }
         }
     }
 
@@ -101,16 +108,25 @@ class StrokeOrderFragment : Fragment() {
         @JavascriptInterface
         fun isLoaded() {
             webViewLoaded = true
-            drawCharacter()
+            showCharacter()
         }
     }
 
-    private fun drawCharacter() {
+    private fun showCharacter() {
         if (webViewLoaded && currentStrokeOrder != "") {
             webView.evaluateJavascript(
                 "javascript: " +
-                        "drawCharacter()", null
+                        "showCharacter()", null
             )
         }
     }
+
+
+
+    enum class OutlineMode {
+        SHOW,
+        HIDE
+    }
 }
+
+

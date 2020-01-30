@@ -14,6 +14,7 @@ import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.WebView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.res.ResourcesCompat
@@ -25,6 +26,7 @@ import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
 import com.mrpepe.pengyou.dictionary.wordView.WordViewViewModel
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+
 
 class DefinitionFormatter {
 
@@ -162,6 +164,12 @@ class DefinitionFormatter {
     }
 }
 
+fun WebView.runJavaScript(string: String) {
+    this.evaluateJavascript(
+                "javascript: " +
+                        string, null
+            )
+}
 
 class WordLink(val entry: Entry,
                val context: Context,
