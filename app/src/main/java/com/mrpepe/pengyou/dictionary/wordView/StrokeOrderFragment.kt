@@ -14,6 +14,8 @@ import com.beust.klaxon.Parser
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.runJavaScript
 import kotlinx.android.synthetic.main.fragment_stroke_order.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.lang.StringBuilder
 
@@ -28,8 +30,14 @@ class StrokeOrderFragment : Fragment() {
     private val JAVASCRIPT_OBJ = "Android"
 
     private var currentStrokeOrder = ""
+    private var nStrokes = 0
+    private var currentStroke = 0
+
+    private var isAnimating = false
 
     private var outlineMode = OutlineMode.SHOW
+
+    private var buttonsblocked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,15 +67,57 @@ class StrokeOrderFragment : Fragment() {
         webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
         webView.loadUrl(BASE_URL)
         webView.settings.loadWithOverviewMode = true
-        webView.settings.useWideViewPort = true
+//        webView.settings.useWideViewPort = true
+
 
         model.strokeOrders.observe(this, Observer {strokeOrders ->
             currentStrokeOrder = strokeOrders[0].replace("\'", "\"")
+            nStrokes = (Parser.default().parse(StringBuilder(currentStrokeOrder)) as JsonObject).array<String>("strokes")!!.size
+            currentStroke = 0
             showCharacter()
         })
 
         buttonPlay.setOnClickListener {
-            webView.runJavaScript("animate()")
+
+            if (!buttonsblocked) {
+                if (!isAnimating) {
+                    buttonsblocked = true
+                    if (currentStroke == nStrokes) {
+                        currentStroke = 0
+                        webView.runJavaScript("reset()")
+                        Thread.sleep(100)
+                    }
+                    isAnimating = true
+                    buttonPlay.text = getString(R.string.button_play_pause)
+                    animateStroke()
+                } else {
+                    buttonsblocked = true
+                    isAnimating = false
+                    buttonPlay.text = getString(R.string.button_play_play)
+                    Thread.sleep(100)
+                    buttonsblocked = false
+                }
+            }
+        }
+
+        buttonReset.setOnClickListener {
+            buttonsblocked = true
+            isAnimating = false
+            buttonPlay.text = getString(R.string.button_play_play)
+            webView.runJavaScript("reset()")
+            Thread.sleep(100)
+            currentStroke = 0
+            buttonsblocked = false
+
+        }
+
+        buttonNext.setOnClickListener {
+            if (!buttonsblocked and !isAnimating) {
+                if (currentStroke in 0 until nStrokes) {
+                    buttonsblocked = true
+                    animateStroke()
+                }
+            }
         }
 
         buttonOutline.setOnClickListener {
@@ -108,16 +158,45 @@ class StrokeOrderFragment : Fragment() {
         @JavascriptInterface
         fun isLoaded() {
             webViewLoaded = true
-            showCharacter()
+
+            if (currentStrokeOrder != "")
+                MainScope().launch {
+                    showCharacter()
+                }
         }
+
+        @JavascriptInterface
+        fun strokeComplete() {
+            currentStroke++
+
+            buttonsblocked = false
+
+            if (isAnimating && currentStroke in 0 until nStrokes) {
+                MainScope().launch {
+                    animateStroke()
+                }
+            }
+            else if (currentStroke == nStrokes) {
+                isAnimating = false
+                buttonPlay.text = getString(R.string.button_play_play)
+            }
+        }
+
+        @JavascriptInterface
+        fun getCurrentStroke(): Int{
+            return currentStroke
+        }
+
+
+    }
+
+    private fun animateStroke() {
+        webView.runJavaScript("animateStroke()")
     }
 
     private fun showCharacter() {
         if (webViewLoaded && currentStrokeOrder != "") {
-            webView.evaluateJavascript(
-                "javascript: " +
-                        "showCharacter()", null
-            )
+            webView.runJavaScript("showCharacter()")
         }
     }
 

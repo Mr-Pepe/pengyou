@@ -1188,6 +1188,29 @@ HanziWriter.prototype.cancelQuiz = function () {
   }
 };
 
+HanziWriter.prototype.resetRenderer = function () {
+  var _this11 = this;
+
+  this.cancelQuiz();
+  if (this._hanziWriterRenderer) this._hanziWriterRenderer.destroy();
+  if (this._renderState) this._renderState.cancelAll();
+  this._hanziWriterRenderer = null;
+  this._withDataPromise = this._loadingManager.loadCharData(this._char).then(function (pathStrings) {
+    if (_this11._loadingManager.loadingFailed) return;
+
+    _this11._character = parseCharData(_this11._char, pathStrings);
+    _this11._positioner = new Positioner(_this11._options);
+    var hanziWriterRenderer = new _this11._renderer.HanziWriterRenderer(_this11._character, _this11._positioner);
+    _this11._hanziWriterRenderer = hanziWriterRenderer;
+    _this11._renderState = new RenderState(_this11._character, _this11._options, function (nextState) {
+      hanziWriterRenderer.render(nextState);
+    });
+    _this11._hanziWriterRenderer.mount(_this11.target, _this11._renderState.state);
+    _this11._hanziWriterRenderer.render(_this11._renderState.state);
+  });
+  return this._withDataPromise;
+};
+
 HanziWriter.prototype.setCharacter = function (char) {
   var _this11 = this;
 
