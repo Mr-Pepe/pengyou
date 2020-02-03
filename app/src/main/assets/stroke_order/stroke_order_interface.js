@@ -54,3 +54,7 @@ function showCharacter() {
 function hideCharacter() {
     writer.hideCharacter();
 }
+
+function startQuiz() {
+    writer.quiz();
+}

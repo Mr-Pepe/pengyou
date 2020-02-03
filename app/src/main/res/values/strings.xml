@@ -22,10 +22,10 @@
     <string name="button_play_play">PLAY</string>
     <string name="button_play_pause">PAUSE</string>
     <string name="button_next">NEXT</string>
-    <string name="button_previous">PREV</string>
     <string name="button_reset">RESET</string>
     <string name="button_full">FULL</string>
     <string name="button_outline_show">SHOW</string>
     <string name="button_outline_hide">HIDE</string>
+    <string name="button_quiz">QUIZ</string>
 
 </resources>
