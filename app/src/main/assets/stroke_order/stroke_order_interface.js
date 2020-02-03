@@ -29,6 +29,7 @@ function animateStroke() {
 }
 
 function reset() {
+    writer.hideCharacter();
     writer.resetRenderer();
     Android.resetFinished();
 }
@@ -47,6 +48,7 @@ function hideOutline() {
 
 function showCharacter() {
     writer.showCharacter();
+    Android.showCharacterFinished();
 }
 
 function hideCharacter() {

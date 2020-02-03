@@ -47,6 +47,9 @@ class StrokeOrderFragment : Fragment() {
     private var completedStroke = MutableLiveData<Boolean>()
     private var block = false
 
+    private var showCharacterRequest = false
+    private var showCharacterFinished = MutableLiveData<Boolean>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -139,6 +142,19 @@ class StrokeOrderFragment : Fragment() {
             }
         }
 
+        buttonFull.setOnClickListener {
+            block = true
+            if (isAnimating.value!!) {
+                showCharacterRequest = true
+                isAnimating.value = false
+            }
+            else {
+                MainScope().launch {
+                    webView.runJavaScript("showCharacter()")
+                }
+            }
+        }
+
         buttonOutline.setOnClickListener {
             when (outlineMode) {
                 OutlineMode.SHOW -> {
@@ -166,21 +182,31 @@ class StrokeOrderFragment : Fragment() {
             }
         })
 
+        showCharacterFinished.observe(this, Observer {
+            currentStroke = nStrokes
+            block = false
+        })
+
         completedStroke.observe(this, Observer {
             if (resetRequest) {
                 resetRequest = false
                 MainScope().launch {
                     webView.runJavaScript("reset()")
                 }
+            } else if (showCharacterRequest) {
+                showCharacterRequest = false
+                MainScope().launch {
+                    webView.runJavaScript("showCharacter()")
+                }
+
             } else {
                 block = false
                 currentStroke++
 
                 if (currentStroke == nStrokes) {
                     isAnimating.value = false
-
                 }
-                else {
+                if (isAnimating.value!!) {
                     animateStroke()
                 }
             }
@@ -224,12 +250,18 @@ class StrokeOrderFragment : Fragment() {
         @JavascriptInterface
         fun resetFinished() {
             var timer1 = Timer()
-                timer1.schedule(timerTask { resetFinished.postValue(true) }, 500)
+                timer1.schedule(timerTask { resetFinished.postValue(true) }, 200)
         }
 
         @JavascriptInterface
         fun getCurrentStroke(): Int{
             return currentStroke
+        }
+
+        @JavascriptInterface
+        fun showCharacterFinished() {
+            var timer1 = Timer()
+                timer1.schedule(timerTask { showCharacterFinished.postValue(true) }, 100)
         }
     }
 
