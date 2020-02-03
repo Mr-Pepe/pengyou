@@ -80,7 +80,7 @@ class SearchViewActivity : BaseActivity() {
 
                 searchViewFragmentViewModel.searchQuery = newText!!
 
-                if (newText!!.isNotBlank()) {
+                if (newText.isNotBlank()) {
                     searchViewViewModel.searchFor(newText
                                     .replace("ü", "u:")
                                     .replace("v", "u:"))
