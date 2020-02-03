@@ -214,9 +214,19 @@ class StrokeOrderFragment : Fragment() {
 
         isAnimating.observe(this, Observer {
             when(it) {
-                true -> buttonPlay.text = getString(R.string.button_play_pause)
-                false -> buttonPlay.text = getString(R.string.button_play_play)
+                true -> {
+                    buttonPlay.text = getString(R.string.button_play_pause)
+                    buttonNext.isEnabled = false
+                    buttonPrevious.isEnabled = false
+                }
+                false -> {
+                    buttonPlay.text = getString(R.string.button_play_play)
+                    buttonNext.isEnabled = true
+                    buttonPrevious.isEnabled = true
+                }
             }
+
+
         })
     }
 
