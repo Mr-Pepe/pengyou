@@ -1,7 +1,7 @@
 var writer;
 
 
-function showCharacter() {
+function initCharacter() {
 
     var width = 300;
     var height = 300;
@@ -30,10 +30,7 @@ function animateStroke() {
 
 function reset() {
     writer.resetRenderer();
-}
-
-function hideCharacter() {
-    writer.hideCharacter();
+    Android.resetFinished();
 }
 
 function animate(){
@@ -48,4 +45,10 @@ function hideOutline() {
     writer.hideOutline();
 }
 
+function showCharacter() {
+    writer.showCharacter();
+}
 
+function hideCharacter() {
+    writer.hideCharacter();
+}
