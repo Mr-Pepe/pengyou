@@ -14,14 +14,17 @@ class WordViewActivity : BaseActivity() {
     lateinit var wordViewViewModel : WordViewViewModel
     lateinit var wordViewFragmentViewModel : WordViewFragmentViewModel
 
+    lateinit var viewPager: ViewPager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_word_view)
         val sectionsPagerAdapter = WordViewPagerAdapter(this, supportFragmentManager)
-        val viewPager: ViewPager = findViewById(R.id.word_view_pager)
+        viewPager = findViewById(R.id.word_view_pager)
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
+
 
         wordViewFragmentViewModel = ViewModelProviders.of(this)[WordViewFragmentViewModel::class.java]
         wordViewViewModel = ViewModelProvider.AndroidViewModelFactory(application)

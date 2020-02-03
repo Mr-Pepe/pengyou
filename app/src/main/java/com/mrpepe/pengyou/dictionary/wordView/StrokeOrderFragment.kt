@@ -14,6 +14,7 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.runJavaScript
+import kotlinx.android.synthetic.main.activity_word_view.*
 import kotlinx.android.synthetic.main.fragment_stroke_order.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -50,6 +51,8 @@ class StrokeOrderFragment : Fragment() {
     private var showCharacterRequest = false
     private var showCharacterFinished = MutableLiveData<Boolean>()
 
+    private var quizMode = MutableLiveData<Boolean>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -62,6 +65,7 @@ class StrokeOrderFragment : Fragment() {
         })
 
         isAnimating.value = false
+        quizMode.value = false
     }
 
     override fun onCreateView(
@@ -170,6 +174,21 @@ class StrokeOrderFragment : Fragment() {
             }
         }
 
+        buttonQuiz.setOnClickListener {
+            if (!quizMode.value!!) {
+                quizMode.value = true
+                MainScope().launch {
+                    webView.runJavaScript("startQuiz()")
+                }
+            }
+            else {
+                quizMode.value = false
+                MainScope().launch {
+                    webView.runJavaScript("reset()")
+                }
+            }
+        }
+
         resetFinished.observe(this, Observer {
             currentStroke = 0
 
@@ -217,16 +236,31 @@ class StrokeOrderFragment : Fragment() {
                 true -> {
                     buttonPlay.text = getString(R.string.button_play_pause)
                     buttonNext.isEnabled = false
-                    buttonPrevious.isEnabled = false
+                    buttonQuiz.isEnabled = false
                 }
                 false -> {
                     buttonPlay.text = getString(R.string.button_play_play)
                     buttonNext.isEnabled = true
-                    buttonPrevious.isEnabled = true
+                    buttonQuiz.isEnabled = true
                 }
             }
+        })
 
-
+        quizMode.observe(this, Observer {
+            when(it) {
+                true -> {
+                    buttonPlay.isEnabled = false
+                    buttonNext.isEnabled = false
+                    buttonFull.isEnabled = false
+                    buttonReset.isEnabled = false
+                }
+                false -> {
+                    buttonPlay.isEnabled = true
+                    buttonNext.isEnabled = true
+                    buttonFull.isEnabled = true
+                    buttonReset.isEnabled = true
+                }
+            }
         })
     }
 

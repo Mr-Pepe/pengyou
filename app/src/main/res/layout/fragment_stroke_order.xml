@@ -42,13 +42,21 @@
         app:layout_constraintTop_toTopOf="@+id/buttonPlay" />
 
     <Button
-        android:id="@+id/buttonReset"
+        android:id="@+id/buttonQuiz"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="5dp"
+        android:text="@string/button_quiz"
+        app:layout_constraintEnd_toStartOf="@+id/buttonPlay"
+        app:layout_constraintTop_toTopOf="@+id/buttonPlay" />
+
+    <Button
+        android:id="@+id/buttonReset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="@string/button_reset"
-        app:layout_constraintEnd_toStartOf="@+id/buttonOutline"
-        app:layout_constraintTop_toBottomOf="@+id/buttonPlay" />
+        app:layout_constraintEnd_toEndOf="@+id/buttonQuiz"
+        app:layout_constraintTop_toBottomOf="@+id/buttonQuiz" />
 
     <Button
         android:id="@+id/buttonFull"
