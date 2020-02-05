@@ -1,7 +1,6 @@
 package com.mrpepe.pengyou.dictionary.wordView
 
 import android.os.Bundle
-import android.text.SpannableStringBuilder
 import com.google.android.material.tabs.TabLayout
 import androidx.viewpager.widget.ViewPager
 import androidx.lifecycle.Observer
@@ -11,18 +10,23 @@ import com.mrpepe.pengyou.*
 import com.mrpepe.pengyou.dictionary.Entry
 import kotlinx.android.synthetic.main.activity_word_view.*
 
-class WordViewActivity : BaseActivity() {
+class WordViewActivity : BaseActivity(), StrokeOrderFragment.ToggleHorizontalPaging {
     lateinit var wordViewViewModel : WordViewViewModel
     lateinit var wordViewFragmentViewModel : WordViewFragmentViewModel
+
+    lateinit var viewPager: CustomViewPager
+
+    var horizontalPagingEnabled = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_word_view)
         val sectionsPagerAdapter = WordViewPagerAdapter(this, supportFragmentManager)
-        val viewPager: ViewPager = findViewById(R.id.view_pager)
+        viewPager = findViewById(R.id.word_view_pager)
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
+
 
         wordViewFragmentViewModel = ViewModelProviders.of(this)[WordViewFragmentViewModel::class.java]
         wordViewViewModel = ViewModelProvider.AndroidViewModelFactory(application)
@@ -55,5 +59,9 @@ class WordViewActivity : BaseActivity() {
         wordViewViewModel.strokeOrders.observe(this, Observer { strokeOrders ->
             wordViewFragmentViewModel.strokeOrders.value = strokeOrders
         })
+    }
+
+    override fun toggleHorizontalPaging() {
+        viewPager.togglePagingEnabled()
     }
 }

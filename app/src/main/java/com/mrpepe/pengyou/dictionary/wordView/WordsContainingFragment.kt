@@ -2,6 +2,7 @@ package com.mrpepe.pengyou.dictionary.wordView
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.searchView.SearchResultAdapter
-import kotlinx.android.synthetic.main.search_result_list.view.*
+import kotlinx.android.synthetic.main.fragment_search_result_list.view.*
 import java.lang.Exception
 
 class WordsContainingFragment : Fragment() {
@@ -22,6 +23,7 @@ class WordsContainingFragment : Fragment() {
     private lateinit var model: WordViewFragmentViewModel
     private lateinit var searchResultList: RecyclerView
     private lateinit var resultCount: TextView
+    private var lastClickTime : Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +39,7 @@ class WordsContainingFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.search_result_list, container, false)
+        val root = inflater.inflate(R.layout.fragment_search_result_list, container, false)
 
         searchResultList = root.searchResultList
         resultCount = root.resultCount
@@ -66,6 +68,11 @@ class WordsContainingFragment : Fragment() {
     }
 
     private fun entryClicked(entry: Entry){
+        if (SystemClock.elapsedRealtime() - lastClickTime < 500) {
+            return
+        }
+        lastClickTime = SystemClock.elapsedRealtime()
+
         val intent = Intent(activity, WordViewActivity::class.java)
         intent.putExtra("entry", entry)
         startActivity(intent)
