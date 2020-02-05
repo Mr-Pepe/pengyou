@@ -1,35 +1,33 @@
 package com.mrpepe.pengyou.dictionary.searchView
 
-import android.content.Intent
+import android.content.Context
+import android.graphics.Rect
+import android.hardware.input.InputManager
 import android.os.Bundle
-import android.os.SystemClock
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import com.mrpepe.pengyou.BaseActivity
-import com.mrpepe.pengyou.R
-import com.mrpepe.pengyou.UpdateSearchResultsMode
-import com.mrpepe.pengyou.dictionary.Entry
-import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
-import com.mrpepe.pengyou.dictionary.wordView.WordViewFragmentViewModel
-import com.mrpepe.pengyou.dictionary.wordView.WordViewPagerAdapter
-
+import com.mrpepe.pengyou.*
 import kotlinx.android.synthetic.main.activity_search_view.*
 import kotlinx.android.synthetic.main.activity_search_view.view.*
-import kotlinx.android.synthetic.main.fragment_search_result_list.*
+import java.util.*
+import kotlin.concurrent.timerTask
+
 
 class SearchViewActivity : BaseActivity() {
     private lateinit var modeSwitch: MenuItem
     private lateinit var searchViewViewModel: SearchViewViewModel
     private lateinit var searchViewFragmentViewModel: SearchViewFragmentViewModel
     private var searchViewHadFocus = false
+    private var pagePosition = 0
+    private var keyboardVisible = false
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.that_menu, menu)
@@ -55,10 +53,22 @@ class SearchViewActivity : BaseActivity() {
         setSupportActionBar(toolbar)
 
         val sectionsPagerAdapter = SearchViewPagerAdapter(this, supportFragmentManager)
-        val viewPager: ViewPager = findViewById(R.id.search_view_pager)
+        val viewPager: CustomViewPager = findViewById(R.id.search_view_pager)
         viewPager.adapter = sectionsPagerAdapter
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
+        // Deactivate horizontal paging
+        viewPager.togglePagingEnabled()
+
+        val rootLayout = findViewById<View>(R.id.search_view_root)
+        rootLayout.viewTreeObserver.addOnGlobalLayoutListener {
+            val rec = Rect()
+            rootLayout.getWindowVisibleDisplayFrame(rec)
+            val screenHeight = rootLayout.rootView.height
+            val keypadHeight = screenHeight - rec.bottom
+
+            keyboardVisible = (keypadHeight > screenHeight*0.15)
+        }
 
         searchViewFragmentViewModel = ViewModelProviders.of(this)[SearchViewFragmentViewModel::class.java]
         searchViewViewModel = ViewModelProvider.AndroidViewModelFactory(application)
@@ -107,6 +117,33 @@ class SearchViewActivity : BaseActivity() {
                     true -> tabs.visibility = View.VISIBLE
                     false -> tabs.visibility = View.INVISIBLE
                 }
+            }
+
+        })
+
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageSelected(position: Int) {
+                if (position == 0) {
+                    if (!keyboardVisible) {
+                        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                    }
+                }
+                else if (position == 1) {
+                    hideKeyboard()
+                }
+
+                pagePosition = position
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
             }
         })
 
