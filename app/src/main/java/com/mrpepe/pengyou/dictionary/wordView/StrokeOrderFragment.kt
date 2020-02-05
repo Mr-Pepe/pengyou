@@ -94,7 +94,7 @@ class StrokeOrderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        webView = my_web_view
+        webView = stroke_order_web_view
         webView.settings.javaScriptEnabled = true
         webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
         webView.loadUrl(BASE_URL)

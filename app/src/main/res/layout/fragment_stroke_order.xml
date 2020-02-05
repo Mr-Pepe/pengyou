@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <WebView
-        android:id="@+id/my_web_view"
+        android:id="@+id/stroke_order_web_view"
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_marginStart="5dp"
@@ -28,9 +28,9 @@
         android:paddingBottom="8dp"
         android:text="@string/button_play_play"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/my_web_view"
-        app:layout_constraintStart_toStartOf="@+id/my_web_view"
-        app:layout_constraintTop_toBottomOf="@+id/my_web_view" />
+        app:layout_constraintEnd_toEndOf="@+id/stroke_order_web_view"
+        app:layout_constraintStart_toStartOf="@+id/stroke_order_web_view"
+        app:layout_constraintTop_toBottomOf="@+id/stroke_order_web_view" />
 
     <Button
         android:id="@+id/buttonNext"
