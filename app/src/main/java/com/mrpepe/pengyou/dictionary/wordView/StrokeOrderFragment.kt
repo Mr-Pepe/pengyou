@@ -1,5 +1,6 @@
 package com.mrpepe.pengyou.dictionary.wordView
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import kotlinx.android.synthetic.main.activity_word_view.*
 import kotlinx.android.synthetic.main.fragment_stroke_order.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import java.lang.ClassCastException
 import java.lang.Exception
 import java.lang.StringBuilder
 import java.util.*
@@ -52,6 +54,20 @@ class StrokeOrderFragment : Fragment() {
     private var showCharacterFinished = MutableLiveData<Boolean>()
 
     private var quizMode = MutableLiveData<Boolean>()
+
+    private lateinit var listener: ToggleHorizontalPaging
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if (context is ToggleHorizontalPaging) {
+            listener = context
+        }
+        else {
+            throw ClassCastException(
+                context.toString() + " must implement ToggleHorizontalPaging."
+            )
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -175,6 +191,7 @@ class StrokeOrderFragment : Fragment() {
         }
 
         buttonQuiz.setOnClickListener {
+            listener.toggleHorizontalPaging()
             if (!quizMode.value!!) {
                 quizMode.value = true
                 MainScope().launch {
@@ -253,6 +270,7 @@ class StrokeOrderFragment : Fragment() {
                     buttonNext.isEnabled = false
                     buttonFull.isEnabled = false
                     buttonReset.isEnabled = false
+
                 }
                 false -> {
                     buttonPlay.isEnabled = true
@@ -267,6 +285,10 @@ class StrokeOrderFragment : Fragment() {
     override fun onDestroy() {
         webView.removeJavascriptInterface(JAVASCRIPT_OBJ)
         super.onDestroy()
+    }
+
+    interface ToggleHorizontalPaging {
+        fun toggleHorizontalPaging()
     }
 
     private inner class JavaScriptInterface {
