@@ -3,6 +3,7 @@ package com.mrpepe.pengyou.dictionary.wordView
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
@@ -273,12 +274,18 @@ class StrokeOrderFragment : Fragment() {
                     buttonPlay.isEnabled = false
                     buttonNext.isEnabled = false
                     buttonFull.isEnabled = false
+                    webView.setOnTouchListener { view, event -> false}
 
                 }
                 false -> {
                     buttonPlay.isEnabled = true
                     buttonNext.isEnabled = true
                     buttonFull.isEnabled = true
+                    webView.setOnTouchListener(object : View.OnTouchListener {
+                        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                            return (event?.action == MotionEvent.ACTION_MOVE)
+                        }
+                    })
                 }
             }
         })
