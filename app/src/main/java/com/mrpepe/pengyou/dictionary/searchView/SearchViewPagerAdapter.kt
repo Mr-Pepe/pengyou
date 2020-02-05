@@ -18,7 +18,7 @@ class SearchViewPagerAdapter(private val context: Context, fm: FragmentManager) 
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> SearchResultFragment()
-            else -> PlaceholderFragment.newInstance(position + 1)
+            else -> HandwritingFragment()
         }
     }
 
