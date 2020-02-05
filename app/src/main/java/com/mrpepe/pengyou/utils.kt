@@ -11,7 +11,9 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebView
@@ -19,6 +21,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.viewpager.widget.ViewPager
 import com.mrpepe.pengyou.dictionary.CEDict
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
@@ -493,4 +496,27 @@ enum class UpdateSearchResultsMode {
     IDLE,
     SNAPTOTOP,
     DONTSNAPTOTOP
+}
+
+class CustomViewPager(context: Context, attributeSet: AttributeSet): ViewPager(context, attributeSet) {
+    private var pagingEnabled = true
+
+    override fun onTouchEvent(ev: MotionEvent?): Boolean {
+        return when (this.pagingEnabled) {
+            true -> super.onTouchEvent(ev)
+            false -> false
+        }
+    }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        return when (this.pagingEnabled) {
+            true -> return super.onInterceptTouchEvent(ev)
+            false -> false
+        }
+    }
+
+    fun togglePagingEnabled() {
+        this.pagingEnabled = !this.pagingEnabled
+    }
+
 }

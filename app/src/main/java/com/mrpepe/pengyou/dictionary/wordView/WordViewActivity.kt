@@ -10,11 +10,13 @@ import com.mrpepe.pengyou.*
 import com.mrpepe.pengyou.dictionary.Entry
 import kotlinx.android.synthetic.main.activity_word_view.*
 
-class WordViewActivity : BaseActivity() {
+class WordViewActivity : BaseActivity(), StrokeOrderFragment.ToggleHorizontalPaging {
     lateinit var wordViewViewModel : WordViewViewModel
     lateinit var wordViewFragmentViewModel : WordViewFragmentViewModel
 
-    lateinit var viewPager: ViewPager
+    lateinit var viewPager: CustomViewPager
+
+    var horizontalPagingEnabled = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,5 +59,9 @@ class WordViewActivity : BaseActivity() {
         wordViewViewModel.strokeOrders.observe(this, Observer { strokeOrders ->
             wordViewFragmentViewModel.strokeOrders.value = strokeOrders
         })
+    }
+
+    override fun toggleHorizontalPaging() {
+        viewPager.togglePagingEnabled()
     }
 }
