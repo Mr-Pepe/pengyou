@@ -15,7 +15,6 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.runJavaScript
-import kotlinx.android.synthetic.main.activity_word_view.*
 import kotlinx.android.synthetic.main.fragment_stroke_order.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -53,7 +52,7 @@ class StrokeOrderFragment : Fragment() {
     private var showCharacterRequest = false
     private var showCharacterFinished = MutableLiveData<Boolean>()
 
-    private var quizMode = MutableLiveData<Boolean>()
+    private var isQuizzing = MutableLiveData<Boolean>()
 
     private lateinit var listener: ToggleHorizontalPaging
 
@@ -81,7 +80,7 @@ class StrokeOrderFragment : Fragment() {
         })
 
         isAnimating.value = false
-        quizMode.value = false
+        isQuizzing.value = false
     }
 
     override fun onCreateView(
@@ -192,14 +191,14 @@ class StrokeOrderFragment : Fragment() {
 
         buttonQuiz.setOnClickListener {
             listener.toggleHorizontalPaging()
-            if (!quizMode.value!!) {
-                quizMode.value = true
+            if (!isQuizzing.value!!) {
+                isQuizzing.value = true
                 MainScope().launch {
                     webView.runJavaScript("startQuiz()")
                 }
             }
             else {
-                quizMode.value = false
+                isQuizzing.value = false
                 MainScope().launch {
                     webView.runJavaScript("reset()")
                 }
@@ -212,6 +211,11 @@ class StrokeOrderFragment : Fragment() {
             if (startAnimatingAfterReset) {
                 startAnimatingAfterReset = false
                 animateStroke()
+            }
+            else if (isQuizzing.value!!) {
+                MainScope().launch {
+                    webView.runJavaScript("startQuiz()")
+                }
             }
             else {
                 block = false
@@ -263,20 +267,18 @@ class StrokeOrderFragment : Fragment() {
             }
         })
 
-        quizMode.observe(this, Observer {
+        isQuizzing.observe(this, Observer {
             when(it) {
                 true -> {
                     buttonPlay.isEnabled = false
                     buttonNext.isEnabled = false
                     buttonFull.isEnabled = false
-                    buttonReset.isEnabled = false
 
                 }
                 false -> {
                     buttonPlay.isEnabled = true
                     buttonNext.isEnabled = true
                     buttonFull.isEnabled = true
-                    buttonReset.isEnabled = true
                 }
             }
         })
