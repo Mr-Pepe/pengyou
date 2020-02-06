@@ -8,7 +8,7 @@ import com.mrpepe.pengyou.PlaceholderFragment
 import com.mrpepe.pengyou.R
 
 class WordViewPagerAdapter(private val context: Context, fm: FragmentManager) :
-    FragmentPagerAdapter(fm) {
+    FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     private val TAB_TITLES = arrayOf(
         R.string.tab_definition_text,

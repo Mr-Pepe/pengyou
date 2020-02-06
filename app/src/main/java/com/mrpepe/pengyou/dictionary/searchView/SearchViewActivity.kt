@@ -2,7 +2,6 @@ package com.mrpepe.pengyou.dictionary.searchView
 
 import android.content.Context
 import android.graphics.Rect
-import android.hardware.input.InputManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,14 +10,11 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.mrpepe.pengyou.*
 import kotlinx.android.synthetic.main.activity_search_view.*
 import kotlinx.android.synthetic.main.activity_search_view.view.*
-import java.util.*
-import kotlin.concurrent.timerTask
 
 
 class SearchViewActivity : BaseActivity() {
@@ -41,6 +37,7 @@ class SearchViewActivity : BaseActivity() {
                 SearchViewViewModel.SearchLanguage.CHINESE -> {
                     modeSwitch.icon = ContextCompat.getDrawable(getApplicationContext(),R.drawable.c);
                 }
+                else -> {}
             }
         })
 
@@ -70,7 +67,7 @@ class SearchViewActivity : BaseActivity() {
             keyboardVisible = (keypadHeight > screenHeight*0.15)
         }
 
-        searchViewFragmentViewModel = ViewModelProviders.of(this)[SearchViewFragmentViewModel::class.java]
+        searchViewFragmentViewModel = ViewModelProvider(this)[SearchViewFragmentViewModel::class.java]
         searchViewViewModel = ViewModelProvider.AndroidViewModelFactory(application)
                                             .create(SearchViewViewModel::class.java)
 

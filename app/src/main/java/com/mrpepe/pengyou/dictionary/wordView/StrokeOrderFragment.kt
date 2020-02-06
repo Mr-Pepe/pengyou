@@ -11,7 +11,7 @@ import android.webkit.WebView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.mrpepe.pengyou.R
@@ -19,9 +19,6 @@ import com.mrpepe.pengyou.runJavaScript
 import kotlinx.android.synthetic.main.fragment_stroke_order.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import java.lang.ClassCastException
-import java.lang.Exception
-import java.lang.StringBuilder
 import java.util.*
 import kotlin.concurrent.timerTask
 
@@ -57,14 +54,14 @@ class StrokeOrderFragment : Fragment() {
 
     private lateinit var listener: ToggleHorizontalPaging
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is ToggleHorizontalPaging) {
             listener = context
         }
         else {
             throw ClassCastException(
-                context.toString() + " must implement ToggleHorizontalPaging."
+                "$context must implement ToggleHorizontalPaging."
             )
         }
     }
@@ -73,7 +70,7 @@ class StrokeOrderFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            model = ViewModelProviders.of(it).get(WordViewFragmentViewModel::class.java)
+            model = ViewModelProvider(it).get(WordViewFragmentViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
         model.entry.observe(this, Observer { entry ->
@@ -274,7 +271,7 @@ class StrokeOrderFragment : Fragment() {
                     buttonPlay.isEnabled = false
                     buttonNext.isEnabled = false
                     buttonFull.isEnabled = false
-                    webView.setOnTouchListener { view, event -> false}
+                    webView.setOnTouchListener { _, _ -> false}
 
                 }
                 false -> {

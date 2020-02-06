@@ -2,7 +2,6 @@ package com.mrpepe.pengyou.dictionary.searchView
 
 import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.lifecycle.*
 import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.R

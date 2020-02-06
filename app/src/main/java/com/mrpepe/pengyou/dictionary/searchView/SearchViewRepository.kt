@@ -1,12 +1,8 @@
 package com.mrpepe.pengyou.dictionary.searchView
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 
 class SearchViewRepository(private val entryDao: EntryDAO) {
     var searchResults : LiveData<List<Entry>>
