@@ -3,12 +3,10 @@ package com.mrpepe.pengyou.dictionary.searchView
 import android.text.SpannableStringBuilder
 import android.view.View
 import android.widget.TextView
-import androidx.core.content.res.TypedArrayUtils.getString
 import androidx.core.text.bold
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.*
 import com.mrpepe.pengyou.dictionary.Entry
-import java.lang.StringBuilder
 
 class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var headword: TextView = itemView.findViewById(R.id.headword)

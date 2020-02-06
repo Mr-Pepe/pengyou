@@ -1,28 +1,21 @@
 package com.mrpepe.pengyou.dictionary.wordView
 
-import android.app.Application
 import android.os.Bundle
-import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.text.bold
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.mrpepe.pengyou.ChineseMode
 import com.mrpepe.pengyou.DefinitionFormatter
 import com.mrpepe.pengyou.MainApplication
-
 import com.mrpepe.pengyou.R
-import kotlinx.android.synthetic.main.activity_word_view.*
 import kotlinx.android.synthetic.main.search_result.view.*
-import kotlinx.android.synthetic.main.fragment_word_definition.*
-import java.lang.Exception
 
 class WordDefinitionFragment : Fragment() {
     private lateinit var model: WordViewFragmentViewModel
@@ -32,7 +25,7 @@ class WordDefinitionFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            model = ViewModelProviders.of(it).get(WordViewFragmentViewModel::class.java)
+            model = ViewModelProvider(it).get(WordViewFragmentViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
 
@@ -52,7 +45,7 @@ class WordDefinitionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        model.entry.observe(this, Observer { entry ->
+        model.entry.observe(viewLifecycleOwner, Observer { entry ->
             definitions.movementMethod = LinkMovementMethod.getInstance()
 
             val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, true, activity, ChineseMode.BOTH)

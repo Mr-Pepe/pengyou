@@ -9,10 +9,9 @@ import android.widget.TextView
 import androidx.core.text.bold
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.mrpepe.pengyou.R
 import kotlinx.android.synthetic.main.fragment_decomposition.view.*
-import java.lang.Exception
 
 class DecompositionFragment : Fragment() {
     private lateinit var model: WordViewFragmentViewModel
@@ -22,7 +21,7 @@ class DecompositionFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            model = ViewModelProviders.of(it).get(WordViewFragmentViewModel::class.java)
+            model = ViewModelProvider(it).get(WordViewFragmentViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
 
@@ -42,7 +41,7 @@ class DecompositionFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        model.decompositions.observe(this, Observer {decomp ->
+        model.decompositions.observe(viewLifecycleOwner, Observer {decomp ->
             var components = decomp[0].components
             var text = SpannableStringBuilder()
             var iComponent = 1

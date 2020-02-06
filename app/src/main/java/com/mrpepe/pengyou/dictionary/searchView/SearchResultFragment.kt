@@ -1,7 +1,5 @@
 package com.mrpepe.pengyou.dictionary.searchView
 
-import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
-
 import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
@@ -11,14 +9,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.UpdateSearchResultsMode
 import com.mrpepe.pengyou.dictionary.Entry
+import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
 import kotlinx.android.synthetic.main.fragment_search_result_list.view.*
-import java.lang.Exception
 
 class SearchResultFragment : Fragment() {
 
@@ -32,7 +30,7 @@ class SearchResultFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            model = ViewModelProviders.of(it).get(SearchViewFragmentViewModel::class.java)
+            model = ViewModelProvider(this).get(SearchViewFragmentViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
 
@@ -61,7 +59,7 @@ class SearchResultFragment : Fragment() {
         searchResultList.layoutManager = LinearLayoutManager(activity)
         searchResultList.adapter = adapter
 
-        model.searchResults.observe(this, Observer { searchResults ->
+        model.searchResults.observe(viewLifecycleOwner, Observer { searchResults ->
             searchResults?.let { adapter.setEntries(searchResults) }
             resultCount.text = when(searchResults.size) {
                 0 -> ""
@@ -69,7 +67,7 @@ class SearchResultFragment : Fragment() {
             }
         })
 
-        model.updateSearchResults.observe(this, Observer { mode ->
+        model.updateSearchResults.observe(viewLifecycleOwner, Observer { mode ->
             updateSearchResults(mode)
         })
     }
