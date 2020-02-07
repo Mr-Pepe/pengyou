@@ -14,6 +14,8 @@ import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.runJavaScript
 import kotlinx.android.synthetic.main.fragment_handwriting_input.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import java.io.Console
 import java.util.*
 import kotlin.concurrent.timerTask
@@ -30,11 +32,23 @@ class HandwritingFragment : Fragment() {
 
     private var proposedCharactersString = MutableLiveData<String>()
 
+    private var strokes = listOf<List<List<Float>>?>()
+
+    private val widthAndHeight = 250
+
+    private var minX = 10000000.toFloat()
+    private var maxX = 0.toFloat()
+    private var minY = 10000000.toFloat()
+    private var maxY = 0.toFloat()
+    private var scaleX = 0.9.toFloat()
+    private var scaleY = 0.9.toFloat()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            model = ViewModelProvider(this).get(SearchViewFragmentViewModel::class.java)
+            model = ViewModelProvider(it).get(SearchViewFragmentViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
     }
@@ -77,14 +91,53 @@ class HandwritingFragment : Fragment() {
         webView.loadUrl(BASE_URL)
 
         isLoaded.observe(viewLifecycleOwner, Observer {
-
-//            webView.runJavaScript("init()")
-//            Thread.sleep(1000)
-            webView.runJavaScript("feedback()")
         })
 
         proposedCharactersString.observe(viewLifecycleOwner, Observer {
             proposedCharacters.text = it
+        })
+
+        draw_board.pathExposed.observe(viewLifecycleOwner, Observer {
+            strokes = it
+
+            for (iStroke in 0 until it.size) {
+
+                it[iStroke].forEach {point ->
+
+                    val x = point[0]
+                    val y = point[1]
+
+                    if (x > maxX)
+                        maxX = x
+                    if (x < minX)
+                        minX = x
+                    if (y > maxY)
+                        maxY = y
+                    if (y < minY)
+                        minY = y
+
+                }
+
+            }
+
+            if (maxX - minX > maxY - minY) {
+                scaleX = 0.9.toFloat()
+                scaleY = (maxY - minY) / (maxX - minX)
+            }
+            else {
+                scaleY = 0.9.toFloat()
+                scaleX = (maxX - minX) / (maxY - minY)
+            }
+
+            MainScope().launch {
+                webView.runJavaScript("search()")
+            }
+        })
+
+        clear_board_button.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                draw_board.clearCanvas()
+            }
         })
     }
 
@@ -94,21 +147,36 @@ class HandwritingFragment : Fragment() {
     }
 
     private inner class JavaScriptInterface {
-        //        @JavascriptInterface
-//        fun getJSON(): String {
-////            val json : JsonObject = Parser.default().parse(StringBuilder(currentStrokeOrder)) as JsonObject
-//
-////            return json.toJsonString()
-//            return "1"
-//        }
+
         @JavascriptInterface
-        fun feedback(string: String) {
+        fun updateProposedCharacters(string: String) {
             Timer().schedule(timerTask { proposedCharactersString.postValue(string) }, 10)
         }
 
         @JavascriptInterface
         fun isLoaded() {
             Timer().schedule(timerTask { isLoaded.postValue(true) }, 10)
+        }
+
+        @JavascriptInterface
+        fun getNumberOfStrokes(): Int {
+            return strokes.size
+        }
+
+        @JavascriptInterface
+        fun getNumberOfPoints(iStroke: Int): Int {
+            return strokes[iStroke]!!.size
+        }
+
+        // The x and y coordinates are scaled and centered so that they are in a 250x250 field with
+        @JavascriptInterface
+        fun getX(iStroke: Int, iPoint: Int): Float {
+            return ((strokes[iStroke]!![iPoint][0] - minX ) / (maxX - minX) * widthAndHeight - widthAndHeight/2) * scaleX + widthAndHeight/2
+        }
+
+        @JavascriptInterface
+        fun getY(iStroke: Int, iPoint: Int): Float {
+            return ((strokes[iStroke]!![iPoint][1] - minY ) / (maxY - minY) * widthAndHeight - widthAndHeight/2) * scaleY + widthAndHeight/2
         }
     }
 }
