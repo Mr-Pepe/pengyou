@@ -99,7 +99,7 @@ class StrokeOrderFragment : Fragment() {
 //        webView.settings.useWideViewPort = true
 
 
-        model.strokeOrders.observe(this, Observer {strokeOrders ->
+        model.strokeOrders.observe(viewLifecycleOwner, Observer {strokeOrders ->
             currentStrokeOrder = strokeOrders[0].replace("\'", "\"")
             nStrokes = (Parser.default().parse(StringBuilder(currentStrokeOrder)) as JsonObject).array<String>("strokes")!!.size
             currentStroke = 0
@@ -203,7 +203,7 @@ class StrokeOrderFragment : Fragment() {
             }
         }
 
-        resetFinished.observe(this, Observer {
+        resetFinished.observe(viewLifecycleOwner, Observer {
             currentStroke = 0
 
             if (startAnimatingAfterReset) {
@@ -220,12 +220,12 @@ class StrokeOrderFragment : Fragment() {
             }
         })
 
-        showCharacterFinished.observe(this, Observer {
+        showCharacterFinished.observe(viewLifecycleOwner, Observer {
             currentStroke = nStrokes
             block = false
         })
 
-        completedStroke.observe(this, Observer {
+        completedStroke.observe(viewLifecycleOwner, Observer {
             if (resetRequest) {
                 resetRequest = false
                 MainScope().launch {
@@ -250,7 +250,7 @@ class StrokeOrderFragment : Fragment() {
             }
         })
 
-        isAnimating.observe(this, Observer {
+        isAnimating.observe(viewLifecycleOwner, Observer {
             when(it) {
                 true -> {
                     buttonPlay.text = getString(R.string.button_play_pause)
@@ -265,7 +265,7 @@ class StrokeOrderFragment : Fragment() {
             }
         })
 
-        isQuizzing.observe(this, Observer {
+        isQuizzing.observe(viewLifecycleOwner, Observer {
             when(it) {
                 true -> {
                     buttonPlay.isEnabled = false

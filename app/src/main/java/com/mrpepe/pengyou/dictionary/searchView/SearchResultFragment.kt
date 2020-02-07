@@ -30,7 +30,7 @@ class SearchResultFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            model = ViewModelProvider(this).get(SearchViewFragmentViewModel::class.java)
+            model = ViewModelProvider(it).get(SearchViewFragmentViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
 
