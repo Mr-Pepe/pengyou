@@ -57,7 +57,7 @@ class WordsContainingFragment : Fragment() {
         searchResultList.layoutManager = LinearLayoutManager(activity)
         searchResultList.adapter = adapter
 
-        model.wordsContaining.observe(this, Observer { wordsContaining ->
+        model.wordsContaining.observe(viewLifecycleOwner, Observer { wordsContaining ->
             wordsContaining?.let { adapter.setEntries(wordsContaining) }
             resultCount.text = when(wordsContaining.size) {
                 0 -> ""
