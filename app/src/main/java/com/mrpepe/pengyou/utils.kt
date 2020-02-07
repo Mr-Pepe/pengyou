@@ -1,8 +1,12 @@
 package com.mrpepe.pengyou
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Path
 import android.os.Bundle
 import android.os.SystemClock
 import android.text.SpannableString
@@ -16,11 +20,13 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.viewpager.widget.ViewPager
 import com.mrpepe.pengyou.dictionary.CEDict
 import com.mrpepe.pengyou.dictionary.Entry
@@ -519,4 +525,17 @@ class CustomViewPager(context: Context, attributeSet: AttributeSet): ViewPager(c
         this.pagingEnabled = !this.pagingEnabled
     }
 
+}
+
+fun Fragment.hideKeyboard() {
+    activity?.hideKeyboard(view!!)
+}
+
+fun Activity.hideKeyboard() {
+    hideKeyboard(if (currentFocus == null) View(this) else currentFocus!!)
+}
+
+fun Context.hideKeyboard(view: View) {
+    val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
 }

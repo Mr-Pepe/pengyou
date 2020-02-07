@@ -4,11 +4,10 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.mrpepe.pengyou.PlaceholderFragment
 import com.mrpepe.pengyou.R
 
 class SearchViewPagerAdapter(private val context: Context, fm: FragmentManager) :
-    FragmentPagerAdapter(fm) {
+    FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     private val TAB_TITLES = arrayOf(
         R.string.tab_keyboard,
@@ -18,7 +17,7 @@ class SearchViewPagerAdapter(private val context: Context, fm: FragmentManager) 
     override fun getItem(position: Int): Fragment {
         return when (position) {
             0 -> SearchResultFragment()
-            else -> PlaceholderFragment.newInstance(position + 1)
+            else -> HandwritingFragment()
         }
     }
 
