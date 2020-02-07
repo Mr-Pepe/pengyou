@@ -8,15 +8,20 @@ function search() {
     var iPoint;
 
     var strokes = [];
+    try {
+        for (iStroke = 0; iStroke < Android.getNumberOfStrokes(); iStroke++) {
+            strokes.push([]);
 
-    for (iStroke = 0; iStroke < Android.getNumberOfStrokes(); iStroke++) {
-        strokes.push([]);
-
-        for (iPoint = 0; iPoint < Android.getNumberOfPoints(iStroke); iPoint++) {
-            strokes[iStroke].push([]);
-            strokes[iStroke][iPoint] = [Android.getX(iStroke, iPoint), Android.getY(iStroke, iPoint)];
+            for (iPoint = 0; iPoint < Android.getNumberOfPoints(iStroke); iPoint++) {
+                strokes[iStroke].push([]);
+                strokes[iStroke][iPoint] = [Android.getX(iStroke, iPoint), Android.getY(iStroke, iPoint)];
+            }
         }
-    }
 
-    Android.updateProposedCharacters(wasm_bindgen.lookup(strokes, 8));
+        Android.updateProposedCharacters(wasm_bindgen.lookup(strokes, 8));
+    }
+    catch (e) {
+        Android.updateProposedCharacters("");
+        init();
+    }
 }
