@@ -26,6 +26,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.viewpager.widget.ViewPager
 import com.mrpepe.pengyou.dictionary.CEDict
 import com.mrpepe.pengyou.dictionary.Entry
@@ -524,80 +525,6 @@ class CustomViewPager(context: Context, attributeSet: AttributeSet): ViewPager(c
         this.pagingEnabled = !this.pagingEnabled
     }
 
-}
-
-class DrawView (context: Context, attributeSet: AttributeSet): View(context, attributeSet) {
-
-    private var mPaint = Paint()
-    private var mPath = Path()
-
-    private var mCurX = 0f
-    private var mCurY = 0f
-    private var mStartX = 0f
-    private var mStartY = 0f
-
-    init {
-        mPaint.apply {
-            color = Color.BLACK
-            style = Paint.Style.STROKE
-            strokeJoin = Paint.Join.ROUND
-            strokeCap = Paint.Cap.ROUND
-            strokeWidth = 8f
-            isAntiAlias = true
-        }
-    }
-
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-        val x = event.x
-        val y = event.y
-
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                mStartX = x
-                mStartY = y
-                actionDown(x, y)
-            }
-            MotionEvent.ACTION_MOVE -> actionMove(x, y)
-            MotionEvent.ACTION_UP -> actionUp()
-        }
-
-        invalidate()
-        return true
-    }
-
-    private fun actionDown(x: Float, y: Float) {
-        mPath.moveTo(x, y)
-        mCurX = x
-        mCurY = y
-    }
-
-    private fun actionMove(x: Float, y: Float) {
-        mPath.quadTo(mCurX, mCurY, (x + mCurX) / 2, (y + mCurY) / 2)
-        mCurX = x
-        mCurY = y
-    }
-
-    private fun actionUp() {
-        mPath.lineTo(mCurX, mCurY)
-
-        // draw a dot on click
-        if (mStartX == mCurX && mStartY == mCurY) {
-            mPath.lineTo(mCurX, mCurY + 2)
-            mPath.lineTo(mCurX + 1, mCurY + 2)
-            mPath.lineTo(mCurX + 1, mCurY)
-        }
-    }
-
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-
-        canvas.drawPath(mPath, mPaint)
-    }
-
-    fun clearCanvas() {
-        mPath.reset()
-        invalidate()
-    }
 }
 
 fun Fragment.hideKeyboard() {
