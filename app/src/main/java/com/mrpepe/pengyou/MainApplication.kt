@@ -3,7 +3,6 @@ package com.mrpepe.pengyou
 import android.app.Activity
 import android.app.Application
 import android.content.Context
-import android.database.CursorIndexOutOfBoundsException
 
 class MainApplication : Application() {
 
