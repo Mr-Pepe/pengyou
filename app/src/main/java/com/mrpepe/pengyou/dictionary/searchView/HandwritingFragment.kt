@@ -25,6 +25,8 @@ import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
 import com.mrpepe.pengyou.runJavaScript
 import kotlinx.android.synthetic.main.fragment_handwriting_input.*
 import kotlinx.android.synthetic.main.fragment_handwriting_input.view.*
+import kotlinx.coroutines.CompletableJob
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.util.*
@@ -58,6 +60,9 @@ class HandwritingFragment : Fragment() {
     private var scaleY = standardScale
 
     private var lastClickTime: Long = 0
+
+    private var canSearch = false
+    private var searchRequest = MutableLiveData<Boolean>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,19 +123,27 @@ class HandwritingFragment : Fragment() {
 
 
         isLoaded.observe(viewLifecycleOwner, Observer {
+            canSearch = true
         })
 
         proposedCharactersString.observe(viewLifecycleOwner, Observer {
-            proposedCharactersDummy.text = it
-            var characters = mutableListOf<String>()
 
-            val json : JsonArray<JsonObject> = Parser.default().parse(StringBuilder(it)) as JsonArray<JsonObject>
+            if (it.isNotBlank()) {
+                val characters = mutableListOf<String>()
 
-            json.forEach {character ->
-                characters.add(character.get("hanzi").toString())
+                val json: JsonArray<JsonObject> =
+                    Parser.default().parse(StringBuilder(it)) as JsonArray<JsonObject>
+
+                json.forEach { character ->
+                    characters.add(character.get("hanzi").toString())
+                }
+
+                adapter.setProposedCharacters(characters)
             }
+            else {
+                Timer().schedule(timerTask { searchRequest.postValue(true) }, 500)
 
-            adapter.setProposedCharacters(characters)
+            }
         })
 
         draw_board.pathExposed.observe(viewLifecycleOwner, Observer {
@@ -153,7 +166,6 @@ class HandwritingFragment : Fragment() {
                         minY = y
 
                 }
-
             }
 
             if (maxX - minX > maxY - minY) {
@@ -165,9 +177,7 @@ class HandwritingFragment : Fragment() {
                 scaleX = (maxX - minX) / (maxY - minY) * standardScale
             }
 
-            MainScope().launch {
-                webView.runJavaScript("search()")
-            }
+            searchRequest.value = true
         })
 
         clear_board_button.setOnClickListener(object: View.OnClickListener {
@@ -183,6 +193,12 @@ class HandwritingFragment : Fragment() {
                 model.submitFromDrawBoard.value = true
             }
         } )
+
+        searchRequest.observe(viewLifecycleOwner, Observer {
+             if (canSearch && strokes.isNotEmpty()) {
+                webView.runJavaScript("search()")
+             }
+        })
     }
 
     override fun onDestroy() {
