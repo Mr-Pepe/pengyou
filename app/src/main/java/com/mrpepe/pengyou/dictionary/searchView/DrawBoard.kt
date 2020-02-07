@@ -27,6 +27,8 @@ class DrawBoard (context: Context, attributeSet: AttributeSet): View(context, at
     private var iStroke = 0
     private var iPoint = 0
 
+    var isClear = true
+
     init {
         mPaint.apply {
             color = Color.BLACK
@@ -85,11 +87,12 @@ class DrawBoard (context: Context, attributeSet: AttributeSet): View(context, at
         }
 
         pathExposed.value = path
+
+        isClear = false
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-
         canvas.drawPath(mPath, mPaint)
     }
 
@@ -97,5 +100,6 @@ class DrawBoard (context: Context, attributeSet: AttributeSet): View(context, at
         mPath.reset()
         invalidate()
         path = mutableListOf<MutableList<List<Float>>>()
+        isClear = true
     }
 }

@@ -13,6 +13,9 @@ class SearchViewFragmentViewModel : ViewModel() {
     var searchQuery = ""
 
     var updateSearchResults = MutableLiveData<UpdateSearchResultsMode>()
+    var addCharacterToQuery = MutableLiveData<String>()
+    var deleteLastCharacterOfQuery = MutableLiveData<Boolean>()
+    var submitFromDrawBoard = MutableLiveData<Boolean>()
 
     init {
         searchResults.value = listOf()

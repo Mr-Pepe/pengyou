@@ -3,10 +3,12 @@ package com.mrpepe.pengyou.dictionary.searchView
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -24,6 +26,8 @@ class SearchViewActivity : BaseActivity() {
     private var searchViewHadFocus = false
     private var pagePosition = 0
     private var keyboardVisible = false
+
+    private var blockKeyboard = false
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.that_menu, menu)
@@ -82,6 +86,11 @@ class SearchViewActivity : BaseActivity() {
             searchViewFragmentViewModel.updateSearchResults.value = UpdateSearchResultsMode.SNAPTOTOP
         })
 
+        searchViewFragmentViewModel.addCharacterToQuery.observe(this, Observer {
+            val previousQuery = dictionary_search_view.query
+            dictionary_search_view.setQuery("$previousQuery$it", false)
+        })
+
         toolbar.dictionary_search_view.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextChange(newText: String?): Boolean {
 
@@ -104,6 +113,17 @@ class SearchViewActivity : BaseActivity() {
             }
         })
 
+        searchViewFragmentViewModel.deleteLastCharacterOfQuery.observe(this, Observer {
+            dictionary_search_view.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
+        })
+
+        searchViewFragmentViewModel.submitFromDrawBoard.observe(this, Observer {
+            blockKeyboard = true
+            tabs.setScrollPosition(0, 0.toFloat(), true)
+            viewPager.setCurrentItem(0)
+
+        })
+
         searchViewFragmentViewModel.newHistoryEntry.observe(this, Observer { id ->
             searchViewViewModel.addToSearchHistory(id)
         })
@@ -121,9 +141,15 @@ class SearchViewActivity : BaseActivity() {
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageSelected(position: Int) {
                 if (position == 0) {
-                    if (!keyboardVisible) {
-                        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                    if (blockKeyboard) {
+                        blockKeyboard = false
+                    }
+                    else {
+                        if (!keyboardVisible) {
+                            val imm =
+                                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                        }
                     }
                 }
                 else if (position == 1) {

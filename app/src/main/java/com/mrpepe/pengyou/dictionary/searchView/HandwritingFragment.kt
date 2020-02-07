@@ -1,22 +1,32 @@
 package com.mrpepe.pengyou.dictionary.searchView
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.webkit.WebViewAssetLoader
+import com.beust.klaxon.JsonArray
+import com.beust.klaxon.JsonObject
+import com.beust.klaxon.Parser
 import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.R
+import com.mrpepe.pengyou.dictionary.Entry
+import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
 import com.mrpepe.pengyou.runJavaScript
 import kotlinx.android.synthetic.main.fragment_handwriting_input.*
+import kotlinx.android.synthetic.main.fragment_handwriting_input.view.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import java.io.Console
 import java.util.*
 import kotlin.concurrent.timerTask
 
@@ -24,6 +34,8 @@ import kotlin.concurrent.timerTask
 class HandwritingFragment : Fragment() {
     private lateinit var model: SearchViewFragmentViewModel
     private lateinit var webView : WebView
+    private lateinit var proposedCharacterList: RecyclerView
+    lateinit var adapter : ProposedCharacterAdapter
 
     private val BASE_URL = "https://appassets.androidplatform.net/assets/handwriting_input/hanzi_lookup.html"
     private val JAVASCRIPT_OBJ = "Android"
@@ -36,12 +48,16 @@ class HandwritingFragment : Fragment() {
 
     private val widthAndHeight = 250
 
+    private val standardScale = 0.8.toFloat()
+
     private var minX = 10000000.toFloat()
     private var maxX = 0.toFloat()
     private var minY = 10000000.toFloat()
     private var maxY = 0.toFloat()
-    private var scaleX = 0.9.toFloat()
-    private var scaleY = 0.9.toFloat()
+    private var scaleX = standardScale
+    private var scaleY = standardScale
+
+    private var lastClickTime: Long = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,6 +74,8 @@ class HandwritingFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_handwriting_input, container, false)
+
+        proposedCharacterList = root.proposedCharacters
 
         return root
     }
@@ -90,11 +108,29 @@ class HandwritingFragment : Fragment() {
 
         webView.loadUrl(BASE_URL)
 
+        adapter = ProposedCharacterAdapter { character: String ->
+            characterClicked(character)
+        }
+
+        proposedCharacterList.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+
+        proposedCharacterList.adapter = adapter
+
+
         isLoaded.observe(viewLifecycleOwner, Observer {
         })
 
         proposedCharactersString.observe(viewLifecycleOwner, Observer {
-            proposedCharacters.text = it
+            proposedCharactersDummy.text = it
+            var characters = mutableListOf<String>()
+
+            val json : JsonArray<JsonObject> = Parser.default().parse(StringBuilder(it)) as JsonArray<JsonObject>
+
+            json.forEach {character ->
+                characters.add(character.get("hanzi").toString())
+            }
+
+            adapter.setProposedCharacters(characters)
         })
 
         draw_board.pathExposed.observe(viewLifecycleOwner, Observer {
@@ -121,12 +157,12 @@ class HandwritingFragment : Fragment() {
             }
 
             if (maxX - minX > maxY - minY) {
-                scaleX = 0.9.toFloat()
-                scaleY = (maxY - minY) / (maxX - minX)
+                scaleX = standardScale
+                scaleY = (maxY - minY) / (maxX - minX) * standardScale
             }
             else {
-                scaleY = 0.9.toFloat()
-                scaleX = (maxX - minX) / (maxY - minY)
+                scaleY = standardScale
+                scaleX = (maxX - minX) / (maxY - minY) * standardScale
             }
 
             MainScope().launch {
@@ -134,11 +170,19 @@ class HandwritingFragment : Fragment() {
             }
         })
 
-        clear_board_button.setOnClickListener(object : View.OnClickListener {
+        clear_board_button.setOnClickListener(object: View.OnClickListener {
             override fun onClick(v: View?) {
+                if (draw_board.isClear)
+                    model.deleteLastCharacterOfQuery.postValue(true)
                 draw_board.clearCanvas()
             }
         })
+
+        search_button.setOnClickListener ( object: View.OnClickListener {
+            override fun onClick(v: View?) {
+                model.submitFromDrawBoard.value = true
+            }
+        } )
     }
 
     override fun onDestroy() {
@@ -178,5 +222,16 @@ class HandwritingFragment : Fragment() {
         fun getY(iStroke: Int, iPoint: Int): Float {
             return ((strokes[iStroke]!![iPoint][1] - minY ) / (maxY - minY) * widthAndHeight - widthAndHeight/2) * scaleY + widthAndHeight/2
         }
+    }
+
+    private fun characterClicked(character: String){
+        if (SystemClock.elapsedRealtime() - lastClickTime < 500) {
+            return
+        }
+        lastClickTime = SystemClock.elapsedRealtime()
+
+        model.addCharacterToQuery.value = character
+
+        draw_board.clearCanvas()
     }
 }
