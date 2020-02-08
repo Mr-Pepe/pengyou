@@ -35,7 +35,7 @@ class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
 
         hsk.text = when (entry.hsk) {
-            7 -> ""
+            7 ->    "         "
             else -> "HSK " + entry.hsk.toString()
         }
 
