@@ -4,10 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:elevation="0dp"
+    android:foreground="?attr/selectableItemBackground"
     app:cardBackgroundColor="?attr/colorBackgroundFloating"
-    app:cardCornerRadius="2dp"
-    app:cardElevation="2dp"
-    app:cardUseCompatPadding="true">
+    app:cardCornerRadius="0dp"
+    app:cardElevation="1dp"
+    app:cardMaxElevation="0dp"
+    app:cardUseCompatPadding="true"
+    app:contentPaddingLeft="5dp"
+    app:layout_insetEdge="none">
 
     <TableLayout
         android:layout_width="match_parent"
@@ -35,6 +40,7 @@
                     android:id="@+id/pinyin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingBottom="2dp"
                     android:textSize="18sp"
                     tools:text="Pinyin" />
 
@@ -45,6 +51,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
+                android:paddingTop="3dp"
                 android:paddingRight="10dp"
                 android:textAlignment="viewEnd"
                 android:textSize="18sp"
@@ -62,6 +69,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="3"
                 android:minLines="1"
+                android:paddingBottom="2dp"
                 android:textSize="14sp"
                 tools:text="DefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitions" />
 

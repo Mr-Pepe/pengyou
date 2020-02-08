@@ -10,6 +10,8 @@
         android:id="@+id/decompositions"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingStart="10dp"
+        android:paddingTop="5dp"
         android:text="@string/hello_blank_fragment"
         android:textSize="24sp" />
 
