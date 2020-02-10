@@ -12,10 +12,11 @@ import kotlinx.coroutines.launch
 class SearchViewViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository : SearchViewRepository
-    val searchResults = MediatorLiveData<List<Entry>>()
-    private var oldResults : LiveData<List<Entry>>
-    var searchLanguage = MutableLiveData<SearchLanguage>()
-    var searchMode = MutableLiveData<SearchMode>()
+    val englishSearchResults = MediatorLiveData<List<Entry>>()
+    val chineseSearchResults = MediatorLiveData<List<Entry>>()
+    private var oldEnglishResults : LiveData<List<Entry>>
+    private var oldChineseResults : LiveData<List<Entry>>
+    var requestedLanguage = MutableLiveData<SearchLanguage>()
     var searchPreferences = application.getSharedPreferences(MainApplication.getContext().getString(R.string.search_history), Context.MODE_PRIVATE)
     var searchHistory = MutableLiveData<List<Entry>>()
     var searchHistoryIDs = mutableListOf<String>()
@@ -23,10 +24,11 @@ class SearchViewViewModel(application: Application) : AndroidViewModel(applicati
     init {
         val entryDao = CEDict.getDatabase(application).entryDao()
         repository = SearchViewRepository(entryDao)
-        oldResults = repository.searchResults
-        searchResults.addSource(repository.searchResults) {value -> searchResults.value = value}
-        searchMode.value = SearchMode.DICT
-        searchLanguage.value = SearchLanguage.CHINESE
+        oldEnglishResults = repository.englishSearchResults
+        oldChineseResults = repository.chineseSearchResults
+        englishSearchResults.addSource(repository.englishSearchResults) { value -> englishSearchResults.value = value}
+        chineseSearchResults.addSource(repository.chineseSearchResults) { value -> chineseSearchResults.value = value}
+        requestedLanguage.value = SearchLanguage.CHINESE
 
         searchHistoryIDs = searchPreferences.getString("search_history", "")!!.split(',').toMutableList()
         viewModelScope.launch {
@@ -57,42 +59,27 @@ class SearchViewViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun searchFor(query: String) = viewModelScope.launch {
-        repository.searchFor(query, getSearchMode(searchLanguage.value!!, searchMode.value!!))
-        searchResults.removeSource(oldResults)
-        oldResults = repository.searchResults
-        searchResults.addSource(repository.searchResults) {value -> searchResults.postValue(value)}
+        repository.searchFor(query)
+
+        englishSearchResults.removeSource(oldEnglishResults)
+        oldEnglishResults = repository.englishSearchResults
+        englishSearchResults.addSource(repository.englishSearchResults) { value -> englishSearchResults.postValue(value)}
+
+        chineseSearchResults.removeSource(oldChineseResults)
+        oldChineseResults = repository.chineseSearchResults
+        chineseSearchResults.addSource(repository.chineseSearchResults) { value -> chineseSearchResults.postValue(value)}
     }
 
-    fun toggleLanguage(){
-        when (searchLanguage.value) {
-            SearchLanguage.CHINESE -> searchLanguage.value = SearchLanguage.ENGLISH
-            SearchLanguage.ENGLISH -> searchLanguage.value = SearchLanguage.CHINESE
+    fun toggleDisplayedLanguage(){
+        when (requestedLanguage.value) {
+            SearchLanguage.CHINESE -> requestedLanguage.value = SearchLanguage.ENGLISH
+            SearchLanguage.ENGLISH -> requestedLanguage.value = SearchLanguage.CHINESE
         }
     }
 
     enum class SearchLanguage {
         ENGLISH,
         CHINESE
-    }
-
-    // A search for example sentences can be added by adding another mode like "SENTENCES"
-    enum class SearchMode {
-        DICT
-    }
-
-    private fun getSearchMode(lang: SearchLanguage, mode: SearchMode): SearchViewRepository.SearchMode {
-        return when (lang) {
-            SearchLanguage.ENGLISH -> {
-                when (mode) {
-                    SearchMode.DICT -> SearchViewRepository.SearchMode.ENGLISHDICT
-                }
-            }
-            SearchLanguage.CHINESE -> {
-                when (mode) {
-                    SearchMode.DICT -> SearchViewRepository.SearchMode.CHINESEDICT
-                }
-            }
-        }
     }
 }
 

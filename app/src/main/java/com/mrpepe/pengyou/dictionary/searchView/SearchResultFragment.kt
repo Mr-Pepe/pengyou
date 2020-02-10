@@ -60,14 +60,6 @@ class SearchResultFragment : Fragment() {
         searchResultList.layoutManager = LinearLayoutManager(activity)
         searchResultList.adapter = adapter
 
-        model.searchResults.observe(viewLifecycleOwner, Observer { searchResults ->
-            searchResults?.let { adapter.setEntries(searchResults) }
-            resultCount.text = when(searchResults.size) {
-                0 -> ""
-                else -> "Appears in ${searchResults.size} words"
-            }
-        })
-
         model.updateSearchResults.observe(viewLifecycleOwner, Observer { mode ->
             updateSearchResults(mode)
         })
@@ -89,28 +81,64 @@ class SearchResultFragment : Fragment() {
         startActivity(intent)
     }
 
-    fun updateSearchResults(mode: UpdateSearchResultsMode) {
-        if (mode != UpdateSearchResultsMode.IDLE) {
-            when (model.searchQuery.isBlank()) {
-                true -> {
-                    resultCount.text = when (model.searchHistory.value?.size) {
-                        0 -> ""
-                        else -> "Recently viewed: " + model.searchHistory.value?.size.toString()
-                    }
-                    adapter.setEntries(model.searchHistory.value!!)
+    private fun updateSearchResults(mode: UpdateSearchResultsMode) {
+
+        when (model.searchQuery.isBlank()) {
+            true -> {
+                resultCount.text = when (model.searchHistory.value?.size) {
+                    0 -> ""
+                    else -> "Recently viewed: " + model.searchHistory.value?.size.toString()
                 }
-                false -> {
-                    resultCount.text = when (model.searchResults.value?.size) {
-                        0 -> "Search results: 0"
-                        in 1..999 -> "Search results: " + model.searchResults.value?.size.toString()
-                        else -> "Search results: 999+"
+                adapter.setEntries(model.searchHistory.value!!)
+            }
+            false -> {
+
+                if (model.requestedLanguage == SearchViewViewModel.SearchLanguage.ENGLISH) {
+                    when (model.englishSearchResults.value?.isNotEmpty()!!) {
+                        true -> setEnglish()
+                        false -> {
+                            if (model.chineseSearchResults.value?.isNotEmpty()!!) {
+                                setChinese()
+                            }
+                            else {
+                                setEnglish()
+                            }
+                        }
                     }
-                    adapter.setEntries(model.searchResults.value!!)
+                }
+                else if (model.requestedLanguage == SearchViewViewModel.SearchLanguage.CHINESE) {
+                    when (model.chineseSearchResults.value?.isNotEmpty()!!) {
+                        true -> setChinese()
+                        false -> {
+                            if (model.englishSearchResults.value?.isNotEmpty()!!) {
+                                setEnglish()
+                            }
+                            else {
+                                setChinese()
+                            }
+                        }
+                    }
+                }
+
+                resultCount.text = when (adapter.searchResults.size) {
+                    0 -> "Search results: 0"
+                    in 1..999 -> "Search results: " + adapter.searchResults.size.toString()
+                    else -> "Search results: 999+"
                 }
             }
-
-            if (mode == UpdateSearchResultsMode.SNAPTOTOP)
-                searchResultList.scrollToPosition(0)
         }
+
+        if (mode == UpdateSearchResultsMode.SNAPTOTOP)
+            searchResultList.scrollToPosition(0)
+    }
+
+    private fun setEnglish() {
+        adapter.setEntries(model.englishSearchResults.value!!)
+        model.displayedLanguage.value = SearchViewViewModel.SearchLanguage.ENGLISH
+    }
+
+    private fun setChinese() {
+        adapter.setEntries(model.chineseSearchResults.value!!)
+        model.displayedLanguage.value = SearchViewViewModel.SearchLanguage.CHINESE
     }
 }

@@ -499,7 +499,6 @@ class PlaceholderFragment : Fragment() {
 }
 
 enum class UpdateSearchResultsMode {
-    IDLE,
     SNAPTOTOP,
     DONTSNAPTOTOP
 }

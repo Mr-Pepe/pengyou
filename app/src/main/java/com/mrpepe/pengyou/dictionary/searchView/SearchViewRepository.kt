@@ -5,18 +5,18 @@ import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
 
 class SearchViewRepository(private val entryDao: EntryDAO) {
-    var searchResults : LiveData<List<Entry>>
+    var englishSearchResults : LiveData<List<Entry>>
+    var chineseSearchResults : LiveData<List<Entry>>
     var searchHistory = mutableListOf<Entry>()
 
     init {
-        searchResults = entryDao.searchInDictByChinese("123456", "123456z")
+        englishSearchResults = entryDao.searchInDictByChinese("123456", "123456z")
+        chineseSearchResults = entryDao.searchInDictByChinese("123456", "123456z")
     }
 
-    fun searchFor(query: String, mode: SearchMode) {
-        searchResults = when (mode) {
-            SearchMode.CHINESEDICT -> entryDao.searchInDictByChinese(query, query + 'z')
-            SearchMode.ENGLISHDICT -> entryDao.searchInDictByEnglish("%${query}%")
-        }
+    fun searchFor(query: String) {
+        englishSearchResults = entryDao.searchInDictByEnglish("%${query}%")
+        chineseSearchResults = entryDao.searchInDictByChinese(query, query + 'z')
     }
 
     suspend fun getSearchHistory(ids: List<String>) {
@@ -31,10 +31,5 @@ class SearchViewRepository(private val entryDao: EntryDAO) {
         else {
             searchHistory.clear()
         }
-    }
-
-    enum class SearchMode {
-        CHINESEDICT,
-        ENGLISHDICT
     }
 }

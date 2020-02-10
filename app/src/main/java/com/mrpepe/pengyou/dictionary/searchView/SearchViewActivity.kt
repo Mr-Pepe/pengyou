@@ -6,10 +6,8 @@ import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.view.forEach
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
@@ -33,13 +31,18 @@ class SearchViewActivity : BaseActivity() {
         menuInflater.inflate(R.menu.that_menu, menu)
         modeSwitch = menu?.getItem(0)!!
 
-        searchViewViewModel.searchLanguage.observe(this, Observer { mode ->
-            when (mode) {
+        searchViewViewModel.requestedLanguage.observe(this, Observer { language ->
+            searchViewFragmentViewModel.requestedLanguage = language
+            searchViewFragmentViewModel.updateSearchResults.value = UpdateSearchResultsMode.SNAPTOTOP
+        })
+
+        searchViewFragmentViewModel.displayedLanguage.observe(this, Observer { language ->
+            when (language) {
                 SearchViewViewModel.SearchLanguage.ENGLISH -> {
-                    modeSwitch.icon = ContextCompat.getDrawable(getApplicationContext(),R.drawable.e);
+                    modeSwitch.icon = ContextCompat.getDrawable(getApplicationContext(), R.drawable.e);
                 }
                 SearchViewViewModel.SearchLanguage.CHINESE -> {
-                    modeSwitch.icon = ContextCompat.getDrawable(getApplicationContext(),R.drawable.c);
+                    modeSwitch.icon = ContextCompat.getDrawable(getApplicationContext(), R.drawable.c);
                 }
                 else -> {}
             }
@@ -68,24 +71,21 @@ class SearchViewActivity : BaseActivity() {
             tabs.getTabAt(iTab)?.customView = tab
         }
 
-        val rootLayout = findViewById<View>(R.id.search_view_root)
-        rootLayout.viewTreeObserver.addOnGlobalLayoutListener {
-            val rec = Rect()
-            rootLayout.getWindowVisibleDisplayFrame(rec)
-            val screenHeight = rootLayout.rootView.height
-            val keypadHeight = screenHeight - rec.bottom
-
-            keyboardVisible = (keypadHeight > screenHeight*0.15)
-        }
+        // Detect whether the keyboard is visible or not
+        setupKeyboardVisibleListener()
 
         searchViewFragmentViewModel = ViewModelProvider(this)[SearchViewFragmentViewModel::class.java]
         searchViewViewModel = ViewModelProvider.AndroidViewModelFactory(application)
                                             .create(SearchViewViewModel::class.java)
 
-        searchViewViewModel.searchResults.observe(this, Observer {
-            searchViewFragmentViewModel.searchResults.value = it
+        searchViewViewModel.englishSearchResults.observe(this, Observer {
+            searchViewFragmentViewModel.englishSearchResults.value = it
             searchViewFragmentViewModel.updateSearchResults.value = UpdateSearchResultsMode.SNAPTOTOP
+        })
 
+        searchViewViewModel.chineseSearchResults.observe(this, Observer {
+            searchViewFragmentViewModel.chineseSearchResults.value = it
+            searchViewFragmentViewModel.updateSearchResults.value = UpdateSearchResultsMode.SNAPTOTOP
         })
 
         searchViewViewModel.searchHistory.observe(this, Observer {
@@ -98,6 +98,20 @@ class SearchViewActivity : BaseActivity() {
             dictionary_search_view.setQuery("$previousQuery$it", false)
         })
 
+        searchViewFragmentViewModel.deleteLastCharacterOfQuery.observe(this, Observer {
+            dictionary_search_view.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
+        })
+
+        searchViewFragmentViewModel.submitFromDrawBoard.observe(this, Observer {
+            blockKeyboard = true
+            tabs.setScrollPosition(0, 0.toFloat(), true)
+            viewPager.setCurrentItem(0)
+        })
+
+        searchViewFragmentViewModel.newHistoryEntry.observe(this, Observer { id ->
+            searchViewViewModel.addToSearchHistory(id)
+        })
+
         toolbar.dictionary_search_view.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextChange(newText: String?): Boolean {
 
@@ -108,7 +122,8 @@ class SearchViewActivity : BaseActivity() {
                                     .replace("ü", "u:")
                                     .replace("v", "u:"))
                 } else {
-                    searchViewFragmentViewModel.searchResults.value = listOf()
+                    searchViewFragmentViewModel.englishSearchResults.value = listOf()
+                    searchViewFragmentViewModel.chineseSearchResults.value = listOf()
                     searchViewFragmentViewModel.updateSearchResults.value = UpdateSearchResultsMode.SNAPTOTOP
                 }
                 return true
@@ -120,21 +135,6 @@ class SearchViewActivity : BaseActivity() {
             }
         })
 
-        searchViewFragmentViewModel.deleteLastCharacterOfQuery.observe(this, Observer {
-            dictionary_search_view.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
-        })
-
-        searchViewFragmentViewModel.submitFromDrawBoard.observe(this, Observer {
-            blockKeyboard = true
-            tabs.setScrollPosition(0, 0.toFloat(), true)
-            viewPager.setCurrentItem(0)
-
-        })
-
-        searchViewFragmentViewModel.newHistoryEntry.observe(this, Observer { id ->
-            searchViewViewModel.addToSearchHistory(id)
-        })
-
         dictionary_search_view.setOnQueryTextFocusChangeListener( object : View.OnFocusChangeListener {
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
                 when (hasFocus) {
@@ -142,12 +142,12 @@ class SearchViewActivity : BaseActivity() {
                     false -> tabs.visibility = View.INVISIBLE
                 }
             }
-
         })
 
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageSelected(position: Int) {
                 if (position == 0) {
+                    // Keep keyboard hidden if desired or open it
                     if (blockKeyboard) {
                         blockKeyboard = false
                     }
@@ -194,13 +194,33 @@ class SearchViewActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.modeSwitch -> {
-                searchViewViewModel.toggleLanguage()
-                val query = toolbar.dictionary_search_view.query
-                toolbar.dictionary_search_view.setQuery("", false)
-                toolbar.dictionary_search_view.setQuery(query, false)
+                if (searchViewFragmentViewModel.displayedLanguage.value != searchViewViewModel.requestedLanguage.value) {
+                    val message = when (searchViewViewModel.requestedLanguage.value) {
+                        SearchViewViewModel.SearchLanguage.CHINESE -> "No results for Chinese search available."
+                        SearchViewViewModel.SearchLanguage.ENGLISH -> "No results for English search available."
+                        else -> ""
+                    }
+                    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                }
+                else {
+                    searchViewViewModel.toggleDisplayedLanguage()
+                }
+
                 true
             }
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun setupKeyboardVisibleListener() {
+        val rootLayout = findViewById<View>(R.id.search_view_root)
+        rootLayout.viewTreeObserver.addOnGlobalLayoutListener {
+            val rec = Rect()
+            rootLayout.getWindowVisibleDisplayFrame(rec)
+            val screenHeight = rootLayout.rootView.height
+            val keypadHeight = screenHeight - rec.bottom
+
+            keyboardVisible = (keypadHeight > screenHeight*0.15)
         }
     }
 }
