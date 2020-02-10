@@ -6,9 +6,12 @@ import com.mrpepe.pengyou.UpdateSearchResultsMode
 import com.mrpepe.pengyou.dictionary.Entry
 
 class SearchViewFragmentViewModel : ViewModel() {
-    var searchResults = MutableLiveData<List<Entry>>()
+    var englishSearchResults = MutableLiveData<List<Entry>>()
+    var chineseSearchResults = MutableLiveData<List<Entry>>()
     var searchHistory = MutableLiveData<List<Entry>>()
     var newHistoryEntry = MutableLiveData<String>()
+    var displayedLanguage = MutableLiveData<SearchViewViewModel.SearchLanguage>()
+    var requestedLanguage = SearchViewViewModel.SearchLanguage.CHINESE
 
     var searchQuery = ""
 
@@ -18,7 +21,8 @@ class SearchViewFragmentViewModel : ViewModel() {
     var submitFromDrawBoard = MutableLiveData<Boolean>()
 
     init {
-        searchResults.value = listOf()
+        englishSearchResults.value = listOf()
         searchHistory.value = listOf()
+        displayedLanguage.value = SearchViewViewModel.SearchLanguage.CHINESE
     }
 }
