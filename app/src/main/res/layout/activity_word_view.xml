@@ -68,8 +68,9 @@
                 android:id="@+id/hsk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingStart="@dimen/medium_padding"
                 android:paddingTop="15dp"
-                android:paddingEnd="10dp"
+                android:paddingEnd="@dimen/medium_padding"
                 android:textSize="18sp"
                 tools:text="HSK" />
 
@@ -86,7 +87,7 @@
             android:id="@+id/word_view_pager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1" />
 
     </LinearLayout>
 

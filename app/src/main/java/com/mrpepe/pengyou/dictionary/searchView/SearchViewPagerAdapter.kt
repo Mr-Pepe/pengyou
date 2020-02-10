@@ -9,9 +9,9 @@ import com.mrpepe.pengyou.R
 class SearchViewPagerAdapter(private val context: Context, fm: FragmentManager) :
     FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    private val TAB_TITLES = arrayOf(
-        R.string.tab_keyboard,
-        R.string.tab_handwriting
+    val tabIcons = arrayOf(
+        R.drawable.ic_keyboard_line,
+        R.drawable.ic_brush_line
     )
 
     override fun getItem(position: Int): Fragment {
@@ -21,11 +21,9 @@ class SearchViewPagerAdapter(private val context: Context, fm: FragmentManager) 
         }
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
-        return context.resources.getString(TAB_TITLES[position])
+    override fun getCount(): Int {
+        return tabIcons.size
     }
 
-    override fun getCount(): Int {
-        return TAB_TITLES.size
-    }
+
 }

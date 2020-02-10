@@ -11,9 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:lineSpacingExtra="18sp"
-        android:paddingStart="15dp"
-        android:paddingTop="20dp"
-        android:paddingEnd="10dp"
+        android:paddingStart="@dimen/medium_padding"
+        android:paddingTop="@dimen/large_padding"
+        android:paddingEnd="@dimen/medium_padding"
         android:text="@string/hello_blank_fragment"
         android:textSize="18sp" />
 

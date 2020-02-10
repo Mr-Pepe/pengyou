@@ -16,6 +16,7 @@ import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.UpdateSearchResultsMode
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
+import com.mrpepe.pengyou.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_search_result_list.view.*
 
 class SearchResultFragment : Fragment() {
@@ -78,8 +79,9 @@ class SearchResultFragment : Fragment() {
         }
         lastClickTime = SystemClock.elapsedRealtime()
 
-
         model.newHistoryEntry.value = entry.id.toString()
+
+        hideKeyboard()
 
         val intent = Intent(activity, WordViewActivity::class.java)
         intent.putExtra("entry", entry)

@@ -10,11 +10,11 @@ import com.mrpepe.pengyou.R
 class WordViewPagerAdapter(private val context: Context, fm: FragmentManager) :
     FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-    private val TAB_TITLES = arrayOf(
-        R.string.tab_definition_text,
-        R.string.tab_strokes_text,
-        R.string.tab_components_text,
-        R.string.tab_words_text
+    val tabIcons = arrayOf(
+        R.drawable.ic_dictionary_line,
+        R.drawable.ic_strokes,
+        R.drawable.ic_decomposition,
+        R.drawable.ic_brush_line
     )
 
     override fun getItem(position: Int): Fragment {
@@ -27,11 +27,7 @@ class WordViewPagerAdapter(private val context: Context, fm: FragmentManager) :
         }
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
-        return context.resources.getString(TAB_TITLES[position])
-    }
-
     override fun getCount(): Int {
-        return TAB_TITLES.size
+        return tabIcons.size
     }
 }
