@@ -3,13 +3,13 @@ package com.mrpepe.pengyou.dictionary.searchView
 import android.content.Context
 import android.graphics.Rect
 import android.os.Bundle
-import android.view.KeyEvent
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.view.forEach
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
@@ -60,6 +60,13 @@ class SearchViewActivity : BaseActivity() {
         tabs.setupWithViewPager(viewPager)
         // Deactivate horizontal paging
         viewPager.togglePagingEnabled()
+
+        // Set icons for the tabs
+        for (iTab in 0 until tabs.tabCount) {
+            val tab = LayoutInflater.from(this).inflate(R.layout.tab_item, null)
+            tab.findViewById<ImageView>(R.id.tab_icon).setImageResource(sectionsPagerAdapter.tabIcons[iTab])
+            tabs.getTabAt(iTab)?.customView = tab
+        }
 
         val rootLayout = findViewById<View>(R.id.search_view_root)
         rootLayout.viewTreeObserver.addOnGlobalLayoutListener {
@@ -188,7 +195,7 @@ class SearchViewActivity : BaseActivity() {
         return when (item.itemId) {
             R.id.modeSwitch -> {
                 searchViewViewModel.toggleLanguage()
-                var query = toolbar.dictionary_search_view.query
+                val query = toolbar.dictionary_search_view.query
                 toolbar.dictionary_search_view.setQuery("", false)
                 toolbar.dictionary_search_view.setQuery(query, false)
                 true

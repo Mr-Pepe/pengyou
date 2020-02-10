@@ -1,6 +1,9 @@
 package com.mrpepe.pengyou.dictionary.wordView
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.tabs.TabLayout
@@ -14,8 +17,6 @@ class WordViewActivity : BaseActivity(), StrokeOrderFragment.ToggleHorizontalPag
 
     lateinit var viewPager: CustomViewPager
 
-    var horizontalPagingEnabled = true
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_word_view)
@@ -25,6 +26,12 @@ class WordViewActivity : BaseActivity(), StrokeOrderFragment.ToggleHorizontalPag
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
 
+        // Setup tab icons
+        for (iTab in 0 until tabs.tabCount) {
+            val tab = LayoutInflater.from(this).inflate(R.layout.tab_item, null)
+            tab.findViewById<ImageView>(R.id.tab_icon).setImageResource(sectionsPagerAdapter.tabIcons[iTab])
+            tabs.getTabAt(iTab)?.customView = tab
+        }
 
         wordViewFragmentViewModel = ViewModelProvider(this)[WordViewFragmentViewModel::class.java]
         wordViewViewModel = ViewModelProvider.AndroidViewModelFactory(application)

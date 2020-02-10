@@ -11,7 +11,8 @@
     app:cardElevation="1dp"
     app:cardMaxElevation="0dp"
     app:cardUseCompatPadding="true"
-    app:contentPaddingLeft="5dp"
+    app:contentPaddingLeft="@dimen/medium_padding"
+    app:contentPaddingRight="@dimen/medium_padding"
     app:layout_insetEdge="none">
 
     <TableLayout
@@ -50,9 +51,7 @@
                 android:id="@+id/hsk"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="10dp"
-                android:paddingTop="3dp"
-                android:paddingRight="10dp"
+                android:paddingTop="@dimen/tiny_padding"
                 android:textAlignment="viewEnd"
                 android:textSize="18sp"
                 tools:text="HSK 6" />
