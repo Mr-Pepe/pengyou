@@ -25,6 +25,9 @@ class SearchViewActivity : BaseActivity() {
     private var pagePosition = 0
     private var keyboardVisible = false
 
+    private var englishUpdated = false
+    private var chineseUpdated = false
+
     private var blockKeyboard = false
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -80,12 +83,22 @@ class SearchViewActivity : BaseActivity() {
 
         searchViewViewModel.englishSearchResults.observe(this, Observer {
             searchViewFragmentViewModel.englishSearchResults.value = it
-            searchViewFragmentViewModel.updateSearchResults.value = UpdateSearchResultsMode.SNAPTOTOP
+            englishUpdated = true
+            if (englishUpdated && chineseUpdated) {
+                englishUpdated = false
+                chineseUpdated = false
+                searchViewFragmentViewModel.updateSearchResults.value = UpdateSearchResultsMode.SNAPTOTOP
+            }
         })
 
         searchViewViewModel.chineseSearchResults.observe(this, Observer {
             searchViewFragmentViewModel.chineseSearchResults.value = it
-            searchViewFragmentViewModel.updateSearchResults.value = UpdateSearchResultsMode.SNAPTOTOP
+            chineseUpdated = true
+            if (englishUpdated && chineseUpdated) {
+                englishUpdated = false
+                chineseUpdated = false
+                searchViewFragmentViewModel.updateSearchResults.value = UpdateSearchResultsMode.SNAPTOTOP
+            }
         })
 
         searchViewViewModel.searchHistory.observe(this, Observer {
@@ -120,7 +133,8 @@ class SearchViewActivity : BaseActivity() {
                 if (newText.isNotBlank()) {
                     searchViewViewModel.searchFor(newText
                                     .replace("ü", "u:")
-                                    .replace("v", "u:"))
+                                    .replace("v", "u:")
+                                    .trimEnd())
                 } else {
                     searchViewFragmentViewModel.englishSearchResults.value = listOf()
                     searchViewFragmentViewModel.chineseSearchResults.value = listOf()
