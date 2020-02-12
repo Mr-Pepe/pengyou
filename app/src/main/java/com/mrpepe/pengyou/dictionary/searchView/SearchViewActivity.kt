@@ -194,7 +194,8 @@ class SearchViewActivity : BaseActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.modeSwitch -> {
-                if (searchViewFragmentViewModel.displayedLanguage.value != searchViewViewModel.requestedLanguage.value) {
+                if (searchViewFragmentViewModel.displayedLanguage.value != searchViewViewModel.requestedLanguage.value &&
+                        dictionary_search_view.query.isNotBlank()) {
                     val message = when (searchViewViewModel.requestedLanguage.value) {
                         SearchViewViewModel.SearchLanguage.CHINESE -> "No results for Chinese search available."
                         SearchViewViewModel.SearchLanguage.ENGLISH -> "No results for English search available."
