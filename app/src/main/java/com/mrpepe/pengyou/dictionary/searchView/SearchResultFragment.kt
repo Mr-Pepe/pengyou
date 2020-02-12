@@ -90,6 +90,7 @@ class SearchResultFragment : Fragment() {
                     else -> "Recently viewed: " + model.searchHistory.value?.size.toString()
                 }
                 adapter.setEntries(model.searchHistory.value!!)
+                model.displayedLanguage.value = model.requestedLanguage
             }
             false -> {
 
