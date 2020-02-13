@@ -1,10 +1,9 @@
 package com.mrpepe.pengyou.dictionary.searchView
 
 import android.app.Application
-import android.content.Context
+import android.content.SharedPreferences
 import androidx.lifecycle.*
-import com.mrpepe.pengyou.MainApplication
-import com.mrpepe.pengyou.R
+import com.mrpepe.pengyou.SearchHistory
 import com.mrpepe.pengyou.dictionary.CEDict
 import com.mrpepe.pengyou.dictionary.Entry
 import kotlinx.coroutines.launch
@@ -12,7 +11,7 @@ import kotlinx.coroutines.launch
 class SearchViewViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository : SearchViewRepository
-    private var searchPreferences = application.getSharedPreferences(MainApplication.getContext().getString(R.string.search_history), Context.MODE_PRIVATE)
+    val searchHistory = SearchHistory
 
     private var oldEnglishResults1 : LiveData<List<Entry>>
     private var oldEnglishResults2 : LiveData<List<Entry>>
@@ -23,8 +22,20 @@ class SearchViewViewModel(application: Application) : AndroidViewModel(applicati
 
     var requestedLanguage = MutableLiveData<SearchLanguage>()
 
-    var searchHistory = MutableLiveData<List<Entry>>()
-    var searchHistoryIDs = mutableListOf<String>()
+    var searchHistoryEntries = MutableLiveData<List<Entry>>()
+    var searchHistoryIDs = listOf<String>()
+
+    var listener = object : SharedPreferences.OnSharedPreferenceChangeListener {
+        override fun onSharedPreferenceChanged(
+            sharedPreferences: SharedPreferences?,
+            key: String?
+        ) {
+            if (key == "search_history") {
+                searchHistoryIDs = searchHistory.getHistoryIds()
+                reloadSearchHistory()
+            }
+        }
+    }
 
     init {
         val entryDao = CEDict.getDatabase(application).entryDao()
@@ -38,31 +49,20 @@ class SearchViewViewModel(application: Application) : AndroidViewModel(applicati
         chineseSearchResults.addSource(repository.chineseSearchResults) { }
         requestedLanguage.value = SearchLanguage.CHINESE
 
-        searchHistoryIDs = searchPreferences.getString("search_history", "")!!.split(',').toMutableList()
+        searchHistory.searchPreferences.registerOnSharedPreferenceChangeListener(listener)
+
+        searchHistoryIDs = searchHistory.getHistoryIds()
+
         viewModelScope.launch {
             repository.getSearchHistory(searchHistoryIDs.reversed())
-            searchHistory.postValue(repository.searchHistory)
+            searchHistoryEntries.postValue(repository.searchHistory)
         }
     }
 
-    fun addToSearchHistory(id: String) {
-        val maxLengthHistory = 10000
-
-        if (searchHistoryIDs.size >= maxLengthHistory) {
-            searchHistoryIDs = searchHistoryIDs.slice(1 until maxLengthHistory).toMutableList()
-        }
-
-        searchHistoryIDs.add(id)
-
-        viewModelScope.launch {
-            with(searchPreferences.edit()) {
-                putString("search_history", searchHistoryIDs.joinToString(","))
-                commit()
-            }
-        }
-
+    fun reloadSearchHistory() {
         viewModelScope.launch {
             repository.getSearchHistory(searchHistoryIDs.reversed())
+            searchHistoryEntries.postValue(repository.searchHistory)
         }
     }
 

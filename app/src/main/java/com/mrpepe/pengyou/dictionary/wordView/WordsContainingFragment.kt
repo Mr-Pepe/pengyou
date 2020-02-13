@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
+import com.mrpepe.pengyou.SearchHistory
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.searchView.SearchResultAdapter
 import kotlinx.android.synthetic.main.fragment_search_result_list.view.*
@@ -23,6 +24,7 @@ class WordsContainingFragment : Fragment() {
     private lateinit var searchResultList: RecyclerView
     private lateinit var resultCount: TextView
     private var lastClickTime : Long = 0
+    private var searchHistory = SearchHistory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +81,8 @@ class WordsContainingFragment : Fragment() {
             return
         }
         lastClickTime = SystemClock.elapsedRealtime()
+
+        searchHistory.addToHistory(entry.id.toString())
 
         val intent = Intent(activity, WordViewActivity::class.java)
         intent.putExtra("entry", entry)
