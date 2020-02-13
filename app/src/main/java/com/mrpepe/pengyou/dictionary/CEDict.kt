@@ -104,9 +104,23 @@ interface EntryDAO {
     @Query("SELECT * " +
             "FROM entries " +
             "WHERE definitions LIKE :query " +
-            "ORDER BY hsk, priority " +
+            "ORDER BY priority " +
             "LIMIT 1000")
-    fun searchInDictByEnglish(query: String) : LiveData<List<Entry>>
+    fun searchInDictByEnglish1(query: String) : LiveData<List<Entry>>
+
+    @Query("SELECT * " +
+            "FROM entries " +
+            "WHERE definitions LIKE :query1 OR definitions LIKE :query2 OR definitions LIKE :query3 " +
+            "ORDER BY priority " +
+            "LIMIT 1000")
+    fun searchInDictByEnglish3(query1: String, query2: String, query3: String) : LiveData<List<Entry>>
+
+    @Query("SELECT * " +
+            "FROM entries " +
+            "WHERE definitions LIKE :query1 OR definitions LIKE :query2 OR definitions LIKE :query3 OR definitions LIKE :query4 " +
+            "ORDER BY priority " +
+            "LIMIT 1000")
+    fun searchInDictByEnglish4(query1: String, query2: String, query3: String, query4: String) : LiveData<List<Entry>>
 
     @Query("SELECT * FROM decompositions WHERE character = :query")
     suspend fun getDecomposition(query: String): List<DbDecomposition>
