@@ -83,22 +83,14 @@ class SearchViewActivity : BaseActivity() {
 
         searchViewViewModel.englishSearchResults.observe(this, Observer {
             searchViewFragmentViewModel.englishSearchResults.value = it
-            englishUpdated = true
-            if (englishUpdated && chineseUpdated) {
-                englishUpdated = false
-                chineseUpdated = false
-                searchViewFragmentViewModel.updateSearchResults.value = UpdateSearchResultsMode.SNAPTOTOP
-            }
+            searchViewFragmentViewModel.updateSearchResults.value = UpdateSearchResultsMode.SNAPTOTOP
+
         })
 
         searchViewViewModel.chineseSearchResults.observe(this, Observer {
             searchViewFragmentViewModel.chineseSearchResults.value = it
-            chineseUpdated = true
-            if (englishUpdated && chineseUpdated) {
-                englishUpdated = false
-                chineseUpdated = false
-                searchViewFragmentViewModel.updateSearchResults.value = UpdateSearchResultsMode.SNAPTOTOP
-            }
+            searchViewFragmentViewModel.updateSearchResults.value = UpdateSearchResultsMode.SNAPTOTOP
+
         })
 
         searchViewViewModel.searchHistory.observe(this, Observer {
@@ -131,10 +123,11 @@ class SearchViewActivity : BaseActivity() {
                 searchViewFragmentViewModel.searchQuery = newText!!
 
                 if (newText.isNotBlank()) {
-                    searchViewViewModel.searchFor(newText
+                    searchViewViewModel.searchForChinese(newText
                                     .replace("ü", "u:")
                                     .replace("v", "u:")
                                     .trimEnd())
+                    searchViewViewModel.searchForEnglish(newText.trimEnd())
                 } else {
                     searchViewFragmentViewModel.englishSearchResults.value = listOf()
                     searchViewFragmentViewModel.chineseSearchResults.value = listOf()

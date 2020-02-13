@@ -82,7 +82,6 @@ class SearchResultFragment : Fragment() {
     }
 
     private fun updateSearchResults(mode: UpdateSearchResultsMode) {
-
         when (model.searchQuery.isBlank()) {
             true -> {
                 resultCount.text = when (model.searchHistory.value?.size) {
@@ -93,32 +92,33 @@ class SearchResultFragment : Fragment() {
                 model.displayedLanguage.value = model.requestedLanguage
             }
             false -> {
-
                 if (model.requestedLanguage == SearchViewViewModel.SearchLanguage.ENGLISH) {
-                    when (model.englishSearchResults.value?.isNotEmpty()!!) {
+
+                    when (model.englishSearchResults.value != null && model.englishSearchResults.value?.isNotEmpty()!!) {
                         true -> setEnglish()
                         false -> {
-                            if (model.chineseSearchResults.value?.isNotEmpty()!!) {
+                            if (model.chineseSearchResults.value != null && model.chineseSearchResults.value?.isNotEmpty()!! || model.displayedLanguage.value == SearchViewViewModel.SearchLanguage.CHINESE) {
                                 setChinese()
-                            }
-                            else {
+                            } else {
                                 setEnglish()
                             }
                         }
                     }
+
                 }
                 else if (model.requestedLanguage == SearchViewViewModel.SearchLanguage.CHINESE) {
-                    when (model.chineseSearchResults.value?.isNotEmpty()!!) {
+
+                    when (model.chineseSearchResults.value != null && model.chineseSearchResults.value?.isNotEmpty()!!) {
                         true -> setChinese()
                         false -> {
-                            if (model.englishSearchResults.value?.isNotEmpty()!!) {
+                            if (model.englishSearchResults.value != null && model.englishSearchResults.value?.isNotEmpty()!! || model.displayedLanguage.value == SearchViewViewModel.SearchLanguage.ENGLISH) {
                                 setEnglish()
-                            }
-                            else {
+                            } else {
                                 setChinese()
                             }
                         }
                     }
+
                 }
 
                 resultCount.text = when (adapter.searchResults.size) {
@@ -131,15 +131,16 @@ class SearchResultFragment : Fragment() {
 
         if (mode == UpdateSearchResultsMode.SNAPTOTOP)
             searchResultList.scrollToPosition(0)
+
     }
 
     private fun setEnglish() {
-        adapter.setEntries(model.englishSearchResults.value!!)
+        adapter.setEntries(model.englishSearchResults.value ?: listOf())
         model.displayedLanguage.value = SearchViewViewModel.SearchLanguage.ENGLISH
     }
 
     private fun setChinese() {
-        adapter.setEntries(model.chineseSearchResults.value!!)
+        adapter.setEntries(model.chineseSearchResults.value ?: listOf())
         model.displayedLanguage.value = SearchViewViewModel.SearchLanguage.CHINESE
     }
 }

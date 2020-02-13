@@ -17,8 +17,6 @@ class SearchViewViewModel(application: Application) : AndroidViewModel(applicati
     private var oldEnglishResults1 : LiveData<List<Entry>>
     private var oldEnglishResults2 : LiveData<List<Entry>>
     private var oldEnglishResults3 : LiveData<List<Entry>>
-    private var oldEnglishResults4 : LiveData<List<Entry>>
-    private var oldEnglishResults5 : LiveData<List<Entry>>
     val englishSearchResults = MediatorLiveData<List<Entry>>()
     private var oldChineseResults : LiveData<List<Entry>>
     val chineseSearchResults = MediatorLiveData<List<Entry>>()
@@ -34,12 +32,10 @@ class SearchViewViewModel(application: Application) : AndroidViewModel(applicati
         oldEnglishResults1 = repository.englishSearchResults1
         oldEnglishResults2 = repository.englishSearchResults1
         oldEnglishResults3 = repository.englishSearchResults1
-        oldEnglishResults4 = repository.englishSearchResults1
-        oldEnglishResults5 = repository.englishSearchResults1
 
         oldChineseResults = repository.chineseSearchResults
         englishSearchResults.addSource(repository.englishSearchResults1) { }
-        chineseSearchResults.addSource(repository.chineseSearchResults) { value -> chineseSearchResults.value = value}
+        chineseSearchResults.addSource(repository.chineseSearchResults) { }
         requestedLanguage.value = SearchLanguage.CHINESE
 
         searchHistoryIDs = searchPreferences.getString("search_history", "")!!.split(',').toMutableList()
@@ -70,28 +66,26 @@ class SearchViewViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun searchFor(query: String) = viewModelScope.launch {
-        repository.searchFor(query)
-
-        oldEnglishResults1 = repository.englishSearchResults1
-        oldEnglishResults2 = repository.englishSearchResults2
-        oldEnglishResults3 = repository.englishSearchResults3
-        oldEnglishResults4 = repository.englishSearchResults4
-        oldEnglishResults5 = repository.englishSearchResults5
-        englishSearchResults.removeSource(oldEnglishResults1)
-        englishSearchResults.removeSource(oldEnglishResults2)
-        englishSearchResults.removeSource(oldEnglishResults3)
-        englishSearchResults.removeSource(oldEnglishResults4)
-        englishSearchResults.removeSource(oldEnglishResults5)
-        englishSearchResults.addSource(repository.englishSearchResults1) { value -> englishSearchResults.value = mergeEnglishResults() }
-        englishSearchResults.addSource(repository.englishSearchResults2) { value -> englishSearchResults.value = mergeEnglishResults() }
-        englishSearchResults.addSource(repository.englishSearchResults3) { value -> englishSearchResults.value = mergeEnglishResults() }
-        englishSearchResults.addSource(repository.englishSearchResults4) { value -> englishSearchResults.value = mergeEnglishResults() }
-        englishSearchResults.addSource(repository.englishSearchResults5) { value -> englishSearchResults.value = mergeEnglishResults() }
+    fun searchForChinese(query: String) = viewModelScope.launch {
+        repository.searchForChinese(query)
 
         chineseSearchResults.removeSource(oldChineseResults)
         oldChineseResults = repository.chineseSearchResults
         chineseSearchResults.addSource(repository.chineseSearchResults) { value -> chineseSearchResults.postValue(value)}
+    }
+
+    fun searchForEnglish(query: String) = viewModelScope.launch {
+        repository.searchForEnglish(query)
+
+        oldEnglishResults1 = repository.englishSearchResults1
+        oldEnglishResults2 = repository.englishSearchResults2
+        oldEnglishResults3 = repository.englishSearchResults3
+        englishSearchResults.removeSource(oldEnglishResults1)
+        englishSearchResults.removeSource(oldEnglishResults2)
+        englishSearchResults.removeSource(oldEnglishResults3)
+        englishSearchResults.addSource(repository.englishSearchResults1) {  }
+        englishSearchResults.addSource(repository.englishSearchResults2) {  }
+        englishSearchResults.addSource(repository.englishSearchResults3) { _ -> englishSearchResults.value = mergeEnglishResults() }
     }
 
     fun toggleDisplayedLanguage(){
@@ -107,15 +101,13 @@ class SearchViewViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     private fun mergeEnglishResults(): List<Entry> {
-        var output = listOf<Entry>()
+        var output = setOf<Entry>()
 
-        repository.englishSearchResults1.value?.let { output += repository.englishSearchResults1.value!! }
-        repository.englishSearchResults2.value?.let { output += repository.englishSearchResults2.value!! }
-        repository.englishSearchResults3.value?.let { output += repository.englishSearchResults3.value!! }
-        repository.englishSearchResults4.value?.let { output += repository.englishSearchResults4.value!! }
-        repository.englishSearchResults5.value?.let { output += repository.englishSearchResults5.value!! }
+        repository.englishSearchResults1.value?.let { output = output.union(repository.englishSearchResults1.value!!) }
+        repository.englishSearchResults2.value?.let { output = output.union(repository.englishSearchResults2.value!!) }
+        repository.englishSearchResults3.value?.let { output = output.union(repository.englishSearchResults3.value!!) }
 
-        return output
+        return output.toList()
     }
 }
 
