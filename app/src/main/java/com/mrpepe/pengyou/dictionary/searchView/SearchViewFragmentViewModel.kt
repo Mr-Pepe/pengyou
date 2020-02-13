@@ -9,7 +9,6 @@ class SearchViewFragmentViewModel : ViewModel() {
     var englishSearchResults = MutableLiveData<List<Entry>>()
     var chineseSearchResults = MutableLiveData<List<Entry>>()
     var searchHistory = MutableLiveData<List<Entry>>()
-    var newHistoryEntry = MutableLiveData<String>()
     var displayedLanguage = MutableLiveData<SearchViewViewModel.SearchLanguage>()
     var requestedLanguage = SearchViewViewModel.SearchLanguage.CHINESE
 

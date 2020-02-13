@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
+import com.mrpepe.pengyou.SearchHistory
 import com.mrpepe.pengyou.UpdateSearchResultsMode
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
@@ -26,6 +27,8 @@ class SearchResultFragment : Fragment() {
     private lateinit var resultCount: TextView
     lateinit var adapter : SearchResultAdapter
     private var lastClickTime: Long = 0
+
+    private var searchHistory = SearchHistory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +74,7 @@ class SearchResultFragment : Fragment() {
         }
         lastClickTime = SystemClock.elapsedRealtime()
 
-        model.newHistoryEntry.value = entry.id.toString()
+        searchHistory.addToHistory(entry.id.toString())
 
         hideKeyboard()
 

@@ -25,9 +25,6 @@ class SearchViewActivity : BaseActivity() {
     private var pagePosition = 0
     private var keyboardVisible = false
 
-    private var englishUpdated = false
-    private var chineseUpdated = false
-
     private var blockKeyboard = false
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -93,7 +90,7 @@ class SearchViewActivity : BaseActivity() {
 
         })
 
-        searchViewViewModel.searchHistory.observe(this, Observer {
+        searchViewViewModel.searchHistoryEntries.observe(this, Observer {
             searchViewFragmentViewModel.searchHistory.value = it
             searchViewFragmentViewModel.updateSearchResults.value = UpdateSearchResultsMode.SNAPTOTOP
         })
@@ -111,10 +108,6 @@ class SearchViewActivity : BaseActivity() {
             blockKeyboard = true
             tabs.setScrollPosition(0, 0.toFloat(), true)
             viewPager.setCurrentItem(0)
-        })
-
-        searchViewFragmentViewModel.newHistoryEntry.observe(this, Observer { id ->
-            searchViewViewModel.addToSearchHistory(id)
         })
 
         toolbar.dictionary_search_view.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{

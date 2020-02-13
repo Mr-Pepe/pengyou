@@ -3,6 +3,7 @@ package com.mrpepe.pengyou
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
@@ -27,6 +28,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.viewpager.widget.ViewPager
 import com.mrpepe.pengyou.dictionary.CEDict
 import com.mrpepe.pengyou.dictionary.Entry
@@ -537,4 +539,36 @@ fun Activity.hideKeyboard() {
 fun Context.hideKeyboard(view: View) {
     val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+object SearchHistory {
+
+    val searchPreferences = MainApplication.getContext().getSharedPreferences(MainApplication.getContext().getString(R.string.search_history), Context.MODE_PRIVATE)
+
+    fun getHistoryIds(): List<String> {
+        return searchPreferences.getString("search_history", "")!!.split(',')
+    }
+
+    fun addToHistory(id: String) {
+        val maxLengthHistory = 10000
+
+        var searchHistoryIDs = searchPreferences.getString("search_history", "")!!.split(',').toMutableList()
+
+
+        if (searchHistoryIDs.size >= maxLengthHistory) {
+            searchHistoryIDs = searchHistoryIDs.slice(1 until maxLengthHistory).toMutableList()
+        }
+
+        searchHistoryIDs.remove(id)
+        searchHistoryIDs.add(id)
+
+        MainScope().launch {
+            with(searchPreferences.edit()) {
+                putString("search_history", searchHistoryIDs.joinToString(","))
+                commit()
+            }
+        }
+
+    }
+
 }
