@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/modeSwitch"
-        android:icon="@drawable/c"
+        android:icon="@drawable/ic_chinese_mode"
         android:title="@string/switch_language_button_title"
         app:showAsAction="always" />
 </menu>

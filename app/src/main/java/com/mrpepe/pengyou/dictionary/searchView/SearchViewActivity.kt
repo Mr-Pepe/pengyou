@@ -39,10 +39,10 @@ class SearchViewActivity : BaseActivity() {
         searchViewFragmentViewModel.displayedLanguage.observe(this, Observer { language ->
             when (language) {
                 SearchViewViewModel.SearchLanguage.ENGLISH -> {
-                    modeSwitch.icon = ContextCompat.getDrawable(getApplicationContext(), R.drawable.e);
+                    modeSwitch.icon = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_english_mode);
                 }
                 SearchViewViewModel.SearchLanguage.CHINESE -> {
-                    modeSwitch.icon = ContextCompat.getDrawable(getApplicationContext(), R.drawable.c);
+                    modeSwitch.icon = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_chinese_mode);
                 }
                 else -> {}
             }
