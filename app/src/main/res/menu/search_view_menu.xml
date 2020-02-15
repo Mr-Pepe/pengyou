@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/modeSwitch"
-        android:icon="@mipmap/ic_launcher"
-        android:title="Switch Language"
+        android:icon="@drawable/c"
+        android:title="@string/switch_language_button_title"
         app:showAsAction="always" />
 </menu>

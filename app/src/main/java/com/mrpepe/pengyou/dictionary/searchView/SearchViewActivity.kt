@@ -28,7 +28,7 @@ class SearchViewActivity : BaseActivity() {
     private var blockKeyboard = false
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.that_menu, menu)
+        menuInflater.inflate(R.menu.search_view_menu, menu)
         modeSwitch = menu?.getItem(0)!!
 
         searchViewViewModel.requestedLanguage.observe(this, Observer { language ->
@@ -54,7 +54,7 @@ class SearchViewActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_view)
-        setSupportActionBar(toolbar)
+        setSupportActionBar(search_view_toolbar)
 
         val sectionsPagerAdapter = SearchViewPagerAdapter(this, supportFragmentManager)
         val viewPager: CustomViewPager = findViewById(R.id.search_view_pager)
@@ -110,7 +110,7 @@ class SearchViewActivity : BaseActivity() {
             viewPager.setCurrentItem(0)
         })
 
-        toolbar.dictionary_search_view.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
+        search_view_toolbar.dictionary_search_view.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextChange(newText: String?): Boolean {
 
                 searchViewFragmentViewModel.searchQuery = newText!!

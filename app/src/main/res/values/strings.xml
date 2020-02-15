@@ -19,5 +19,7 @@
     <string name="button_outline_show">SHOW</string>
     <string name="button_outline_hide">HIDE</string>
     <string name="button_quiz">QUIZ</string>
+    <string name="switch_language_button_title">Switch Language</string>
+    <string name="copy_to_clipboard_button_title">Copy to Clipboard</string>
 
 </resources>
