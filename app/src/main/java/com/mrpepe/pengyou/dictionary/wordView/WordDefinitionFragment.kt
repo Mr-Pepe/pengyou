@@ -6,6 +6,7 @@ import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.text.bold
 import androidx.fragment.app.Fragment
@@ -15,11 +16,17 @@ import com.mrpepe.pengyou.ChineseMode
 import com.mrpepe.pengyou.DefinitionFormatter
 import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.R
+import kotlinx.android.synthetic.main.fragment_word_definition.view.*
 import kotlinx.android.synthetic.main.search_result.view.*
+import kotlinx.android.synthetic.main.search_result.view.definitions
+import kotlinx.android.synthetic.main.search_result.view.hsk
 
 class WordDefinitionFragment : Fragment() {
     private lateinit var model: WordViewFragmentViewModel
     private lateinit var definitions : TextView
+    private lateinit var hsk : TextView
+    private lateinit var linearLayout: LinearLayout
+    private lateinit var hskLayout: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +45,9 @@ class WordDefinitionFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_word_definition, container, false)
 
         definitions = root.definitions
+        hsk = root.hsk
+        linearLayout = root.linearLayout
+        hskLayout = root.hskLayout
 
         return root
     }
@@ -46,9 +56,15 @@ class WordDefinitionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         model.entry.observe(viewLifecycleOwner, Observer { entry ->
+            when (entry.hsk) {
+                7 -> linearLayout.removeView(hskLayout)
+                else -> hsk.text = "HSK " + entry.hsk.toString()
+            }
+
+
             definitions.movementMethod = LinkMovementMethod.getInstance()
 
-            val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, true, activity, ChineseMode.BOTH)
+            val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, true, activity, ChineseMode.SIMPLIFIED)
 
             if (formattedDefinitions.isEmpty())
                 definitions.text = MainApplication.getContext().getString(R.string.no_definition_found)
