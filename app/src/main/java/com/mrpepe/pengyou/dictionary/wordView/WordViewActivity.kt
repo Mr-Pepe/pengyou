@@ -11,11 +11,10 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.mrpepe.pengyou.*
 import com.mrpepe.pengyou.dictionary.Entry
-import com.mrpepe.pengyou.dictionary.searchView.SearchViewViewModel
-import kotlinx.android.synthetic.main.activity_search_view.*
 import kotlinx.android.synthetic.main.activity_word_view.*
 
 class WordViewActivity : BaseActivity(), StrokeOrderFragment.ToggleHorizontalPaging {
@@ -54,13 +53,8 @@ class WordViewActivity : BaseActivity(), StrokeOrderFragment.ToggleHorizontalPag
         }
 
         wordViewViewModel.entry.observe(this, Observer { entry ->
-            headword.text = HeadwordFormatter().format(entry, ChineseMode.BOTH)
+            headword.text = HeadwordFormatter().format(entry, ChineseMode.SIMPLIFIED)
             pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinMode.MARKS)
-
-            hsk.text = when (entry.hsk) {
-                7 -> ""
-                else -> "HSK " + entry.hsk.toString()
-            }
             
             wordViewFragmentViewModel.entry.value = entry
         })
