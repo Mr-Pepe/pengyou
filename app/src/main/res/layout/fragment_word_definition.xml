@@ -39,7 +39,7 @@
                 android:layout_marginStart="@dimen/large_padding"
                 android:layout_marginTop="@dimen/large_padding"
                 android:layout_marginEnd="@dimen/large_padding"
-                android:background="@drawable/rounded_corner"
+                android:background="@drawable/rounded_corner_filled"
                 android:paddingLeft="@dimen/small_padding"
                 android:paddingTop="@dimen/tiny_padding"
                 android:paddingRight="@dimen/small_padding"
