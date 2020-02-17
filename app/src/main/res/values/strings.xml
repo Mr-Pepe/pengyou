@@ -7,6 +7,10 @@
     <string name="no_definition_found">"No definition found, but this character might be used in other words."</string>
     <string name="search_history">com.mrpepe.pengyou.search_history</string>
 
+    <!--  Bottom Navigation View  -->
+    <string name="bottom_navigation_view_dictionary">Dictionary</string>
+    <string name="bottom_navigation_view_settings">Settings</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
