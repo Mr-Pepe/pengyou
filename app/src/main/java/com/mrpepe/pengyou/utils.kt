@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.os.Bundle
 import android.os.SystemClock
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -13,10 +12,8 @@ import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
 import android.widget.Toast
@@ -27,8 +24,7 @@ import androidx.viewpager.widget.ViewPager
 import com.mrpepe.pengyou.dictionary.CEDict
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
-import com.mrpepe.pengyou.dictionary.singleEntryView.WordViewActivity
-import com.mrpepe.pengyou.dictionary.singleEntryView.WordViewViewModel
+import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -449,51 +445,6 @@ fun String.countSurrogatePairs() = withIndex().count {
 // Returns the actual length of a string considering surrogate pairs
 fun String.lengthSurrogate() = this.length - this.countSurrogatePairs()
 
-class PlaceholderFragment : Fragment() {
-
-    private lateinit var pageViewModel: WordViewViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        pageViewModel = ViewModelProviders.of(this).get(WordViewViewModel::class.java).apply {
-//            setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
-//        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val root = inflater.inflate(R.layout.fragment_word_view, container, false)
-//        val textView: TextView = root.findViewById(R.id.section_label)
-//        pageViewModel.text.observe(this, Observer<String> {
-//            textView.text = it
-//        })
-        return root
-    }
-
-    companion object {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private const val ARG_SECTION_NUMBER = "section_number"
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        @JvmStatic
-        fun newInstance(sectionNumber: Int): PlaceholderFragment {
-            return PlaceholderFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_SECTION_NUMBER, sectionNumber)
-                }
-            }
-        }
-    }
-}
-
 enum class UpdateSearchResultsMode {
     SNAPTOTOP,
     DONTSNAPTOTOP
@@ -520,6 +471,12 @@ class CustomViewPager(context: Context, attributeSet: AttributeSet): ViewPager(c
         this.pagingEnabled = !this.pagingEnabled
     }
 
+}
+
+fun hideKeyboardFrom(context: Context, view: View) {
+    val imm =
+        context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
 fun Fragment.hideKeyboard() {

@@ -1,4 +1,4 @@
-package com.mrpepe.pengyou.dictionary.singleEntryView
+package com.mrpepe.pengyou.dictionary.wordView
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel

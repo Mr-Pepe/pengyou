@@ -1,10 +1,9 @@
-package com.mrpepe.pengyou.dictionary.singleEntryView
+package com.mrpepe.pengyou.dictionary.wordView
 
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.mrpepe.pengyou.PlaceholderFragment
 import com.mrpepe.pengyou.R
 
 class WordViewPagerAdapter(private val context: Context, fm: FragmentManager) :
@@ -23,7 +22,7 @@ class WordViewPagerAdapter(private val context: Context, fm: FragmentManager) :
             1 -> StrokeOrderFragment()
             2 -> DecompositionFragment()
             3 -> WordsContainingFragment()
-            else -> PlaceholderFragment.newInstance(position + 1)
+            else -> WordDefinitionFragment()
         }
     }
 

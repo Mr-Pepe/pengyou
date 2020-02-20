@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
@@ -83,10 +84,10 @@ class SearchResultFragment : Fragment() {
 
         hideKeyboard()
 
-//        val intent = Intent(activity, WordViewActivity::class.java)
-//        intent.putExtra("entry", entry)
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//        startActivity(intent)
+        val action =
+            DictionarySearchFragmentDirections.dictionaryEntryClickedAction(entry)
+
+        findNavController().navigate(action)
     }
 
     private fun updateSearchResults(snapToTop: Boolean) {
@@ -96,7 +97,7 @@ class SearchResultFragment : Fragment() {
                     0 -> ""
                     else -> "Recently viewed: " + dictionaryViewModel.searchHistoryIDs.size.toString()
                 }
-                adapter.setEntries(dictionaryViewModel.searchHistoryEntries.value!!)
+                adapter.setEntries(dictionaryViewModel.searchHistoryEntries.value ?: listOf())
                 dictionaryViewModel.displayedLanguage.value = dictionaryViewModel.requestedLanguage.value
             }
             false -> {

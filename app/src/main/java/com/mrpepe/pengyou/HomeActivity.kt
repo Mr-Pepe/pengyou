@@ -11,10 +11,12 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchFragment
+import com.mrpepe.pengyou.dictionary.wordView.WordViewFragment
 import com.mrpepe.pengyou.settings.SettingsFragment
 
 class HomeActivity : BaseActivity(),
     DictionarySearchFragment.DictionarySearchFragmentInteractionListener,
+    WordViewFragment.WordViewFragmentInteractionListener,
     SettingsFragment.SettingsFragmentInteractionListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +39,7 @@ class HomeActivity : BaseActivity(),
                 Integer.toString(destination.id)
             }
 
-            Toast.makeText(this@HomeActivity, "Navigated to $dest", Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this@HomeActivity, "Navigated to $dest", Toast.LENGTH_SHORT).show()
             Log.d("HomeActivity", "Navigated to $dest")
         }
 
