@@ -17,8 +17,6 @@ import com.mrpepe.pengyou.dictionary.wordView.WordViewFragment
 import com.mrpepe.pengyou.settings.SettingsFragment
 
 class HomeActivity : BaseActivity(),
-    DictionarySearchFragment.DictionarySearchFragmentInteractionListener,
-    WordViewFragment.WordViewFragmentInteractionListener,
     SettingsFragment.SettingsFragmentInteractionListener {
 
     private lateinit var dictionarySearchViewModel: DictionarySearchViewModel
@@ -59,7 +57,7 @@ class HomeActivity : BaseActivity(),
             when (item.title) {
                 getString(R.string.bottom_navigation_view_dictionary) -> {
                     dictionarySearchViewModel.searchQuery = ""
-                    findNavController(R.id.main_container).navigate(R.id.dictionarySearchFragment)
+                    findNavController(R.id.main_container).navigate(R.id.globalOpenDictionaryAction)
                 }
                 getString(R.string.bottom_navigation_view_settings) -> {
                     findNavController(R.id.main_container).navigate(R.id.settingsFragment)

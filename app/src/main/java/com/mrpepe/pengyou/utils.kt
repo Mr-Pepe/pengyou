@@ -12,6 +12,7 @@ import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -19,18 +20,21 @@ import android.webkit.WebView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.Navigation
 import androidx.viewpager.widget.ViewPager
 import com.mrpepe.pengyou.dictionary.CEDict
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
+import com.mrpepe.pengyou.dictionary.wordView.WordViewFragmentDirections
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 
 class DefinitionFormatter {
 
-    fun formatDefinitions(entry: Entry, linkWords: Boolean, context: Context?, mode: ChineseMode): List<SpannableStringBuilder> {
+    fun formatDefinitions(entry: Entry, linkWords: Boolean, context: Context?, view: View, mode: ChineseMode): List<SpannableStringBuilder> {
         val rawDefinitions = entry.definitions
         val definitions = mutableListOf<SpannableStringBuilder>()
 
@@ -39,14 +43,14 @@ class DefinitionFormatter {
         }
         else {
             rawDefinitions.split('/').forEach { rawDefinition ->
-                definitions.add(formatDefinition(entry, rawDefinition, linkWords, context, mode))
+                definitions.add(formatDefinition(entry, rawDefinition, linkWords, context, view, mode))
             }
 
             definitions
         }
     }
 
-    private fun formatDefinition(entry: Entry, rawDefinition: String, linkWords: Boolean, context: Context?, mode: ChineseMode) : SpannableStringBuilder {
+    private fun formatDefinition(entry: Entry, rawDefinition: String, linkWords: Boolean, context: Context?, view: View, mode: ChineseMode) : SpannableStringBuilder {
 
         val definition = SpannableStringBuilder()
 
@@ -103,6 +107,7 @@ class DefinitionFormatter {
                                 WordLink(
                                     entry,
                                     context!!,
+                                    view,
                                     simplified,
                                     traditional,
                                     tmpPinyin.toString()
@@ -173,6 +178,7 @@ fun WebView.runJavaScript(string: String) {
 
 class WordLink(val entry: Entry,
                val context: Context,
+               val view: View,
                private val simplified: String,
                private val traditional: String,
                private val pinyin: String): ClickableSpan() {
@@ -242,12 +248,7 @@ class WordLink(val entry: Entry,
                     Toast.LENGTH_SHORT
                 ).show()
                 1 -> {
-                    // TODO: Make links work again
-//                    val intent =
-//                        Intent(MainApplication.getCurrentActivity(), WordViewActivity::class.java)
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-//                    intent.putExtra("entry", entries[0])
-//                    startActivity(context, intent, null)
+                    Navigation.findNavController(view).navigate(WordViewFragmentDirections.globalOpenWordViewAction(entries[0]))
                 }
                 else -> Toast
                         .makeText(

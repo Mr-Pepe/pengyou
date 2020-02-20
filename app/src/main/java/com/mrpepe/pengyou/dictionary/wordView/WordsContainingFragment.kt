@@ -10,11 +10,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.SearchHistory
 import com.mrpepe.pengyou.dictionary.Entry
+import com.mrpepe.pengyou.dictionary.search.DictionarySearchFragmentDirections
 import com.mrpepe.pengyou.dictionary.search.SearchResultAdapter
 import kotlinx.android.synthetic.main.fragment_search_result_list.view.*
 
@@ -84,10 +86,6 @@ class WordsContainingFragment : Fragment() {
 
         searchHistory.addToHistory(entry.id.toString())
 
-        // TODO: Open new word view
-
-//        val intent = Intent(activity, WordViewActivity::class.java)
-//        intent.putExtra("entry", entry)
-//        startActivity(intent)
+        findNavController().navigate(WordViewFragmentDirections.globalOpenWordViewAction(entry))
     }
 }
