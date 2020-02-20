@@ -1,4 +1,4 @@
-package com.mrpepe.pengyou.dictionary.searchView
+package com.mrpepe.pengyou.dictionary.search
 
 import android.text.SpannableStringBuilder
 import android.view.View
@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.*
 import com.mrpepe.pengyou.dictionary.Entry
 
-class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class SearchResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var headword: TextView = itemView.findViewById(R.id.headword)
     private var pinyin: TextView = itemView.findViewById(R.id.pinyin)
     private var definitions: TextView = itemView.findViewById(R.id.definitions)

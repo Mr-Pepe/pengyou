@@ -1,4 +1,4 @@
-package com.mrpepe.pengyou.dictionary.wordView
+package com.mrpepe.pengyou.dictionary.singleEntryView
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -11,7 +11,6 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.tabs.TabLayout
 import com.mrpepe.pengyou.*
 import com.mrpepe.pengyou.dictionary.Entry
@@ -31,7 +30,7 @@ class WordViewActivity : BaseActivity(), StrokeOrderFragment.ToggleHorizontalPag
         val sectionsPagerAdapter = WordViewPagerAdapter(this, supportFragmentManager)
         viewPager = findViewById(R.id.word_view_pager)
         viewPager.adapter = sectionsPagerAdapter
-        val tabs: TabLayout = findViewById(R.id.tabs)
+        val tabs: TabLayout = findViewById(R.id.dictionarySearchInputMethodTabs)
         tabs.setupWithViewPager(viewPager)
 
         val actionBar = supportActionBar

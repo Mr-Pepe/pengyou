@@ -1,4 +1,4 @@
-package com.mrpepe.pengyou.dictionary.wordView
+package com.mrpepe.pengyou.dictionary.singleEntryView
 
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -17,7 +17,6 @@ import com.mrpepe.pengyou.DefinitionFormatter
 import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.R
 import kotlinx.android.synthetic.main.fragment_word_definition.view.*
-import kotlinx.android.synthetic.main.search_result.view.*
 import kotlinx.android.synthetic.main.search_result.view.definitions
 import kotlinx.android.synthetic.main.search_result.view.hsk
 
