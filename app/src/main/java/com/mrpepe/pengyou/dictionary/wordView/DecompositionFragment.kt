@@ -14,14 +14,14 @@ import com.mrpepe.pengyou.R
 import kotlinx.android.synthetic.main.fragment_decomposition.view.*
 
 class DecompositionFragment : Fragment() {
-    private lateinit var model: WordViewFragmentViewModel
+    private lateinit var model: WordViewViewModel
     private lateinit var decompositions : TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            model = ViewModelProvider(it).get(WordViewFragmentViewModel::class.java)
+            model = ViewModelProvider(it).get(WordViewViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
 
@@ -42,8 +42,8 @@ class DecompositionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         model.decompositions.observe(viewLifecycleOwner, Observer {decomp ->
-            var components = decomp[0].components
-            var text = SpannableStringBuilder()
+            val components = decomp[0].components
+            val text = SpannableStringBuilder()
             var iComponent = 1
 
             components.forEach {

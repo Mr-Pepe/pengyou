@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_search_result_list.view.*
 
 class WordsContainingFragment : Fragment() {
 
-    private lateinit var model: WordViewFragmentViewModel
+    private lateinit var model: WordViewViewModel
     private lateinit var searchResultList: RecyclerView
     private lateinit var resultCount: TextView
     private var lastClickTime : Long = 0
@@ -30,7 +30,7 @@ class WordsContainingFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            model = ViewModelProvider(it).get(WordViewFragmentViewModel::class.java)
+            model = ViewModelProvider(it).get(WordViewViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
 
@@ -84,8 +84,10 @@ class WordsContainingFragment : Fragment() {
 
         searchHistory.addToHistory(entry.id.toString())
 
-        val intent = Intent(activity, WordViewActivity::class.java)
-        intent.putExtra("entry", entry)
-        startActivity(intent)
+        // TODO: Open new word view
+
+//        val intent = Intent(activity, WordViewActivity::class.java)
+//        intent.putExtra("entry", entry)
+//        startActivity(intent)
     }
 }

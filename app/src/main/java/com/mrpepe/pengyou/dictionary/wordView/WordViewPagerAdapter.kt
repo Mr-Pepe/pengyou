@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.mrpepe.pengyou.R
 
-class WordViewPagerAdapter(private val context: Context, fm: FragmentManager) :
+class WordViewPagerAdapter(fm: FragmentManager) :
     FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     val tabIcons = arrayOf(
