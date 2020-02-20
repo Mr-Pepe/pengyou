@@ -6,9 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".dictionary.search.SearchViewActivity"
-    tools:layout_editor_absoluteY="56dp"
-    tools:showIn="@layout/activity_search_view">
+    tools:layout_editor_absoluteY="56dp">
 
     <TextView
         android:id="@+id/resultCount"

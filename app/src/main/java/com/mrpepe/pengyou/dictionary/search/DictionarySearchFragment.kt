@@ -79,12 +79,11 @@ class DictionarySearchFragment : Fragment() {
         // Detect whether the keyboard is visible or not
         setupKeyboardVisibleListener(view)
 
-        //TODO: Update Search results on change of: requestedLanguage, englishSearchResults, chineseSearchResults, searchHistoryEntries
-
         dictionarySearchSearchBox.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextChange(newText: String?): Boolean {
                 dictionaryViewModel.searchQuery = newText!!
                 dictionaryViewModel.search()
+
                 return true
             }
 
@@ -97,8 +96,10 @@ class DictionarySearchFragment : Fragment() {
         dictionarySearchSearchBox.setOnQueryTextFocusChangeListener( object : View.OnFocusChangeListener {
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
                 when (hasFocus) {
-                    true -> dictionarySearchInputMethodTabs.visibility = View.VISIBLE
-                    false -> dictionarySearchInputMethodTabs.visibility = View.INVISIBLE
+                    true -> if (dictionarySearchInputMethodTabs.parent == null) {
+                        dictionarySearchLinearLayout.addView(dictionarySearchInputMethodTabs, 1)
+                    }
+                    false -> dictionarySearchLinearLayout.removeView(dictionarySearchInputMethodTabs)
                 }
             }
         })
@@ -116,9 +117,11 @@ class DictionarySearchFragment : Fragment() {
                                 activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
                         }
+                        dictionarySearchSearchBox.requestFocus()
                     }
                 }
                 else if (position == 1) {
+                    dictionarySearchSearchBox.requestFocus()
                     hideKeyboard()
                 }
             }
@@ -197,12 +200,9 @@ class DictionarySearchFragment : Fragment() {
 
     fun submitQuery() {
         blockKeyboard = true
+        dictionarySearchViewPager.requestFocus()
         dictionarySearchInputMethodTabs.setScrollPosition(0, 0.toFloat(), true)
         dictionarySearchViewPager.setCurrentItem(0)
-    }
-
-    fun getSearchQuery(): String {
-        return dictionarySearchSearchBox.query.toString()
     }
 
 

@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dictionarySearchFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".dictionary.search.SearchViewActivity">
+    android:layout_height="match_parent">
 
     <LinearLayout
+        android:id="@+id/dictionarySearchLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
-                android:id="@+id/dictionarySearchToolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorPrimary"
-                app:popupTheme="@style/AppTheme.PopupOverlay">
+            android:id="@+id/dictionarySearchToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <SearchView
                 android:id="@+id/dictionarySearchSearchBox"

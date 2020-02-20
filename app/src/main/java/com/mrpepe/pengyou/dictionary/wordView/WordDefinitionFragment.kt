@@ -1,4 +1,4 @@
-package com.mrpepe.pengyou.dictionary.singleEntryView
+package com.mrpepe.pengyou.dictionary.wordView
 
 import android.os.Bundle
 import android.text.SpannableStringBuilder

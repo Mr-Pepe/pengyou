@@ -10,10 +10,25 @@
         android:name="com.mrpepe.pengyou.settings.SettingsFragment"
         tools:layout="@layout/fragment_settings">
     </fragment>
+
     <fragment
         android:id="@+id/dictionarySearchFragment"
         android:name="com.mrpepe.pengyou.dictionary.search.DictionarySearchFragment"
-        android:label="DictionarySearchFragment" />
+        android:label="DictionarySearchFragment" >
+        <action
+            android:id="@+id/dictionaryEntryClickedAction"
+            app:destination="@id/wordViewFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/wordViewFragment"
+        android:name="com.mrpepe.pengyou.dictionary.wordView.WordViewFragment"
+        android:label="WordViewFragment">
+
+        <argument
+            android:name="entry"
+            app:argType="com.mrpepe.pengyou.dictionary.Entry" />
+    </fragment>
 
 
 </navigation>
