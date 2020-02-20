@@ -5,7 +5,7 @@
     android:id="@+id/word_view_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".dictionary.wordView.WordViewActivity">
+    tools:context=".dictionary.singleEntryView.WordViewActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -54,7 +54,7 @@
             tools:text="Headword" />
 
         <com.google.android.material.tabs.TabLayout
-            android:id="@+id/tabs"
+            android:id="@+id/dictionarySearchInputMethodTabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/medium_padding"
@@ -72,7 +72,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tabs" />
+            app:layout_constraintTop_toBottomOf="@+id/dictionarySearchInputMethodTabs" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

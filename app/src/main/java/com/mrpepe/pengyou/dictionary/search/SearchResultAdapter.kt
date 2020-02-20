@@ -1,4 +1,4 @@
-package com.mrpepe.pengyou.dictionary.searchView
+package com.mrpepe.pengyou.dictionary.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,12 +8,12 @@ import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.Entry
 
 class SearchResultAdapter(private val clickListener: (Entry) -> Unit) :
-    RecyclerView.Adapter<ResultViewHolder>() {
+    RecyclerView.Adapter<SearchResultViewHolder>() {
 
     var searchResults = emptyList<Entry>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResultViewHolder {
-        return ResultViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchResultViewHolder {
+        return SearchResultViewHolder(
             LayoutInflater.from(parent.context)
                 .inflate(
                     R.layout.search_result,
@@ -23,7 +23,7 @@ class SearchResultAdapter(private val clickListener: (Entry) -> Unit) :
         )
     }
 
-    override fun onBindViewHolder(holder: ResultViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SearchResultViewHolder, position: Int) {
         holder.bind(this.searchResults[position], clickListener)
     }
 

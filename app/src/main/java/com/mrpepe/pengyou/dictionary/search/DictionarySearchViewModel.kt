@@ -1,17 +1,19 @@
-package com.mrpepe.pengyou.dictionary.searchView
+package com.mrpepe.pengyou.dictionary.search
 
-import android.app.Application
 import android.content.SharedPreferences
 import androidx.lifecycle.*
+import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.SearchHistory
 import com.mrpepe.pengyou.dictionary.CEDict
 import com.mrpepe.pengyou.dictionary.Entry
 import kotlinx.coroutines.launch
 
-class SearchViewViewModel(application: Application) : AndroidViewModel(application) {
+class DictionarySearchViewModel() : ViewModel() {
 
-    private val repository : SearchViewRepository
+    private val repository : DictionarySearchRepository
     val searchHistory = SearchHistory
+    var searchHistoryIDs = listOf<String>()
+    var searchHistoryEntries = MutableLiveData<List<Entry>>()
 
     private var oldEnglishResults1 : LiveData<List<Entry>>
     private var oldEnglishResults2 : LiveData<List<Entry>>
@@ -21,11 +23,11 @@ class SearchViewViewModel(application: Application) : AndroidViewModel(applicati
     val chineseSearchResults = MediatorLiveData<List<Entry>>()
 
     var requestedLanguage = MutableLiveData<SearchLanguage>()
+    var displayedLanguage = MutableLiveData<SearchLanguage>()
 
-    var searchHistoryEntries = MutableLiveData<List<Entry>>()
-    var searchHistoryIDs = listOf<String>()
+    var searchQuery = ""
 
-    var listener = object : SharedPreferences.OnSharedPreferenceChangeListener {
+    private var listener = object : SharedPreferences.OnSharedPreferenceChangeListener {
         override fun onSharedPreferenceChanged(
             sharedPreferences: SharedPreferences?,
             key: String?
@@ -38,8 +40,8 @@ class SearchViewViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     init {
-        val entryDao = CEDict.getDatabase(application).entryDao()
-        repository = SearchViewRepository(entryDao)
+        val entryDao = CEDict.getDatabase(MainApplication.getContext()).entryDao()
+        repository = DictionarySearchRepository(entryDao)
         oldEnglishResults1 = repository.englishSearchResults1
         oldEnglishResults2 = repository.englishSearchResults1
         oldEnglishResults3 = repository.englishSearchResults1
@@ -48,6 +50,7 @@ class SearchViewViewModel(application: Application) : AndroidViewModel(applicati
         englishSearchResults.addSource(repository.englishSearchResults1) { }
         chineseSearchResults.addSource(repository.chineseSearchResults) { }
         requestedLanguage.value = SearchLanguage.CHINESE
+        displayedLanguage.value = SearchLanguage.CHINESE
 
         searchHistory.searchPreferences.registerOnSharedPreferenceChangeListener(listener)
 
@@ -59,6 +62,23 @@ class SearchViewViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
+    fun search() {
+        if (searchQuery.isNotBlank()) {
+            viewModelScope.launch {
+                searchForChinese(searchQuery
+                            .replace("ü", "u:")
+                            .replace("v", "u:")
+                            .trimEnd())
+            }
+            viewModelScope.launch {
+                searchForEnglish(searchQuery.trimEnd())
+            }
+        } else {
+            englishSearchResults.value = listOf()
+            chineseSearchResults.value = listOf()
+        }
+    }
+
     fun reloadSearchHistory() {
         viewModelScope.launch {
             repository.getSearchHistory(searchHistoryIDs.reversed())
@@ -66,7 +86,7 @@ class SearchViewViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun searchForChinese(query: String) = viewModelScope.launch {
+    private fun searchForChinese(query: String) = viewModelScope.launch {
         repository.searchForChinese(query)
 
         chineseSearchResults.removeSource(oldChineseResults)
@@ -74,7 +94,7 @@ class SearchViewViewModel(application: Application) : AndroidViewModel(applicati
         chineseSearchResults.addSource(repository.chineseSearchResults) { value -> chineseSearchResults.postValue(value)}
     }
 
-    fun searchForEnglish(query: String) = viewModelScope.launch {
+    private fun searchForEnglish(query: String) = viewModelScope.launch {
         repository.searchForEnglish(query)
 
         oldEnglishResults1 = repository.englishSearchResults1

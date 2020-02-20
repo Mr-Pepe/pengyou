@@ -16,7 +16,7 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 class SettingsFragment : Fragment() {
-    private var listener: OnFragmentInteractionListener? = null
+    private var listener: SettingsFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,12 +34,12 @@ class SettingsFragment : Fragment() {
 
     // TODO: Rename method, update argument and hook method into UI event
     fun onButtonPressed(uri: Uri) {
-        listener?.onFragmentInteraction(uri)
+//        listener?.onFragmentInteraction(uri)
     }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
+        if (context is SettingsFragmentInteractionListener) {
             listener = context
         } else {
             throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
@@ -51,9 +51,9 @@ class SettingsFragment : Fragment() {
         listener = null
     }
 
-    interface OnFragmentInteractionListener {
+    interface SettingsFragmentInteractionListener {
         // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
+//        fun onFragmentInteraction(uri: Uri)
     }
 
     companion object {

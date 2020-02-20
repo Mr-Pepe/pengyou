@@ -1,4 +1,4 @@
-package com.mrpepe.pengyou.dictionary.wordView
+package com.mrpepe.pengyou.dictionary.singleEntryView
 
 import android.content.Context
 import androidx.fragment.app.Fragment

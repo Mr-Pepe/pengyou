@@ -1,11 +1,10 @@
-package com.mrpepe.pengyou.dictionary.searchView
+package com.mrpepe.pengyou.dictionary.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
-import com.mrpepe.pengyou.dictionary.Entry
 
 class ProposedCharacterAdapter(private val clickListener: (String) -> Unit) :
     RecyclerView.Adapter<CharacterViewHolder>() {

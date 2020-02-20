@@ -2,7 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/dictionary_search_dest"
+    android:id="@+id/dictionarySearchFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".dictionary.search.SearchViewActivity">
@@ -12,28 +12,22 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:theme="@style/AppTheme.AppBarOverlay">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/search_view_toolbar"
+        <androidx.appcompat.widget.Toolbar
+                android:id="@+id/dictionarySearchToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay">
 
-                <SearchView
-                    android:id="@+id/dictionarySearchSearchBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:iconifiedByDefault="false"
-                    android:queryHint="@string/search_view_query_hint" />
+            <SearchView
+                android:id="@+id/dictionarySearchSearchBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:iconifiedByDefault="false"
+                android:queryHint="@string/search_view_query_hint" />
 
-            </androidx.appcompat.widget.Toolbar>
+        </androidx.appcompat.widget.Toolbar>
 
-        </com.google.android.material.appbar.AppBarLayout>
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/dictionarySearchInputMethodTabs"
