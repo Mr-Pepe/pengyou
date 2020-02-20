@@ -19,7 +19,6 @@ import com.mrpepe.pengyou.*
 
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel
-import kotlinx.android.synthetic.main.activity_word_view.*
 import kotlinx.android.synthetic.main.fragment_dictionary_search.*
 import kotlinx.android.synthetic.main.fragment_word_view.*
 
@@ -30,7 +29,6 @@ class WordViewFragment : Fragment(),
 
     private lateinit var entry: Entry
     private lateinit var viewPager: CustomViewPager
-    private var listener: WordViewFragmentInteractionListener? = null
 
     private lateinit var wordViewViewModel: WordViewViewModel
 
@@ -70,7 +68,7 @@ class WordViewFragment : Fragment(),
 
         wordViewToolbar.inflateMenu(R.menu.word_view_menu)
 
-        if (!wordViewViewModel.isInitialized) {
+        if (!wordViewViewModel.isInitialized || entry != wordViewViewModel.entry.value) {
             wordViewViewModel.init(entry)
         }
 
@@ -108,30 +106,7 @@ class WordViewFragment : Fragment(),
         return true
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is WordViewFragmentInteractionListener) {
-            listener = context
-        } else {
-            throw RuntimeException(context.toString() + " must implement OnFragmentInteractionListener")
-        }
-    }
 
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
-    }
-
-
-    // TODO: Rename method, update argument and hook method into UI event
-//    fun onButtonPressed(uri: Uri) {
-//        listener?.onFragmentInteraction(uri)
-//    }
-
-    interface WordViewFragmentInteractionListener {
-        // TODO: Update argument type and name
-//        fun onFragmentInteraction(uri: Uri)
-    }
 
     companion object {
         @JvmStatic

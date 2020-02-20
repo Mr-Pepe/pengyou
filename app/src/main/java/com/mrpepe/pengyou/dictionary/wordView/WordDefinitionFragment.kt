@@ -3,6 +3,7 @@ package com.mrpepe.pengyou.dictionary.wordView
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,10 +13,14 @@ import androidx.core.text.bold
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.Navigation
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.mrpepe.pengyou.ChineseMode
 import com.mrpepe.pengyou.DefinitionFormatter
 import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.R
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_word_definition.view.*
 import kotlinx.android.synthetic.main.search_result.view.definitions
 import kotlinx.android.synthetic.main.search_result.view.hsk
@@ -60,10 +65,9 @@ class WordDefinitionFragment : Fragment() {
                 else -> hsk.text = "HSK " + entry.hsk.toString()
             }
 
-
             definitions.movementMethod = LinkMovementMethod.getInstance()
 
-            val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, true, activity, ChineseMode.SIMPLIFIED)
+            val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, true, activity, view, ChineseMode.SIMPLIFIED)
 
             if (formattedDefinitions.isEmpty())
                 definitions.text = MainApplication.getContext().getString(R.string.no_definition_found)

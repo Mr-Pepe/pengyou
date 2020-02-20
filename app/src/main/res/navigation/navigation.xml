@@ -2,6 +2,7 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
     app:startDestination="@id/dictionarySearchFragment">
 
 
@@ -14,11 +15,7 @@
     <fragment
         android:id="@+id/dictionarySearchFragment"
         android:name="com.mrpepe.pengyou.dictionary.search.DictionarySearchFragment"
-        android:label="DictionarySearchFragment" >
-        <action
-            android:id="@+id/dictionaryEntryClickedAction"
-            app:destination="@id/wordViewFragment" />
-    </fragment>
+        android:label="DictionarySearchFragment" />
 
     <fragment
         android:id="@+id/wordViewFragment"
@@ -28,7 +25,15 @@
         <argument
             android:name="entry"
             app:argType="com.mrpepe.pengyou.dictionary.Entry" />
+
     </fragment>
+
+    <action
+        android:id="@+id/globalOpenDictionaryAction"
+        app:destination="@id/dictionarySearchFragment" />
+    <action
+        android:id="@+id/globalOpenWordViewAction"
+        app:destination="@id/wordViewFragment" />
 
 
 </navigation>

@@ -4,6 +4,7 @@ import android.text.SpannableStringBuilder
 import android.view.View
 import android.widget.TextView
 import androidx.core.text.bold
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.*
 import com.mrpepe.pengyou.dictionary.Entry
@@ -19,7 +20,7 @@ class SearchResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinMode.MARKS)
 
         // TODO: Handle empty definition list
-        val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, false, null, ChineseMode.SIMPLIFIED)
+        val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, false, null, itemView, ChineseMode.SIMPLIFIED)
 
         if (formattedDefinitions.isEmpty())
             definitions.text = MainApplication.getContext().getString(R.string.no_definition_found)
