@@ -58,19 +58,26 @@ class SearchResultFragment : Fragment() {
         searchResultList.adapter = adapter
 
         dictionaryViewModel.requestedLanguage.observe(viewLifecycleOwner, Observer {
-            updateSearchResults(true)
+            updateSearchResults()
         })
 
         dictionaryViewModel.englishSearchResults.observe(viewLifecycleOwner, Observer {
-            updateSearchResults(true)
+            updateSearchResults()
         })
 
         dictionaryViewModel.chineseSearchResults.observe(viewLifecycleOwner, Observer {
-            updateSearchResults(true)
+            updateSearchResults()
         })
 
         dictionaryViewModel.searchHistoryEntries.observe(viewLifecycleOwner, Observer {
-            updateSearchResults(true)
+            updateSearchResults()
+        })
+
+        dictionaryViewModel.newSearchLive.observe(viewLifecycleOwner, Observer {
+            if (dictionaryViewModel.newSearch) {
+                searchResultList.scrollToPosition(0)
+                dictionaryViewModel.newSearch = false
+            }
         })
     }
 
@@ -90,8 +97,10 @@ class SearchResultFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    private fun updateSearchResults(snapToTop: Boolean) {
+    private fun updateSearchResults() {
         when (dictionaryViewModel.searchQuery.isBlank()) {
+
+            // Show history
             true -> {
                 resultCount.text = when (dictionaryViewModel.searchHistoryIDs.size) {
                     0 -> ""
@@ -99,7 +108,10 @@ class SearchResultFragment : Fragment() {
                 }
                 adapter.setEntries(dictionaryViewModel.searchHistoryEntries.value ?: listOf())
                 dictionaryViewModel.displayedLanguage.value = dictionaryViewModel.requestedLanguage.value
+                searchResultList.scrollToPosition(0)
             }
+
+            // Show search results
             false -> {
                 if (dictionaryViewModel.requestedLanguage.value == DictionarySearchViewModel.SearchLanguage.ENGLISH) {
 
@@ -136,10 +148,6 @@ class SearchResultFragment : Fragment() {
                     else -> "Search results: 999+"
                 }
             }
-        }
-
-        if (snapToTop) {
-            searchResultList.scrollToPosition(0)
         }
     }
 
