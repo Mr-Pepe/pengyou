@@ -26,6 +26,8 @@ class DictionarySearchViewModel() : ViewModel() {
     var displayedLanguage = MutableLiveData<SearchLanguage>()
 
     var searchQuery = ""
+    var newSearchLive = MutableLiveData<Boolean>()
+    var newSearch = false
 
     private var listener = object : SharedPreferences.OnSharedPreferenceChangeListener {
         override fun onSharedPreferenceChanged(
@@ -63,6 +65,9 @@ class DictionarySearchViewModel() : ViewModel() {
     }
 
     fun search() {
+        newSearch = true
+        newSearchLive.value = true
+
         if (searchQuery.isNotBlank()) {
             viewModelScope.launch {
                 searchForChinese(searchQuery

@@ -81,8 +81,10 @@ class DictionarySearchFragment : Fragment() {
 
         dictionarySearchSearchBox.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextChange(newText: String?): Boolean {
-                dictionaryViewModel.searchQuery = newText!!
-                dictionaryViewModel.search()
+                if (newText != dictionaryViewModel.searchQuery) {
+                    dictionaryViewModel.searchQuery = newText!!
+                    dictionaryViewModel.search()
+                }
 
                 return true
             }

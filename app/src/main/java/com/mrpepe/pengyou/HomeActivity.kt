@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -11,7 +12,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchFragment
+import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel
 import com.mrpepe.pengyou.dictionary.wordView.WordViewFragment
+import com.mrpepe.pengyou.dictionary.wordView.WordViewFragmentViewModel
 import com.mrpepe.pengyou.settings.SettingsFragment
 
 class HomeActivity : BaseActivity(),
@@ -19,9 +22,13 @@ class HomeActivity : BaseActivity(),
     WordViewFragment.WordViewFragmentInteractionListener,
     SettingsFragment.SettingsFragmentInteractionListener {
 
+    private lateinit var dictionarySearchViewModel: DictionarySearchViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
+        dictionarySearchViewModel = ViewModelProvider(this)[DictionarySearchViewModel::class.java]
 
         val host: NavHostFragment = supportFragmentManager
             .findFragmentById(R.id.main_container) as NavHostFragment
@@ -52,6 +59,7 @@ class HomeActivity : BaseActivity(),
         bottomNav?.setOnNavigationItemSelectedListener { item ->
             when (item.title) {
                 getString(R.string.bottom_navigation_view_dictionary) -> {
+                    dictionarySearchViewModel.searchQuery = ""
                     findNavController(R.id.main_container).navigate(R.id.dictionarySearchFragment)
                 }
                 getString(R.string.bottom_navigation_view_settings) -> {
