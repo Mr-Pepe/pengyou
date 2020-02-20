@@ -14,7 +14,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchFragment
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel
 import com.mrpepe.pengyou.dictionary.wordView.WordViewFragment
-import com.mrpepe.pengyou.dictionary.wordView.WordViewFragmentViewModel
 import com.mrpepe.pengyou.settings.SettingsFragment
 
 class HomeActivity : BaseActivity(),

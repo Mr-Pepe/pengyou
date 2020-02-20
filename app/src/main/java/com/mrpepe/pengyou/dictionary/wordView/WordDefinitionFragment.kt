@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.search_result.view.definitions
 import kotlinx.android.synthetic.main.search_result.view.hsk
 
 class WordDefinitionFragment : Fragment() {
-    private lateinit var model: WordViewFragmentViewModel
+    private lateinit var model: WordViewViewModel
     private lateinit var definitions : TextView
     private lateinit var hsk : TextView
     private lateinit var linearLayout: LinearLayout
@@ -31,7 +31,7 @@ class WordDefinitionFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            model = ViewModelProvider(it).get(WordViewFragmentViewModel::class.java)
+            model = ViewModelProvider(it).get(WordViewViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
 

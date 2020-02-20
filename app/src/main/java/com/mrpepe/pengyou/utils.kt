@@ -24,7 +24,6 @@ import androidx.viewpager.widget.ViewPager
 import com.mrpepe.pengyou.dictionary.CEDict
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
-import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -243,11 +242,12 @@ class WordLink(val entry: Entry,
                     Toast.LENGTH_SHORT
                 ).show()
                 1 -> {
-                    val intent =
-                        Intent(MainApplication.getCurrentActivity(), WordViewActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    intent.putExtra("entry", entries[0])
-                    startActivity(context, intent, null)
+                    // TODO: Make links work again
+//                    val intent =
+//                        Intent(MainApplication.getCurrentActivity(), WordViewActivity::class.java)
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                    intent.putExtra("entry", entries[0])
+//                    startActivity(context, intent, null)
                 }
                 else -> Toast
                         .makeText(

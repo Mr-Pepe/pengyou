@@ -1,30 +1,48 @@
 package com.mrpepe.pengyou.dictionary.wordView
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.mrpepe.pengyou.*
 
-import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.Entry
+import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel
+import kotlinx.android.synthetic.main.activity_word_view.*
+import kotlinx.android.synthetic.main.fragment_dictionary_search.*
 import kotlinx.android.synthetic.main.fragment_word_view.*
 
 private const val ARG_ENTRY = "entry"
 
-class WordViewFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private lateinit var entry: Entry
+class WordViewFragment : Fragment(),
+    StrokeOrderFragment.ToggleHorizontalPagingListener {
 
+    private lateinit var entry: Entry
+    private lateinit var viewPager: CustomViewPager
     private var listener: WordViewFragmentInteractionListener? = null
+
+    private lateinit var wordViewViewModel: WordViewViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             entry = it.get(ARG_ENTRY) as Entry
         }
+
+        activity?.let {
+            wordViewViewModel = ViewModelProvider(it).get(WordViewViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
     }
 
     override fun onCreateView(
@@ -37,7 +55,57 @@ class WordViewFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        wordViewHeadword.text = entry.simplified
+
+        val sectionsPagerAdapter = WordViewPagerAdapter(childFragmentManager)
+        viewPager = wordViewViewPager
+        viewPager.adapter = sectionsPagerAdapter
+        wordViewTabs.setupWithViewPager(viewPager)
+
+        // Setup tab icons
+        for (iTab in 0 until wordViewTabs.tabCount) {
+            val tab = LayoutInflater.from(activity).inflate(R.layout.tab_item, null)
+            tab.findViewById<ImageView>(R.id.tab_icon).setImageResource(sectionsPagerAdapter.tabIcons[iTab])
+            wordViewTabs.getTabAt(iTab)?.customView = tab
+        }
+
+        wordViewToolbar.inflateMenu(R.menu.word_view_menu)
+
+        if (!wordViewViewModel.isInitialized) {
+            wordViewViewModel.init(entry)
+        }
+
+        wordViewViewModel.entry.observe(viewLifecycleOwner, Observer { entry ->
+            wordViewHeadword.text = HeadwordFormatter().format(entry, ChineseMode.SIMPLIFIED)
+            wordViewPinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinMode.MARKS)
+        })
+
+        wordViewToolbar.setOnMenuItemClickListener(object: Toolbar.OnMenuItemClickListener {
+            override fun onMenuItemClick(item: MenuItem?): Boolean {
+                return when (item?.itemId) {
+                    R.id.copyToClipboard -> {
+                        val headword = wordViewViewModel.entry.value?.simplified
+                        val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        val clip = ClipData.newPlainText("Headword", headword)
+
+                        clipboard.setPrimaryClip(clip)
+
+                        Toast.makeText(activity, "Copied $headword to clipboard", Toast.LENGTH_SHORT).show()
+
+                        true
+                    }
+                    else -> true
+                }
+            }
+        })
+    }
+
+    override fun toggleHorizontalPaging() {
+        viewPager.togglePagingEnabled()
+    }
+
+    fun onSupportNavigateUp(): Boolean {
+//        onBackPressed()
+        return true
     }
 
     override fun onAttach(context: Context) {
@@ -53,8 +121,6 @@ class WordViewFragment : Fragment() {
         super.onDetach()
         listener = null
     }
-
-
 
 
     // TODO: Rename method, update argument and hook method into UI event
