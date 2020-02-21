@@ -1,12 +1,9 @@
-package com.mrpepe.pengyou.dictionary.searchView
+package com.mrpepe.pengyou.dictionary.search
 
-import android.text.SpannableStringBuilder
 import android.view.View
 import android.widget.TextView
-import androidx.core.text.bold
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.*
-import com.mrpepe.pengyou.dictionary.Entry
 
 class CharacterViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var character: TextView = itemView.findViewById(R.id.proposedCharacter)

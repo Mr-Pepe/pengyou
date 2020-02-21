@@ -2,16 +2,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:id="@+id/settingsFragment"
     android:layout_height="match_parent"
-    tools:context=".dictionary.wordView.WordDefinitionFragment">
+    tools:context=".settings.SettingsFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:id="@+id/decompositions"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="@dimen/medium_padding"
-        android:paddingTop="@dimen/large_padding"
-        android:textSize="24sp" />
+        android:text="@string/bottom_navigation_view_settings" />
 
 </FrameLayout>

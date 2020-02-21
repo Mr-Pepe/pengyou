@@ -10,17 +10,19 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.SearchHistory
 import com.mrpepe.pengyou.dictionary.Entry
-import com.mrpepe.pengyou.dictionary.searchView.SearchResultAdapter
+import com.mrpepe.pengyou.dictionary.search.DictionarySearchFragmentDirections
+import com.mrpepe.pengyou.dictionary.search.SearchResultAdapter
 import kotlinx.android.synthetic.main.fragment_search_result_list.view.*
 
 class WordsContainingFragment : Fragment() {
 
-    private lateinit var model: WordViewFragmentViewModel
+    private lateinit var model: WordViewViewModel
     private lateinit var searchResultList: RecyclerView
     private lateinit var resultCount: TextView
     private var lastClickTime : Long = 0
@@ -30,7 +32,7 @@ class WordsContainingFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            model = ViewModelProvider(it).get(WordViewFragmentViewModel::class.java)
+            model = ViewModelProvider(it).get(WordViewViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
 
@@ -70,8 +72,8 @@ class WordsContainingFragment : Fragment() {
         model.wordsContaining.observe(viewLifecycleOwner, Observer { wordsContaining ->
             wordsContaining?.let { adapter.setEntries(wordsContaining) }
             resultCount.text = when(wordsContaining.size) {
-                0 -> ""
-                else -> "Appears in ${wordsContaining.size} words"
+                0 -> (model.entry.value?.simplified ?: "") + getString(R.string.no_appearance_in_other_words)
+                else -> getString(R.string.appears_in_other_words) + wordsContaining.size.toString()
             }
         })
     }
@@ -84,8 +86,6 @@ class WordsContainingFragment : Fragment() {
 
         searchHistory.addToHistory(entry.id.toString())
 
-        val intent = Intent(activity, WordViewActivity::class.java)
-        intent.putExtra("entry", entry)
-        startActivity(intent)
+        findNavController().navigate(WordViewFragmentDirections.globalOpenWordViewAction(entry))
     }
 }

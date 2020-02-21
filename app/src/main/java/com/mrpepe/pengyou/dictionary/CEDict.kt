@@ -3,6 +3,7 @@ package com.mrpepe.pengyou.dictionary
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.mrpepe.pengyou.MainApplication
 import java.io.Serializable
 
 @Database(entities= arrayOf(Entry::class,
@@ -97,7 +98,7 @@ interface EntryDAO {
                     "WHERE " +
                         "permutation >= :lowerString AND " +
                         "permutation < :upperString " +
-                    "LIMIT 1000) " +
+                    "LIMIT " + MainApplication.MAX_SEARCH_RESULTS + ") " +
                 "ORDER BY word_length, hsk, pinyin_length, priority")
     fun searchInDictByChinese(lowerString: String, upperString: String) : LiveData<List<Entry>>
 
@@ -112,14 +113,14 @@ interface EntryDAO {
             "FROM entries " +
             "WHERE definitions LIKE :query1 OR definitions LIKE :query2 OR definitions LIKE :query3 " +
             "ORDER BY priority " +
-            "LIMIT 1000")
+            "LIMIT " + MainApplication.MAX_SEARCH_RESULTS)
     fun searchInDictByEnglish3(query1: String, query2: String, query3: String) : LiveData<List<Entry>>
 
     @Query("SELECT * " +
             "FROM entries " +
             "WHERE definitions LIKE :query1 OR definitions LIKE :query2 OR definitions LIKE :query3 OR definitions LIKE :query4 " +
             "ORDER BY priority " +
-            "LIMIT 1000")
+            "LIMIT " + MainApplication.MAX_SEARCH_RESULTS)
     fun searchInDictByEnglish4(query1: String, query2: String, query3: String, query4: String) : LiveData<List<Entry>>
 
     @Query("SELECT * FROM decompositions WHERE character = :query")

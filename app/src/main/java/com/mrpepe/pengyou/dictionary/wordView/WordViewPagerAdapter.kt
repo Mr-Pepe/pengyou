@@ -4,14 +4,13 @@ import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.mrpepe.pengyou.PlaceholderFragment
 import com.mrpepe.pengyou.R
 
-class WordViewPagerAdapter(private val context: Context, fm: FragmentManager) :
+class WordViewPagerAdapter(fm: FragmentManager) :
     FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     val tabIcons = arrayOf(
-        R.drawable.ic_dictionary_line,
+        R.drawable.ic_dictionary,
         R.drawable.ic_strokes,
         R.drawable.ic_decomposition,
         R.drawable.ic_brush_line
@@ -23,7 +22,7 @@ class WordViewPagerAdapter(private val context: Context, fm: FragmentManager) :
             1 -> StrokeOrderFragment()
             2 -> DecompositionFragment()
             3 -> WordsContainingFragment()
-            else -> PlaceholderFragment.newInstance(position + 1)
+            else -> WordDefinitionFragment()
         }
     }
 

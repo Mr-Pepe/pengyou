@@ -1,10 +1,10 @@
-package com.mrpepe.pengyou.dictionary.searchView
+package com.mrpepe.pengyou.dictionary.search
 
 import androidx.lifecycle.LiveData
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
 
-class SearchViewRepository(private val entryDao: EntryDAO) {
+class DictionarySearchRepository(private val entryDao: EntryDAO) {
     var englishSearchResults1 : LiveData<List<Entry>>
     var englishSearchResults2 : LiveData<List<Entry>>
     var englishSearchResults3 : LiveData<List<Entry>>

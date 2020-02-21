@@ -14,6 +14,8 @@ class MainApplication : Application() {
         private var instance: MainApplication? = null
         private var currentActivity: Activity? = null
 
+        var keyboardVisible = false
+
         fun getContext() : Context {
             return instance!!.applicationContext
         }
@@ -25,6 +27,10 @@ class MainApplication : Application() {
         fun getCurrentActivity(): Activity? {
             return currentActivity
         }
+
+        // Global definitions
+        const val MAX_HISTORY_ENTRIES = 1000
+        const val MAX_SEARCH_RESULTS = 1000
     }
 
 

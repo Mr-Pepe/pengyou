@@ -1,25 +1,26 @@
-package com.mrpepe.pengyou.dictionary.searchView
+package com.mrpepe.pengyou.dictionary.search
 
 import android.text.SpannableStringBuilder
 import android.view.View
 import android.widget.TextView
 import androidx.core.text.bold
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.*
 import com.mrpepe.pengyou.dictionary.Entry
 
-class ResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class SearchResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var headword: TextView = itemView.findViewById(R.id.headword)
     private var pinyin: TextView = itemView.findViewById(R.id.pinyin)
     private var definitions: TextView = itemView.findViewById(R.id.definitions)
     private var hsk: TextView = itemView.findViewById(R.id.hsk)
 
     fun bind(entry: Entry, clickListener: (Entry) -> Unit) {
-        headword.text = HeadwordFormatter().format(entry, ChineseMode.BOTH)
+        headword.text = HeadwordFormatter().format(entry, ChineseMode.SIMPLIFIED)
         pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinMode.MARKS)
 
         // TODO: Handle empty definition list
-        val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, false, null, ChineseMode.BOTH)
+        val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, false, null, itemView, ChineseMode.SIMPLIFIED)
 
         if (formattedDefinitions.isEmpty())
             definitions.text = MainApplication.getContext().getString(R.string.no_definition_found)

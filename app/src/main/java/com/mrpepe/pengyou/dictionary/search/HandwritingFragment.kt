@@ -1,13 +1,11 @@
-package com.mrpepe.pengyou.dictionary.searchView
+package com.mrpepe.pengyou.dictionary.search
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -20,21 +18,15 @@ import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.R
-import com.mrpepe.pengyou.dictionary.Entry
-import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
 import com.mrpepe.pengyou.runJavaScript
 import kotlinx.android.synthetic.main.fragment_handwriting_input.*
 import kotlinx.android.synthetic.main.fragment_handwriting_input.view.*
-import kotlinx.coroutines.CompletableJob
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.concurrent.timerTask
 
 
 class HandwritingFragment : Fragment() {
-    private lateinit var model: SearchViewFragmentViewModel
+    private lateinit var dictionaryViewModel: DictionarySearchViewModel
     private lateinit var webView : WebView
     private lateinit var proposedCharacterList: RecyclerView
     lateinit var adapter : ProposedCharacterAdapter
@@ -47,6 +39,8 @@ class HandwritingFragment : Fragment() {
     private var proposedCharactersString = MutableLiveData<String>()
 
     private var strokes = listOf<List<List<Float>>?>()
+
+    private lateinit var dictionarySearchFragment : DictionarySearchFragment
 
     private val widthAndHeight = 250
 
@@ -69,9 +63,10 @@ class HandwritingFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            model = ViewModelProvider(it).get(SearchViewFragmentViewModel::class.java)
+            dictionaryViewModel = ViewModelProvider(it).get(DictionarySearchViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
+        dictionarySearchFragment = parentFragment as DictionarySearchFragment
     }
 
     override fun onCreateView(
@@ -182,15 +177,16 @@ class HandwritingFragment : Fragment() {
 
         clear_board_button.setOnClickListener(object: View.OnClickListener {
             override fun onClick(v: View?) {
-                if (draw_board.isClear)
-                    model.deleteLastCharacterOfQuery.postValue(true)
+                if (draw_board.isClear) {
+                    dictionarySearchFragment.deleteLastCharacterOfQuery()
+                }
                 draw_board.clearCanvas()
             }
         })
 
         search_button.setOnClickListener ( object: View.OnClickListener {
             override fun onClick(v: View?) {
-                model.submitFromDrawBoard.value = true
+                dictionarySearchFragment.submitQuery()
             }
         } )
 
@@ -246,7 +242,7 @@ class HandwritingFragment : Fragment() {
         }
         lastClickTime = SystemClock.elapsedRealtime()
 
-        model.addCharacterToQuery.value = character
+        dictionarySearchFragment.addCharacterToQuery(character)
 
         draw_board.clearCanvas()
     }
