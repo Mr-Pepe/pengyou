@@ -3,8 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/modeSwitch"
-        android:icon="@mipmap/ic_launcher"
-        android:title="Switch Language"
+        android:id="@+id/copyToClipboard"
+        android:icon="@drawable/ic_file_copy"
+        android:title="@string/copy_to_clipboard_button_title"
         app:showAsAction="always" />
 </menu>

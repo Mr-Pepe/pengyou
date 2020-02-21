@@ -3,12 +3,7 @@ package com.mrpepe.pengyou
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
-import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Path
-import android.os.Bundle
 import android.os.SystemClock
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -17,31 +12,29 @@ import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
-import android.view.LayoutInflater
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.navigation.Navigation
 import androidx.viewpager.widget.ViewPager
 import com.mrpepe.pengyou.dictionary.CEDict
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
-import com.mrpepe.pengyou.dictionary.wordView.WordViewActivity
-import com.mrpepe.pengyou.dictionary.wordView.WordViewViewModel
+import com.mrpepe.pengyou.dictionary.wordView.WordViewFragmentDirections
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 
 class DefinitionFormatter {
 
-    fun formatDefinitions(entry: Entry, linkWords: Boolean, context: Context?, mode: ChineseMode): List<SpannableStringBuilder> {
+    fun formatDefinitions(entry: Entry, linkWords: Boolean, context: Context?, view: View, mode: ChineseMode): List<SpannableStringBuilder> {
         val rawDefinitions = entry.definitions
         val definitions = mutableListOf<SpannableStringBuilder>()
 
@@ -50,14 +43,14 @@ class DefinitionFormatter {
         }
         else {
             rawDefinitions.split('/').forEach { rawDefinition ->
-                definitions.add(formatDefinition(entry, rawDefinition, linkWords, context, mode))
+                definitions.add(formatDefinition(entry, rawDefinition, linkWords, context, view, mode))
             }
 
             definitions
         }
     }
 
-    private fun formatDefinition(entry: Entry, rawDefinition: String, linkWords: Boolean, context: Context?, mode: ChineseMode) : SpannableStringBuilder {
+    private fun formatDefinition(entry: Entry, rawDefinition: String, linkWords: Boolean, context: Context?, view: View, mode: ChineseMode) : SpannableStringBuilder {
 
         val definition = SpannableStringBuilder()
 
@@ -114,6 +107,7 @@ class DefinitionFormatter {
                                 WordLink(
                                     entry,
                                     context!!,
+                                    view,
                                     simplified,
                                     traditional,
                                     tmpPinyin.toString()
@@ -184,6 +178,7 @@ fun WebView.runJavaScript(string: String) {
 
 class WordLink(val entry: Entry,
                val context: Context,
+               val view: View,
                private val simplified: String,
                private val traditional: String,
                private val pinyin: String): ClickableSpan() {
@@ -253,11 +248,7 @@ class WordLink(val entry: Entry,
                     Toast.LENGTH_SHORT
                 ).show()
                 1 -> {
-                    val intent =
-                        Intent(MainApplication.getCurrentActivity(), WordViewActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    intent.putExtra("entry", entries[0])
-                    startActivity(context, intent, null)
+                    Navigation.findNavController(view).navigate(WordViewFragmentDirections.globalOpenWordViewAction(entries[0]))
                 }
                 else -> Toast
                         .makeText(
@@ -440,13 +431,11 @@ class HeadwordFormatter {
 
 }
 
-
 enum class ChineseMode {
     SIMPLIFIED,
     TRADITIONAL,
     BOTH
 }
-
 
 fun String.countSurrogatePairs() = withIndex().count {
     hasSurrogatePairAt(it.index)
@@ -454,56 +443,6 @@ fun String.countSurrogatePairs() = withIndex().count {
 
 // Returns the actual length of a string considering surrogate pairs
 fun String.lengthSurrogate() = this.length - this.countSurrogatePairs()
-
-class PlaceholderFragment : Fragment() {
-
-    private lateinit var pageViewModel: WordViewViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        pageViewModel = ViewModelProviders.of(this).get(WordViewViewModel::class.java).apply {
-//            setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
-//        }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val root = inflater.inflate(R.layout.fragment_word_view, container, false)
-//        val textView: TextView = root.findViewById(R.id.section_label)
-//        pageViewModel.text.observe(this, Observer<String> {
-//            textView.text = it
-//        })
-        return root
-    }
-
-    companion object {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private const val ARG_SECTION_NUMBER = "section_number"
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        @JvmStatic
-        fun newInstance(sectionNumber: Int): PlaceholderFragment {
-            return PlaceholderFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_SECTION_NUMBER, sectionNumber)
-                }
-            }
-        }
-    }
-}
-
-enum class UpdateSearchResultsMode {
-    SNAPTOTOP,
-    DONTSNAPTOTOP
-}
 
 class CustomViewPager(context: Context, attributeSet: AttributeSet): ViewPager(context, attributeSet) {
     private var pagingEnabled = true
@@ -545,12 +484,28 @@ object SearchHistory {
 
     val searchPreferences = MainApplication.getContext().getSharedPreferences(MainApplication.getContext().getString(R.string.search_history), Context.MODE_PRIVATE)
 
+    init {
+        val searchHistoryIDs = searchPreferences.getString("search_history", "")!!.split(',').toMutableList()
+        searchHistoryIDs.remove("")
+        MainScope().launch {
+            with(searchPreferences.edit()) {
+                putString("search_history", searchHistoryIDs.joinToString(","))
+                commit()
+            }
+        }
+    }
+
     fun getHistoryIds(): List<String> {
-        return searchPreferences.getString("search_history", "")!!.split(',')
+        val ids = searchPreferences.getString("search_history", "")!!.split(',')
+
+        return when (ids[0] == "") {
+            true -> listOf()
+            false -> ids
+        }
     }
 
     fun addToHistory(id: String) {
-        val maxLengthHistory = 10000
+        val maxLengthHistory = MainApplication.MAX_HISTORY_ENTRIES
 
         var searchHistoryIDs = searchPreferences.getString("search_history", "")!!.split(',').toMutableList()
 
@@ -568,7 +523,5 @@ object SearchHistory {
                 commit()
             }
         }
-
     }
-
 }

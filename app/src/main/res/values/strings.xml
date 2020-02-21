@@ -7,8 +7,9 @@
     <string name="no_definition_found">"No definition found, but this character might be used in other words."</string>
     <string name="search_history">com.mrpepe.pengyou.search_history</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!--  Bottom Navigation View  -->
+    <string name="bottom_navigation_view_dictionary">DICTIONARY</string>
+    <string name="bottom_navigation_view_settings">SETTINGS</string>
 
     <!-- Buttons in stroke order fragment   -->
     <string name="button_play_play">PLAY</string>
@@ -19,5 +20,13 @@
     <string name="button_outline_show">SHOW</string>
     <string name="button_outline_hide">HIDE</string>
     <string name="button_quiz">QUIZ</string>
+    <string name="switch_language_button_title">Switch Language</string>
+    <string name="copy_to_clipboard_button_title">Copy to Clipboard</string>
+
+    <string name="search_results">SEARCH RESULTS:\u0020</string>
+    <string name="history">HISTORY:\u0020</string>
+    <string name="no_history">NO HISTORY AVAILABLE</string>
+    <string name="no_appearance_in_other_words">\u0020DOES NOT APPEAR IN OTHER WORDS</string>
+    <string name="appears_in_other_words">WORDS CONTAINING:\u0020</string>
 
 </resources>

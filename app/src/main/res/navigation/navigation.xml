@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/navigation"
+    app:startDestination="@id/dictionarySearchFragment">
+
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.mrpepe.pengyou.settings.SettingsFragment"
+        tools:layout="@layout/fragment_settings">
+    </fragment>
+
+    <fragment
+        android:id="@+id/dictionarySearchFragment"
+        android:name="com.mrpepe.pengyou.dictionary.search.DictionarySearchFragment"
+        android:label="DictionarySearchFragment" />
+
+    <fragment
+        android:id="@+id/wordViewFragment"
+        android:name="com.mrpepe.pengyou.dictionary.wordView.WordViewFragment"
+        android:label="WordViewFragment">
+
+        <argument
+            android:name="entry"
+            app:argType="com.mrpepe.pengyou.dictionary.Entry" />
+
+    </fragment>
+
+    <action
+        android:id="@+id/globalOpenDictionaryAction"
+        app:destination="@id/dictionarySearchFragment" />
+    <action
+        android:id="@+id/globalOpenWordViewAction"
+        app:destination="@id/wordViewFragment" />
+
+
+</navigation>

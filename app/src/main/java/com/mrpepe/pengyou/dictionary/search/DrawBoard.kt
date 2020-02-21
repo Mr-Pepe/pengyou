@@ -1,4 +1,4 @@
-package com.mrpepe.pengyou.dictionary.searchView
+package com.mrpepe.pengyou.dictionary.search
 
 import android.content.Context
 import android.graphics.Canvas
@@ -23,9 +23,6 @@ class DrawBoard (context: Context, attributeSet: AttributeSet): View(context, at
     var pathExposed = MutableLiveData<MutableList<MutableList<List<Float>>>>()
 
     private var path  = mutableListOf<MutableList<List<Float>>>()
-    private var iPath = 0
-    private var iStroke = 0
-    private var iPoint = 0
 
     var isClear = true
 
@@ -99,7 +96,7 @@ class DrawBoard (context: Context, attributeSet: AttributeSet): View(context, at
     fun clearCanvas() {
         mPath.reset()
         invalidate()
-        path = mutableListOf<MutableList<List<Float>>>()
+        path = mutableListOf()
         isClear = true
     }
 }

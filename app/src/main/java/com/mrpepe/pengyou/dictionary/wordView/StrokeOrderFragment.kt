@@ -24,7 +24,7 @@ import kotlin.concurrent.timerTask
 
 
 class StrokeOrderFragment : Fragment() {
-    private lateinit var model: WordViewFragmentViewModel
+    private lateinit var model: WordViewViewModel
     private lateinit var webView : WebView
     var character : String = "我"
     var webViewLoaded : Boolean = false
@@ -52,16 +52,16 @@ class StrokeOrderFragment : Fragment() {
 
     private var isQuizzing = MutableLiveData<Boolean>()
 
-    private lateinit var listener: ToggleHorizontalPaging
+    private lateinit var listener: ToggleHorizontalPagingListener
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is ToggleHorizontalPaging) {
-            listener = context
+        if (parentFragment is ToggleHorizontalPagingListener) {
+            listener = parentFragment as ToggleHorizontalPagingListener
         }
         else {
             throw ClassCastException(
-                "$context must implement ToggleHorizontalPaging."
+                "$parentFragment must implement ToggleHorizontalPaging."
             )
         }
     }
@@ -70,7 +70,7 @@ class StrokeOrderFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         activity?.let {
-            model = ViewModelProvider(it).get(WordViewFragmentViewModel::class.java)
+            model = ViewModelProvider(it).get(WordViewViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
         model.entry.observe(this, Observer { entry ->
@@ -293,7 +293,7 @@ class StrokeOrderFragment : Fragment() {
         super.onDestroy()
     }
 
-    interface ToggleHorizontalPaging {
+    interface ToggleHorizontalPagingListener {
         fun toggleHorizontalPaging()
     }
 
