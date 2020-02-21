@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="19.961035"
-     inkscape:cx="17.74186"
-     inkscape:cy="12.142841"
+     inkscape:zoom="8.9791666"
+     inkscape:cx="22.807017"
+     inkscape:cy="11.399495"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -55,22 +55,22 @@
      id="layer1"
      transform="translate(0,-290.65)">
     <rect
-       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.26819086;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.71196145;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
        id="rect815"
-       width="6.081809"
-       height="6.081809"
-       x="0.13409543"
-       y="290.78409"
-       ry="0.50796622" />
+       width="5.6380386"
+       height="5.6380386"
+       x="0.35598072"
+       y="291.00598"
+       ry="0.47090152" />
     <g
        aria-label="E"
-       transform="scale(1.0099165,0.99018088)"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:7.2023468px;line-height:1.25;font-family:'Noto Serif CJK SC';-inkscape-font-specification:'Noto Serif CJK SC';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.18005866"
-       id="text2483">
+       transform="scale(1.180828,0.84686338)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.74607086px;line-height:1.25;font-family:'Noto Sans CJK SC';-inkscape-font-specification:'Noto Sans CJK SC';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.16865176"
+       id="text817">
       <path
-         d="M 4.8435782,297.96313 4.5626867,299.1155 H 2.7693023 c -0.021607,-0.73464 -0.021607,-1.47648 -0.021607,-2.29035 h 1.0875543 l 0.1008329,0.75625 h 0.3385103 v -1.81499 H 3.9360825 l -0.1080352,0.78506 h -1.080352 c 0,-0.75625 0,-1.47649 0.021607,-2.18232 h 1.6493374 l 0.2736892,1.10917 h 0.3889267 l -0.0072,-1.41166 H 1.0479414 v 0.25928 l 0.684223,0.0648 c 0.014405,0.72744 0.014405,1.45488 0.014405,2.17511 v 0.35292 c 0,0.73463 0,1.46207 -0.014405,2.1751 l -0.684223,0.0648 v 0.25209 h 4.1701588 l 0.021607,-1.44767 z"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Noto Serif CJK SC';-inkscape-font-specification:'Noto Serif CJK SC';stroke-width:0.18005866"
-         id="path2507" />
+         d="m 1.1203297,349.45621 h 3.1369229 v -0.83652 H 2.1187482 v -1.33572 h 1.7539784 v -0.83651 H 2.1187482 v -1.15358 h 2.0642977 v -0.83651 H 1.1203297 Z"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Noto Sans CJK SC';-inkscape-font-specification:'Noto Sans CJK SC';stroke-width:0.16865176"
+         id="path871" />
     </g>
   </g>
 </svg>

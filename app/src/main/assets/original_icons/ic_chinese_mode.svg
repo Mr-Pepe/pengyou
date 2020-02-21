@@ -14,8 +14,8 @@
    viewBox="0 0 6.3499998 6.3499998"
    version="1.1"
    id="svg8"
-   inkscape:version="0.92.4 5da689c313, 2019-01-14"
-   sodipodi:docname="ic_chinese_mode.svg">
+   sodipodi:docname="ic_chinese_mode.svg"
+   inkscape:version="0.92.4 5da689c313, 2019-01-14">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="22.4"
-     inkscape:cx="14.099933"
-     inkscape:cy="14.301877"
+     inkscape:zoom="8.9791666"
+     inkscape:cx="22.807017"
+     inkscape:cy="11.399495"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -55,22 +55,22 @@
      id="layer1"
      transform="translate(0,-290.65)">
     <rect
-       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.26819086;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
+       style="opacity:1;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.71196145;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:markers fill stroke"
        id="rect815"
-       width="6.081809"
-       height="6.081809"
-       x="0.13409543"
-       y="290.78409"
-       ry="0.50796622" />
+       width="5.6380386"
+       height="5.6380386"
+       x="0.35598072"
+       y="291.00598"
+       ry="0.47090152" />
     <g
        aria-label="C"
-       transform="scale(1.0107618,0.98935279)"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:6.86600018px;line-height:1.25;font-family:'Noto Serif CJK SC';-inkscape-font-specification:'Noto Serif CJK SC';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.17164999"
-       id="text2483">
+       transform="scale(1.0810623,0.92501607)"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:5.95898056px;line-height:1.25;font-family:'Noto Sans CJK SC';-inkscape-font-specification:'Noto Sans CJK SC';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.14897449"
+       id="text817">
       <path
-         d="m 5.2284592,298.08908 h -0.398228 l -0.3021041,1.16036 c -0.226578,0.0893 -0.439424,0.13045 -0.672868,0.13045 -1.0299,0 -1.78516,-0.76899 -1.78516,-2.38937 0,-1.60664 0.768992,-2.39623 1.78516,-2.39623 0.219712,0 0.418826,0.0343 0.61794,0.11672 l 0.3021041,1.17409 h 0.391362 l 0.013732,-1.18782 c -0.460022,-0.26091 -0.9063121,-0.3845 -1.4487261,-0.3845 -1.469324,0 -2.684606,0.95438 -2.684606,2.67088 0,1.70963 1.13289,2.67774 2.657142,2.67774 0.597342,0 1.0916941,-0.14419 1.5311181,-0.39136 z"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Noto Serif CJK SC';-inkscape-font-specification:'Noto Serif CJK SC';stroke-width:0.17164999"
-         id="path2485" />
+         d="m 3.2438136,319.93139 c 0.5720621,0 1.0428216,-0.22644 1.4063194,-0.64953 l -0.4648005,-0.54823 c -0.2383592,0.25624 -0.5303493,0.43501 -0.911724,0.43501 -0.6972008,0 -1.1500833,-0.57802 -1.1500833,-1.53742 0,-0.94748 0.5005544,-1.51954 1.1679602,-1.51954 0.3337029,0 0.5899391,0.15493 0.8163803,0.36946 l 0.4588416,-0.56015 c -0.2860311,-0.29795 -0.7329547,-0.5661 -1.2930988,-0.5661 -1.1143294,0 -2.0498893,0.85213 -2.0498893,2.30613 0,1.47186 0.905765,2.27037 2.0200944,2.27037 z"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Noto Sans CJK SC';-inkscape-font-specification:'Noto Sans CJK SC';stroke-width:0.14897449"
+         id="path841" />
     </g>
   </g>
 </svg>
