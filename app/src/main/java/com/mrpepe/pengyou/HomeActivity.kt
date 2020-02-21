@@ -1,9 +1,10 @@
 package com.mrpepe.pengyou
 
 import android.content.res.Resources
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -11,10 +12,10 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.mrpepe.pengyou.dictionary.search.DictionarySearchFragment
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel
-import com.mrpepe.pengyou.dictionary.wordView.WordViewFragment
 import com.mrpepe.pengyou.settings.SettingsFragment
+import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.fragment_dictionary_search.*
 
 class HomeActivity : BaseActivity(),
     SettingsFragment.SettingsFragmentInteractionListener {
@@ -24,6 +25,7 @@ class HomeActivity : BaseActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        setupKeyboardVisibleListener(findViewById(R.id.homeActivity))
 
         dictionarySearchViewModel = ViewModelProvider(this)[DictionarySearchViewModel::class.java]
 
@@ -50,7 +52,7 @@ class HomeActivity : BaseActivity(),
     }
 
     private fun setupBottomNavMenu(navController: NavController) {
-        val bottomNav = findViewById<BottomNavigationView>(R.id.bottom_navigation_view)
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNavigationMenu)
         bottomNav?.setupWithNavController(navController)
 
         bottomNav?.setOnNavigationItemSelectedListener { item ->
@@ -66,6 +68,24 @@ class HomeActivity : BaseActivity(),
             }
 
             true
+        }
+    }
+
+    private fun setupKeyboardVisibleListener(rootLayout: View) {
+        rootLayout.viewTreeObserver.addOnGlobalLayoutListener {
+            val rec = Rect()
+            rootLayout.getWindowVisibleDisplayFrame(rec)
+            val screenHeight = rootLayout.rootView.height
+            val keypadHeight = screenHeight - rec.bottom
+
+            MainApplication.keyboardVisible = (keypadHeight > screenHeight*0.15)
+
+            when (MainApplication.keyboardVisible) {
+                false -> if (bottomNavigationMenu.parent == null) {
+                    homeActivityLinearLayout.addView(bottomNavigationMenu, 1)
+                }
+                true -> homeActivityLinearLayout.removeView(bottomNavigationMenu)
+            }
         }
     }
 
