@@ -1,14 +1,14 @@
 ## **Functions**
 
 ### Dictionary
-  - [ ] Search for words
+  - [x] Search for words
     - [x] Using Pinyin with and without tones
     - [x] Using Hanzi
     - [x] Using a mixture of any of them
-    - [ ] Handwriting recognition
+    - [x] Handwriting recognition
   - [ ] Word view
     - [x] Definition
-    - [ ] Stroke order
+    - [x] Stroke order
     - [ ] Components
     - [x] Words in which the character appears
     - [ ] Usage
@@ -19,7 +19,7 @@
       - [ ] Link to grammar structure
     - [ ] Pronounciation
       - [ ] Quick link to testing
-  - [ ] Search history as default
+  - [x] Search history as default
   - [ ] Delete search history
   - [ ] Switch between simplified and traditional characters
   - [ ] Backbutton to revert actions
