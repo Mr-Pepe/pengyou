@@ -1,6 +1,7 @@
 package com.mrpepe.pengyou.dictionary.search
 
 import android.content.Context
+import android.graphics.ColorFilter
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.*
@@ -23,7 +24,6 @@ import kotlinx.android.synthetic.main.fragment_dictionary_search.dictionarySearc
 class DictionarySearchFragment : Fragment() {
     private lateinit var modeSwitch: MenuItem
     private lateinit var dictionaryViewModel: DictionarySearchViewModel
-    private var keyboardVisible = false
     private var blockKeyboard = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,9 +74,6 @@ class DictionarySearchFragment : Fragment() {
             dictionarySearchInputMethodTabs.getTabAt(iTab)?.customView = tab
         }
 
-        // Detect whether the keyboard is visible or not
-        setupKeyboardVisibleListener(view)
-
         dictionarySearchSearchBox.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != dictionaryViewModel.searchQuery) {
@@ -112,7 +109,7 @@ class DictionarySearchFragment : Fragment() {
                         blockKeyboard = false
                     }
                     else {
-                        if (!keyboardVisible) {
+                        if (!MainApplication.keyboardVisible) {
                             val imm =
                                 activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
@@ -160,17 +157,6 @@ class DictionarySearchFragment : Fragment() {
                 }
             }
         })
-    }
-
-    private fun setupKeyboardVisibleListener(rootLayout: View) {
-        rootLayout.viewTreeObserver.addOnGlobalLayoutListener {
-            val rec = Rect()
-            rootLayout.getWindowVisibleDisplayFrame(rec)
-            val screenHeight = rootLayout.rootView.height
-            val keypadHeight = screenHeight - rec.bottom
-
-            keyboardVisible = (keypadHeight > screenHeight*0.15)
-        }
     }
 
     fun addCharacterToQuery(newChar: String) {

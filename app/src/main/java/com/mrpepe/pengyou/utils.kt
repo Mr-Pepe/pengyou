@@ -431,13 +431,11 @@ class HeadwordFormatter {
 
 }
 
-
 enum class ChineseMode {
     SIMPLIFIED,
     TRADITIONAL,
     BOTH
 }
-
 
 fun String.countSurrogatePairs() = withIndex().count {
     hasSurrogatePairAt(it.index)
@@ -445,11 +443,6 @@ fun String.countSurrogatePairs() = withIndex().count {
 
 // Returns the actual length of a string considering surrogate pairs
 fun String.lengthSurrogate() = this.length - this.countSurrogatePairs()
-
-enum class UpdateSearchResultsMode {
-    SNAPTOTOP,
-    DONTSNAPTOTOP
-}
 
 class CustomViewPager(context: Context, attributeSet: AttributeSet): ViewPager(context, attributeSet) {
     private var pagingEnabled = true
@@ -472,12 +465,6 @@ class CustomViewPager(context: Context, attributeSet: AttributeSet): ViewPager(c
         this.pagingEnabled = !this.pagingEnabled
     }
 
-}
-
-fun hideKeyboardFrom(context: Context, view: View) {
-    val imm =
-        context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-    imm.hideSoftInputFromWindow(view.windowToken, 0)
 }
 
 fun Fragment.hideKeyboard() {
@@ -518,7 +505,7 @@ object SearchHistory {
     }
 
     fun addToHistory(id: String) {
-        val maxLengthHistory = 10000
+        val maxLengthHistory = MainApplication.MAX_HISTORY_ENTRIES
 
         var searchHistoryIDs = searchPreferences.getString("search_history", "")!!.split(',').toMutableList()
 
