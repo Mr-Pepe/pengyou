@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.SearchHistory
 import com.mrpepe.pengyou.dictionary.Entry
@@ -102,8 +103,8 @@ class SearchResultFragment : Fragment() {
             // Show history
             true -> {
                 resultCount.text = when (dictionaryViewModel.searchHistoryIDs.size) {
-                    0 -> ""
-                    else -> "Recently viewed: " + dictionaryViewModel.searchHistoryIDs.size.toString()
+                    0 -> getString(R.string.no_history)
+                    else -> getString(R.string.history) + dictionaryViewModel.searchHistoryIDs.size.toString()
                 }
                 adapter.setEntries(dictionaryViewModel.searchHistoryEntries.value ?: listOf())
                 dictionaryViewModel.displayedLanguage.value = dictionaryViewModel.requestedLanguage.value
@@ -142,9 +143,9 @@ class SearchResultFragment : Fragment() {
                 }
 
                 resultCount.text = when (adapter.searchResults.size) {
-                    0 -> "Search results: 0"
-                    in 1..999 -> "Search results: " + adapter.searchResults.size.toString()
-                    else -> "Search results: 999+"
+                    0 -> getString(R.string.search_results) + 0.toString()
+                    in 1..MainApplication.MAX_SEARCH_RESULTS -> getString(R.string.search_results) + adapter.searchResults.size.toString()
+                    else -> getString(R.string.search_results) + (MainApplication.MAX_SEARCH_RESULTS-1).toString() + "+"
                 }
             }
         }
