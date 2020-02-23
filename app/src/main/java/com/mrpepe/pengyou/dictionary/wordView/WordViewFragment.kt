@@ -5,7 +5,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -15,15 +14,15 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.PreferenceManager
 import com.mrpepe.pengyou.*
+import com.mrpepe.pengyou.dictionary.DictionaryBaseFragment
 
 import com.mrpepe.pengyou.dictionary.Entry
 import kotlinx.android.synthetic.main.fragment_word_view.*
 
 private const val ARG_ENTRY = "entry"
 
-class WordViewFragment : Fragment(),
+class WordViewFragment : DictionaryBaseFragment(),
     StrokeOrderFragment.ToggleHorizontalPagingListener {
 
     private lateinit var entry: Entry

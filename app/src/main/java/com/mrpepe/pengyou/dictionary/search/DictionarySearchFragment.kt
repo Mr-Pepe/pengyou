@@ -15,13 +15,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.mrpepe.pengyou.*
+import com.mrpepe.pengyou.dictionary.DictionaryBaseFragment
 
 import kotlinx.android.synthetic.main.fragment_dictionary_search.*
 import kotlinx.android.synthetic.main.fragment_dictionary_search.dictionarySearchInputMethodTabs
 import kotlinx.android.synthetic.main.fragment_dictionary_search.dictionarySearchSearchBox
 import kotlinx.android.synthetic.main.fragment_dictionary_search.dictionarySearchViewPager
 
-class DictionarySearchFragment : Fragment() {
+class DictionarySearchFragment : DictionaryBaseFragment() {
     private lateinit var modeSwitch: MenuItem
     private lateinit var dictionaryViewModel: DictionarySearchViewModel
     private var blockKeyboard = false
