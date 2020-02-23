@@ -6,7 +6,7 @@
     <Preference
         app:key="appearance"
         app:title="Appearance"
-        app:fragment="com.mrpepe.pengyou.settings.SettingsFragment$AppearanceSettingsFragment"/>
+        app:fragment="com.mrpepe.pengyou.settings.AppearanceSettingsFragment"/>
 
     <Preference
         app:key="about"
