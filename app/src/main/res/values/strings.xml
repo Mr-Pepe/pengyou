@@ -2,6 +2,7 @@
     <string name="app_name">Pengyou</string>
     <string name="title_home_activity">Home</string>
     <string name="title_dictionary_activity">Dictionary</string>
+    <string name="title_settings_fragment">Settings</string>
     <string name="title_activity_word_view">WordViewActivity</string>
     <string name="search_view_query_hint">Search Dictionary</string>
     <string name="no_definition_found">"No definition found, but this character might be used in other words."</string>
