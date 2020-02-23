@@ -6,7 +6,7 @@ import androidx.preference.PreferenceFragmentCompat
 import com.mrpepe.pengyou.R
 import kotlinx.android.synthetic.main.fragment_base_settings.view.*
 
-class AppearanceSettingsFragment: PreferenceFragmentCompat() {
+class AppearanceSettingsFragment: SettingsBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

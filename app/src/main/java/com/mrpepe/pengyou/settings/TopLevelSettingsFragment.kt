@@ -8,7 +8,7 @@ import android.widget.Toolbar
 import androidx.preference.PreferenceFragmentCompat
 import com.mrpepe.pengyou.R
 
-class TopLevelSettingsFragment: PreferenceFragmentCompat() {
+class TopLevelSettingsFragment: SettingsBaseFragment() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.top_level_settings, rootKey)
