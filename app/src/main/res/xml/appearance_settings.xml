@@ -5,6 +5,7 @@
     <ListPreference
         app:key="pinyin_notation"
         app:title="@string/pinyin_notation"
+        app:summary="%s"
         app:entries="@array/preferences_pinyin_notation_names"
         app:entryValues="@array/preferences_pinyin_notation_values"
         app:defaultValue="Marks"
