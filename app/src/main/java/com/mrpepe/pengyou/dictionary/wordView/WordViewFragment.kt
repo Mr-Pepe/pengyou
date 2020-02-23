@@ -3,8 +3,8 @@ package com.mrpepe.pengyou.dictionary.wordView
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -15,11 +15,10 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import com.mrpepe.pengyou.*
 
 import com.mrpepe.pengyou.dictionary.Entry
-import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel
-import kotlinx.android.synthetic.main.fragment_dictionary_search.*
 import kotlinx.android.synthetic.main.fragment_word_view.*
 
 private const val ARG_ENTRY = "entry"
@@ -74,7 +73,7 @@ class WordViewFragment : Fragment(),
 
         wordViewViewModel.entry.observe(viewLifecycleOwner, Observer { entry ->
             wordViewHeadword.text = HeadwordFormatter().format(entry, ChineseMode.SIMPLIFIED)
-            wordViewPinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinMode.MARKS)
+            wordViewPinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, MainApplication.pinyinMode)
         })
 
         wordViewToolbar.setOnMenuItemClickListener(object: Toolbar.OnMenuItemClickListener {
@@ -95,6 +94,11 @@ class WordViewFragment : Fragment(),
                 }
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        wordViewPinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, MainApplication.pinyinMode)
     }
 
     override fun toggleHorizontalPaging() {

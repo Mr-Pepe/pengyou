@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="preferences_pinyin_notation_names">
+        <item>@string/pinyin_notation_marks</item>
+        <item>@string/pinyin_notation_numbers</item>
+    </string-array>
+
+    <string-array name="preferences_pinyin_notation_values">
+        <item>Marks</item>
+        <item>Numbers</item>
+    </string-array>
+
+
+</resources>

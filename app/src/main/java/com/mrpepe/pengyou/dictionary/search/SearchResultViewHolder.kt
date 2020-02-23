@@ -1,10 +1,11 @@
 package com.mrpepe.pengyou.dictionary.search
 
+import android.content.SharedPreferences
 import android.text.SpannableStringBuilder
 import android.view.View
 import android.widget.TextView
 import androidx.core.text.bold
-import androidx.navigation.NavController
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.*
 import com.mrpepe.pengyou.dictionary.Entry
@@ -16,11 +17,18 @@ class SearchResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private var hsk: TextView = itemView.findViewById(R.id.hsk)
 
     fun bind(entry: Entry, clickListener: (Entry) -> Unit) {
+
+        setValues(entry)
+
+        itemView.setOnClickListener { clickListener(entry) }
+    }
+
+    fun setValues(entry: Entry) {
         headword.text = HeadwordFormatter().format(entry, ChineseMode.SIMPLIFIED)
-        pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinMode.MARKS)
+        pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, MainApplication.pinyinMode)
 
         // TODO: Handle empty definition list
-        val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, false, null, itemView, ChineseMode.SIMPLIFIED)
+        val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, false, null, itemView, ChineseMode.SIMPLIFIED, MainApplication.pinyinMode)
 
         if (formattedDefinitions.isEmpty())
             definitions.text = MainApplication.getContext().getString(R.string.no_definition_found)
@@ -39,7 +47,5 @@ class SearchResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
             7 ->    "         "
             else -> "HSK " + entry.hsk.toString()
         }
-
-        itemView.setOnClickListener { clickListener(entry) }
     }
 }

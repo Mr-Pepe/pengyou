@@ -2,7 +2,6 @@ package com.mrpepe.pengyou
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.SystemClock
 import android.text.SpannableString
@@ -12,15 +11,12 @@ import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.viewpager.widget.ViewPager
@@ -34,7 +30,7 @@ import kotlinx.coroutines.launch
 
 class DefinitionFormatter {
 
-    fun formatDefinitions(entry: Entry, linkWords: Boolean, context: Context?, view: View, mode: ChineseMode): List<SpannableStringBuilder> {
+    fun formatDefinitions(entry: Entry, linkWords: Boolean, context: Context?, view: View, mode: ChineseMode, pinyinMode: PinyinMode): List<SpannableStringBuilder> {
         val rawDefinitions = entry.definitions
         val definitions = mutableListOf<SpannableStringBuilder>()
 
@@ -43,14 +39,14 @@ class DefinitionFormatter {
         }
         else {
             rawDefinitions.split('/').forEach { rawDefinition ->
-                definitions.add(formatDefinition(entry, rawDefinition, linkWords, context, view, mode))
+                definitions.add(formatDefinition(entry, rawDefinition, linkWords, context, view, mode, pinyinMode))
             }
 
             definitions
         }
     }
 
-    private fun formatDefinition(entry: Entry, rawDefinition: String, linkWords: Boolean, context: Context?, view: View, mode: ChineseMode) : SpannableStringBuilder {
+    private fun formatDefinition(entry: Entry, rawDefinition: String, linkWords: Boolean, context: Context?, view: View, mode: ChineseMode, pinyinMode: PinyinMode) : SpannableStringBuilder {
 
         val definition = SpannableStringBuilder()
 
@@ -138,7 +134,7 @@ class DefinitionFormatter {
                         definition.append(
                             PinyinConverter().getFormattedPinyin(
                                 pinyin.toString(),
-                                PinyinMode.MARKS
+                                pinyinMode
                             )
                         )
                         definition.append(char)
@@ -273,11 +269,11 @@ class PinyinConverter {
         val result = pinyin.replace("u:", "ü")
 
         return when (mode) {
-            PinyinMode.NUMBERS -> {
+            PinyinMode.Numbers -> {
                 return result.replace(",", ", ")
             }
 
-            PinyinMode.MARKS -> {
+            PinyinMode.Marks -> {
                 val syllables = result.split(" ").toMutableList()
 
                 syllables.forEachIndexed { iSyllable, syllable ->
@@ -350,9 +346,9 @@ class PinyinConverter {
     )
 }
 
-enum class PinyinMode {
-    NUMBERS,
-    MARKS
+enum class PinyinMode(val value: String) {
+    Marks("Marks"),
+    Numbers("Numbers")
 }
 
 class HeadwordFormatter {

@@ -3,6 +3,8 @@ package com.mrpepe.pengyou
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 
 class MainApplication : Application() {
 
@@ -11,6 +13,12 @@ class MainApplication : Application() {
     }
 
     companion object {
+        // Global definitions
+        const val MAX_HISTORY_ENTRIES = 1000
+        const val MAX_SEARCH_RESULTS = 1000
+
+        var pinyinMode = PinyinMode.Marks
+
         private var instance: MainApplication? = null
         private var currentActivity: Activity? = null
 
@@ -27,10 +35,6 @@ class MainApplication : Application() {
         fun getCurrentActivity(): Activity? {
             return currentActivity
         }
-
-        // Global definitions
-        const val MAX_HISTORY_ENTRIES = 1000
-        const val MAX_SEARCH_RESULTS = 1000
     }
 
 
