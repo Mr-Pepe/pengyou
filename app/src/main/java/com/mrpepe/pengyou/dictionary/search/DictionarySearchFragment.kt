@@ -21,11 +21,15 @@ import kotlinx.android.synthetic.main.fragment_dictionary_search.*
 import kotlinx.android.synthetic.main.fragment_dictionary_search.dictionarySearchInputMethodTabs
 import kotlinx.android.synthetic.main.fragment_dictionary_search.dictionarySearchSearchBox
 import kotlinx.android.synthetic.main.fragment_dictionary_search.dictionarySearchViewPager
+import java.util.*
+import kotlin.concurrent.timerTask
 
 class DictionarySearchFragment : DictionaryBaseFragment() {
     private lateinit var modeSwitch: MenuItem
     private lateinit var dictionaryViewModel: DictionarySearchViewModel
     private var blockKeyboard = false
+
+    private var selectedInputMethodIndex = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,6 +79,9 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
             dictionarySearchInputMethodTabs.getTabAt(iTab)?.customView = tab
         }
 
+        selectedInputMethodIndex = dictionarySearchInputMethodTabs.selectedTabPosition
+        dictionarySearchLinearLayout.removeView(dictionarySearchInputMethodTabs)
+
         dictionarySearchSearchBox.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != dictionaryViewModel.searchQuery) {
@@ -96,8 +103,12 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
                 when (hasFocus) {
                     true -> if (dictionarySearchInputMethodTabs.parent == null) {
                         dictionarySearchLinearLayout.addView(dictionarySearchInputMethodTabs, 1)
+                        dictionarySearchInputMethodTabs.getTabAt(selectedInputMethodIndex)?.select()
                     }
-                    false -> dictionarySearchLinearLayout.removeView(dictionarySearchInputMethodTabs)
+                    false -> {
+                        selectedInputMethodIndex = dictionarySearchInputMethodTabs.selectedTabPosition
+                        dictionarySearchLinearLayout.removeView(dictionarySearchInputMethodTabs)
+                    }
                 }
             }
         })
