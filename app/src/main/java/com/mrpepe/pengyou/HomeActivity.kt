@@ -11,14 +11,14 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel
-import com.mrpepe.pengyou.settings.SettingsFragment
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.fragment_dictionary_search.*
 
 class HomeActivity : BaseActivity(),
-    SettingsFragment.SettingsFragmentInteractionListener {
+    PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     private lateinit var dictionarySearchViewModel: DictionarySearchViewModel
 
@@ -30,7 +30,7 @@ class HomeActivity : BaseActivity(),
         dictionarySearchViewModel = ViewModelProvider(this)[DictionarySearchViewModel::class.java]
 
         val host: NavHostFragment = supportFragmentManager
-            .findFragmentById(R.id.main_container) as NavHostFragment
+            .findFragmentById(R.id.mainContainer) as NavHostFragment
 
         val navController = host.navController
 
@@ -59,10 +59,10 @@ class HomeActivity : BaseActivity(),
             when (item.title) {
                 getString(R.string.bottom_navigation_view_dictionary) -> {
                     dictionarySearchViewModel.searchQuery = ""
-                    findNavController(R.id.main_container).navigate(R.id.globalOpenDictionaryAction)
+                    findNavController(R.id.mainContainer).navigate(R.id.globalOpenDictionaryAction)
                 }
                 getString(R.string.bottom_navigation_view_settings) -> {
-                    findNavController(R.id.main_container).navigate(R.id.settingsFragment)
+                    findNavController(R.id.mainContainer).navigate(R.id.topLevelSettingsFragment)
                 }
                 else -> {}
             }
@@ -89,4 +89,16 @@ class HomeActivity : BaseActivity(),
         }
     }
 
+    override fun onPreferenceStartFragment(
+        caller: PreferenceFragmentCompat?,
+        pref: Preference?
+    ): Boolean {
+
+        when (pref?.key) {
+            "appearance" -> findNavController(R.id.mainContainer).navigate(R.id.actionTopLevelSettingsToAppearanceSettings)
+            else -> {}
+        }
+        
+        return true
+    }
 }
