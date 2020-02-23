@@ -6,11 +6,13 @@
     <Preference
         app:key="appearance"
         app:title="Appearance"
-        app:fragment="com.mrpepe.pengyou.settings.AppearanceSettingsFragment"/>
+        app:fragment="com.mrpepe.pengyou.settings.AppearanceSettingsFragment"
+        app:iconSpaceReserved="false"/>
 
     <Preference
         app:key="about"
-        app:title="About this app" />
+        app:title="About this app"
+        app:iconSpaceReserved="false"/>
 
 
 </PreferenceScreen>

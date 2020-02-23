@@ -1,5 +1,6 @@
 package com.mrpepe.pengyou
 
+import android.content.SharedPreferences
 import android.content.res.Resources
 import android.graphics.Rect
 import android.os.Bundle
@@ -13,6 +14,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel
 import kotlinx.android.synthetic.main.activity_home.*
@@ -21,6 +23,17 @@ class HomeActivity : BaseActivity(),
     PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     private lateinit var dictionarySearchViewModel: DictionarySearchViewModel
+
+    private var listener = object: SharedPreferences.OnSharedPreferenceChangeListener {
+                override fun onSharedPreferenceChanged(
+                    sharedPreferences: SharedPreferences?,
+                    key: String?
+                ) {
+                    if (key == "pinyin_notation") {
+                        MainApplication.pinyinMode = PinyinMode.valueOf(sharedPreferences?.getString(key, PinyinMode.Marks.value) ?: PinyinMode.Marks.value)
+                    }
+                }
+            }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,6 +61,15 @@ class HomeActivity : BaseActivity(),
 //            Toast.makeText(this@HomeActivity, "Navigated to $dest", Toast.LENGTH_SHORT).show()
             Log.d("HomeActivity", "Navigated to $dest")
         }
+
+        MainApplication.pinyinMode = PinyinMode.valueOf(
+            PreferenceManager
+                .getDefaultSharedPreferences(MainApplication.getContext())
+                .getString("pinyin_notation", PinyinMode.Marks.value) ?: PinyinMode.Marks.value)
+
+        PreferenceManager
+            .getDefaultSharedPreferences(this)
+            .registerOnSharedPreferenceChangeListener(listener)
 
     }
 

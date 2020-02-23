@@ -30,4 +30,10 @@
     <string name="no_appearance_in_other_words">\u0020DOES NOT APPEAR IN OTHER WORDS</string>
     <string name="appears_in_other_words">WORDS CONTAINING:\u0020</string>
 
+    <!--  Settings  -->
+    <string name="appearance_settings_title">Appearance</string>
+        <string name="pinyin_notation">Pinyin notation</string>
+        <string name="pinyin_notation_numbers">Numbers</string>
+        <string name="pinyin_notation_marks">Marks</string>
+
 </resources>
