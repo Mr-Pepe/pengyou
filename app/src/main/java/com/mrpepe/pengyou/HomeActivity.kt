@@ -6,6 +6,7 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -34,6 +35,9 @@ class HomeActivity : BaseActivity(),
                     }
                     else if (key == "chinese_mode") {
                         MainApplication.chineseMode = sharedPreferences?.getString(key, ChineseMode.simplified) ?: ChineseMode.simplified
+                    }
+                    else if (key == "theme") {
+                        setTheme()
                     }
                 }
             }
@@ -75,10 +79,33 @@ class HomeActivity : BaseActivity(),
                 .getDefaultSharedPreferences(MainApplication.getContext())
                 .getString("chinese_mode", ChineseMode.simplified) ?: ChineseMode.simplified
 
+        setTheme()
+
         PreferenceManager
             .getDefaultSharedPreferences(this)
             .registerOnSharedPreferenceChangeListener(listener)
 
+
+    }
+
+    fun setTheme() {
+        val mode = PreferenceManager.getDefaultSharedPreferences(MainApplication.getContext())?.getString("theme", "") ?: ""
+
+        when (mode) {
+            getString(R.string.theme_light) -> AppCompatDelegate.setDefaultNightMode(
+                AppCompatDelegate.MODE_NIGHT_NO
+            )
+            getString(R.string.theme_dark) -> AppCompatDelegate.setDefaultNightMode(
+                AppCompatDelegate.MODE_NIGHT_YES
+            )
+            getString(R.string.theme_battery_saver) -> AppCompatDelegate.setDefaultNightMode(
+                AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+            )
+            getString(R.string.theme_system_default) -> AppCompatDelegate.setDefaultNightMode(
+                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            )
+            else -> {}
+        }
     }
 
     private fun setupBottomNavMenu(navController: NavController) {

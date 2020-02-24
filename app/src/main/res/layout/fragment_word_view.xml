@@ -14,7 +14,6 @@
             android:id="@+id/wordViewToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
             app:layout_constraintEnd_toEndOf="parent"
@@ -49,11 +48,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/medium_padding"
-            android:background="@color/background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/wordViewHeadword"
-            app:tabIndicatorColor="@color/colorIndicator" />
+            app:layout_constraintTop_toBottomOf="@+id/wordViewHeadword"/>
 
         <com.mrpepe.pengyou.CustomViewPager
             android:id="@+id/wordViewViewPager"
