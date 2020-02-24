@@ -15,7 +15,6 @@
             android:id="@+id/dictionarySearchToolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay">
 
             <SearchView
@@ -31,8 +30,7 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/dictionarySearchInputMethodTabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabIndicatorColor="@color/colorIndicator" />
+            android:layout_height="wrap_content"/>
 
         <com.mrpepe.pengyou.CustomViewPager
             android:id="@+id/dictionarySearchViewPager"
