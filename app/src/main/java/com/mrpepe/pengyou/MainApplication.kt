@@ -17,7 +17,8 @@ class MainApplication : Application() {
         const val MAX_HISTORY_ENTRIES = 1000
         const val MAX_SEARCH_RESULTS = 1000
 
-        var pinyinMode = PinyinMode.Marks
+        var pinyinMode = ""
+        var chineseMode = ""
 
         private var instance: MainApplication? = null
         private var currentActivity: Activity? = null

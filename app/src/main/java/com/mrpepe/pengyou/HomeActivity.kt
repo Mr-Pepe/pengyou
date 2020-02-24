@@ -30,7 +30,10 @@ class HomeActivity : BaseActivity(),
                     key: String?
                 ) {
                     if (key == "pinyin_notation") {
-                        MainApplication.pinyinMode = PinyinMode.valueOf(sharedPreferences?.getString(key, PinyinMode.Marks.value) ?: PinyinMode.Marks.value)
+                        MainApplication.pinyinMode = sharedPreferences?.getString(key, PinyinMode.marks) ?: PinyinMode.marks
+                    }
+                    else if (key == "chinese_mode") {
+                        MainApplication.chineseMode = sharedPreferences?.getString(key, ChineseMode.simplified) ?: ChineseMode.simplified
                     }
                 }
             }
@@ -62,10 +65,15 @@ class HomeActivity : BaseActivity(),
             Log.d("HomeActivity", "Navigated to $dest")
         }
 
-        MainApplication.pinyinMode = PinyinMode.valueOf(
+        MainApplication.pinyinMode =
             PreferenceManager
                 .getDefaultSharedPreferences(MainApplication.getContext())
-                .getString("pinyin_notation", PinyinMode.Marks.value) ?: PinyinMode.Marks.value)
+                .getString("pinyin_notation", PinyinMode.marks) ?: PinyinMode.marks
+
+        MainApplication.chineseMode =
+            PreferenceManager
+                .getDefaultSharedPreferences(MainApplication.getContext())
+                .getString("chinese_mode", ChineseMode.simplified) ?: ChineseMode.simplified
 
         PreferenceManager
             .getDefaultSharedPreferences(this)

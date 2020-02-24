@@ -59,7 +59,6 @@ class WordViewRepository(private val entryDao: EntryDAO, val initEntry: Entry) {
             var strokeOrderList = entryDao.getStrokeOrder(character.toString())
 
             if (strokeOrderList.isNotEmpty()) {
-
                 strokeOrders.add(strokeOrderList[0].json)
             } else {
                 strokeOrders.add("")
