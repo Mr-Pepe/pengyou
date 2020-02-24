@@ -198,7 +198,9 @@ class HandwritingFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        webView.removeJavascriptInterface(JAVASCRIPT_OBJ)
+        if (::webView.isInitialized) {
+            webView.removeJavascriptInterface(JAVASCRIPT_OBJ)
+        }
         super.onDestroy()
     }
 

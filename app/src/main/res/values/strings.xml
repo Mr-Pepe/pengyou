@@ -40,6 +40,11 @@
         <string name="chinese_mode_traditional">Traditional</string>
         <string name="chinese_mode_simplified_traditional">Simplified | Traditional</string>
         <string name="chinese_mode_traditional_simplified">Traditional | Simplified</string>
+        <string name="theme">Theme</string>
+        <string name="theme_light">Light</string>
+        <string name="theme_dark">Dark</string>
+        <string name="theme_battery_saver">Set by Battery Saver</string>
+        <string name="theme_system_default">Use system default</string>
 
 
 </resources>
