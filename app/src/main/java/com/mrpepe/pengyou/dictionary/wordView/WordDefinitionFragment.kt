@@ -65,7 +65,7 @@ class WordDefinitionFragment : Fragment() {
 
             definitions.movementMethod = LinkMovementMethod.getInstance()
 
-            val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, true, activity, view, ChineseMode.SIMPLIFIED, MainApplication.pinyinMode)
+            val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, true, activity, view, MainApplication.chineseMode, MainApplication.pinyinMode)
 
             if (formattedDefinitions.isEmpty())
                 definitions.text = MainApplication.getContext().getString(R.string.no_definition_found)

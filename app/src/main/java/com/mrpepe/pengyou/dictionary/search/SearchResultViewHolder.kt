@@ -24,11 +24,10 @@ class SearchResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     }
 
     fun setValues(entry: Entry) {
-        headword.text = HeadwordFormatter().format(entry, ChineseMode.SIMPLIFIED)
+        headword.text = HeadwordFormatter().format(entry, MainApplication.chineseMode)
         pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, MainApplication.pinyinMode)
 
-        // TODO: Handle empty definition list
-        val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, false, null, itemView, ChineseMode.SIMPLIFIED, MainApplication.pinyinMode)
+        val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, false, null, itemView, MainApplication.chineseMode, MainApplication.pinyinMode)
 
         if (formattedDefinitions.isEmpty())
             definitions.text = MainApplication.getContext().getString(R.string.no_definition_found)

@@ -3,12 +3,21 @@
      xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ListPreference
+        app:key="chinese_mode"
+        app:title="@string/chinese_mode"
+        app:summary="%s"
+        app:entries="@array/preferences_chinese_mode_names"
+        app:entryValues="@array/preferences_chinese_mode_values"
+        app:defaultValue="@string/chinese_mode_simplified"
+        app:iconSpaceReserved="false"/>
+
+    <ListPreference
         app:key="pinyin_notation"
         app:title="@string/pinyin_notation"
         app:summary="%s"
         app:entries="@array/preferences_pinyin_notation_names"
         app:entryValues="@array/preferences_pinyin_notation_values"
-        app:defaultValue="Marks"
+        app:defaultValue="@string/pinyin_notation_marks"
         app:iconSpaceReserved="false"/>
 
 

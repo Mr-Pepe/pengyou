@@ -35,5 +35,11 @@
         <string name="pinyin_notation">Pinyin notation</string>
         <string name="pinyin_notation_numbers">Numbers</string>
         <string name="pinyin_notation_marks">Marks</string>
+        <string name="chinese_mode">Chinese mode</string>
+        <string name="chinese_mode_simplified">Simplified</string>
+        <string name="chinese_mode_traditional">Traditional</string>
+        <string name="chinese_mode_simplified_traditional">Simplified | Traditional</string>
+        <string name="chinese_mode_traditional_simplified">Traditional | Simplified</string>
+
 
 </resources>
