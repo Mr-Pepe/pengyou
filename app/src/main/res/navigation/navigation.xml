@@ -41,7 +41,15 @@
     <fragment
         android:id="@+id/appearanceSettingsFragment"
         android:name="com.mrpepe.pengyou.settings.AppearanceSettingsFragment"
-        android:label="AppearanceSettingsFragment" />
+        android:label="AppearanceSettingsFragment" >
+        <action
+            android:id="@+id/actionAppearanceSettingsToHeadwordColoringSettings"
+            app:destination="@id/headwordColoringSettingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/headwordColoringSettingsFragment"
+        android:name="com.mrpepe.pengyou.settings.HeadwordColoringSettingsFragment"
+        android:label="HeadwordColoringSettingsFragment" />
 
 
 </navigation>
