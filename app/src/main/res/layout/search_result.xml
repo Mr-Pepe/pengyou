@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:elevation="0dp"
     android:foreground="?attr/selectableItemBackground"
-    app:cardBackgroundColor="?attr/colorBackgroundFloating"
+    app:cardBackgroundColor="?android:attr/windowBackground"
     app:cardCornerRadius="0dp"
     app:cardElevation="1dp"
     app:cardMaxElevation="0dp"
