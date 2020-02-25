@@ -2,6 +2,7 @@ package com.mrpepe.pengyou
 
 import android.content.SharedPreferences
 import android.content.res.Resources
+import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +20,8 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 class HomeActivity : BaseActivity(),
     PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
@@ -44,6 +47,7 @@ class HomeActivity : BaseActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MainApplication.homeActivity = this
         setContentView(R.layout.activity_home)
         setupKeyboardVisibleListener(findViewById(R.id.homeActivity))
 
@@ -153,6 +157,7 @@ class HomeActivity : BaseActivity(),
 
         when (pref?.key) {
             "appearance" -> findNavController(R.id.mainContainer).navigate(R.id.actionTopLevelSettingsToAppearanceSettings)
+            "headword_coloring" -> findNavController(R.id.mainContainer).navigate(R.id.actionAppearanceSettingsToHeadwordColoringSettings)
             else -> {}
         }
         

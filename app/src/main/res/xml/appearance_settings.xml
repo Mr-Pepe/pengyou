@@ -20,5 +20,11 @@
         app:defaultValue="@string/pinyin_notation_marks"
         app:iconSpaceReserved="false"/>
 
+    <Preference
+        app:key="headword_coloring"
+        app:title="@string/headword_coloring"
+        app:fragment="com.mrpepe.pengyou.settings.HeadwordColoringSettingsFragment"
+        app:iconSpaceReserved="false"/>
+
 
 </PreferenceScreen>

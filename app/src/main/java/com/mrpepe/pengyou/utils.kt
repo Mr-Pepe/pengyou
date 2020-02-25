@@ -2,6 +2,7 @@ package com.mrpepe.pengyou
 
 import android.app.Activity
 import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.SystemClock
 import android.text.SpannableString
@@ -12,14 +13,19 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.util.Log
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
 import android.widget.Toast
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
 import com.mrpepe.pengyou.dictionary.CEDict
 import com.mrpepe.pengyou.dictionary.Entry
@@ -404,28 +410,30 @@ class HeadwordFormatter {
 
                 val pinyinSyllable = syllables[iSyllable]
 
-                var color = R.color.notone
+                val noToneColor = when (MainApplication.homeActivity.getResources().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                    Configuration.UI_MODE_NIGHT_NO -> R.color.no_tone_light_theme
+                    Configuration.UI_MODE_NIGHT_YES -> R.color.no_tone_dark_theme
+                    else -> R.color.no_tone_light_theme
+                }
+
+                var color = noToneColor
+                val preferences = PreferenceManager.getDefaultSharedPreferences(MainApplication.getContext())
 
                 if (pinyinSyllable.length > 1 &&
                     (Character.getNumericValue(pinyinSyllable.last()) in 1..5) &&
                     !headword[iHeadword].isDigit()) {
 
                     color = when (Character.getNumericValue(pinyinSyllable.last())) {
-                        1 -> R.color.tone1
-                        2 -> R.color.tone2
-                        3 -> R.color.tone3
-                        4 -> R.color.tone4
-                        5 -> R.color.tone5
-                        else -> R.color.notone
+                        1 -> preferences.getInt("first_tone_color", noToneColor)
+                        2 -> preferences.getInt("second_tone_color", noToneColor)
+                        3 -> preferences.getInt("third_tone_color", noToneColor)
+                        4 -> preferences.getInt("fourth_tone_color", noToneColor)
+                        5 -> preferences.getInt("fifth_tone_color", noToneColor)
+                        else -> noToneColor
                     }
                 }
 
-                val foreGroundColor = ForegroundColorSpan(
-                    ResourcesCompat.getColor(
-                        MainApplication.getContext().resources,
-                        color, null
-                    )
-                )
+                val foreGroundColor = ForegroundColorSpan(color)
 
                 output.setSpan(
                     foreGroundColor,

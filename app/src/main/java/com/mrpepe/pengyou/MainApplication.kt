@@ -20,6 +20,8 @@ class MainApplication : Application() {
         var pinyinMode = ""
         var chineseMode = ""
 
+        lateinit var homeActivity: HomeActivity
+
         private var instance: MainApplication? = null
         private var currentActivity: Activity? = null
 
