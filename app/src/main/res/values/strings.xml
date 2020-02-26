@@ -51,6 +51,6 @@
             <string name="third_tone">Third tone</string>
             <string name="fourth_tone">Fourth tone</string>
             <string name="fifth_tone">Fifth tone</string>
-            <string name="colorpicker_default">Default</string>
+            <string name="colorpicker_default">Reset to default</string>
 
 </resources>

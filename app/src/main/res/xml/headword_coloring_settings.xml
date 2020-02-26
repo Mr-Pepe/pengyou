@@ -6,7 +6,6 @@
         android:key="first_tone_color"
         android:title="@string/first_tone"
         android:defaultValue="@color/tone1_default_color"
-        app:colorpicker_selectNoneButtonText="@string/colorpicker_default"
         app:iconSpaceReserved="false"
         />
 
@@ -14,7 +13,6 @@
         android:key="second_tone_color"
         android:title="@string/second_tone"
         android:defaultValue="@color/tone2_default_color"
-        app:colorpicker_selectNoneButtonText="@string/colorpicker_default"
         app:iconSpaceReserved="false"
         />
 
@@ -22,7 +20,6 @@
         android:key="third_tone_color"
         android:title="@string/third_tone"
         android:defaultValue="@color/tone3_default_color"
-        app:colorpicker_selectNoneButtonText="@string/colorpicker_default"
         app:iconSpaceReserved="false"
         />
 
@@ -30,7 +27,6 @@
         android:key="fourth_tone_color"
         android:title="@string/fourth_tone"
         android:defaultValue="@color/tone4_default_color"
-        app:colorpicker_selectNoneButtonText="@string/colorpicker_default"
         app:iconSpaceReserved="false"
         />
 
@@ -38,8 +34,14 @@
         android:key="fifth_tone_color"
         android:title="@string/fifth_tone"
         app:defaultValue="@color/tone5_default_color"
-        app:colorpicker_selectNoneButtonText="@string/colorpicker_default"
         app:iconSpaceReserved="false"
+        app:allowDividerBelow="true"
         />
+
+    <Preference
+        android:title="@string/colorpicker_default"
+        android:key="headword_colors_to_default"
+        app:allowDividerAbove="true"
+        app:iconSpaceReserved="false"/>
 
 </PreferenceScreen>
