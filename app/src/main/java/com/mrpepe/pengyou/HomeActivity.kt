@@ -1,6 +1,7 @@
 package com.mrpepe.pengyou
 
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.Rect
@@ -88,8 +89,11 @@ class HomeActivity : BaseActivity(),
         PreferenceManager
             .getDefaultSharedPreferences(this)
             .registerOnSharedPreferenceChangeListener(listener)
+    }
 
-
+    fun isNightMode(): Boolean {
+        return (getResources().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+                    Configuration.UI_MODE_NIGHT_YES
     }
 
     fun setTheme() {

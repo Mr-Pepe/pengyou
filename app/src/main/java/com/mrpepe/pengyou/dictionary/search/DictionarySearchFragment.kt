@@ -47,6 +47,11 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
         return inflater.inflate(R.layout.fragment_dictionary_search, container, false)
     }
 
+    override fun onResume() {
+        super.onResume()
+        dictionaryViewModel.displayedLanguage?.value?.let { setModeSwitchIcon(it) }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -54,15 +59,7 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
         modeSwitch = dictionarySearchToolbar.menu.getItem(0)
 
         dictionaryViewModel.displayedLanguage.observe(viewLifecycleOwner, Observer { language ->
-            when (language) {
-                DictionarySearchViewModel.SearchLanguage.ENGLISH -> {
-                    modeSwitch.icon = ContextCompat.getDrawable(MainApplication.getContext(), R.drawable.ic_english_mode);
-                }
-                DictionarySearchViewModel.SearchLanguage.CHINESE -> {
-                    modeSwitch.icon = ContextCompat.getDrawable(MainApplication.getContext(), R.drawable.ic_chinese_mode);
-                }
-                else -> {}
-            }
+            setModeSwitchIcon(language)
         })
 
         val sectionsPagerAdapter = DictionarySearchPagerAdapter(childFragmentManager)
@@ -144,6 +141,7 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
                 positionOffsetPixels: Int
             ) {
             }
+
         })
 
         dictionarySearchToolbar.setOnMenuItemClickListener(object: Toolbar.OnMenuItemClickListener {
@@ -169,6 +167,25 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
                 }
             }
         })
+    }
+
+    fun setModeSwitchIcon(language: DictionarySearchViewModel.SearchLanguage) {
+        when (language) {
+            DictionarySearchViewModel.SearchLanguage.ENGLISH -> {
+                modeSwitch.icon = ContextCompat.getDrawable(
+                    MainApplication.getContext(),
+                    R.drawable.ic_english_mode
+                )
+
+            }
+            DictionarySearchViewModel.SearchLanguage.CHINESE -> {
+                modeSwitch.icon = ContextCompat.getDrawable(
+                    MainApplication.getContext(),
+                    R.drawable.ic_chinese_mode
+                )
+
+            }
+        }
     }
 
     fun addCharacterToQuery(newChar: String) {

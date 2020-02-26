@@ -410,11 +410,11 @@ class HeadwordFormatter {
 
                 val pinyinSyllable = syllables[iSyllable]
 
-                val noToneColor = when (MainApplication.homeActivity.getResources().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-                    Configuration.UI_MODE_NIGHT_NO -> R.color.no_tone_light_theme
-                    Configuration.UI_MODE_NIGHT_YES -> R.color.no_tone_dark_theme
-                    else -> R.color.no_tone_light_theme
-                }
+                val noToneColor =
+                    when (MainApplication.homeActivity.isNightMode()) {
+                        true -> R.color.no_tone_dark_theme
+                        else -> R.color.no_tone_light_theme
+                    }
 
                 var color = noToneColor
                 val preferences = PreferenceManager.getDefaultSharedPreferences(MainApplication.getContext())
