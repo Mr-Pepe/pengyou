@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="preferences_pinyin_notation_names">
+        <item>@string/pinyin_notation_marks</item>
+        <item>@string/pinyin_notation_numbers</item>
+    </string-array>
+
+    <string-array name="preferences_pinyin_notation_values">
+        <item>@string/pinyin_notation_marks</item>
+        <item>@string/pinyin_notation_numbers</item>
+    </string-array>
+
+    <string-array name="preferences_chinese_mode_names">
+        <item>@string/chinese_mode_simplified</item>
+        <item>@string/chinese_mode_traditional</item>
+        <item>@string/chinese_mode_simplified_traditional</item>
+        <item>@string/chinese_mode_traditional_simplified</item>
+    </string-array>
+
+    <string-array name="preferences_chinese_mode_values">
+        <item>@string/chinese_mode_simplified</item>
+        <item>@string/chinese_mode_traditional</item>
+        <item>@string/chinese_mode_simplified_traditional</item>
+        <item>@string/chinese_mode_traditional_simplified</item>
+    </string-array>
+
+    <string-array name="preferences_theme">
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_battery_saver</item>
+    </string-array>
+
+    <string-array name="preferences_theme_v29">
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_system_default</item>
+    </string-array>
+
+</resources>

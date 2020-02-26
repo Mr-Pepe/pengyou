@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ListPreference
+        app:key="theme"
+        app:title="@string/theme"
+        app:summary="%s"
+        app:entries="@array/preferences_theme"
+        app:entryValues="@array/preferences_theme"
+        app:defaultValue="@string/theme_battery_saver"
+        app:iconSpaceReserved="false" />
+
+</PreferenceScreen>

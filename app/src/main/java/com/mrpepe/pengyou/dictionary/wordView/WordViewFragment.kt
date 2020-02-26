@@ -3,9 +3,8 @@ package com.mrpepe.pengyou.dictionary.wordView
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -16,15 +15,14 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.mrpepe.pengyou.*
+import com.mrpepe.pengyou.dictionary.DictionaryBaseFragment
 
 import com.mrpepe.pengyou.dictionary.Entry
-import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel
-import kotlinx.android.synthetic.main.fragment_dictionary_search.*
 import kotlinx.android.synthetic.main.fragment_word_view.*
 
 private const val ARG_ENTRY = "entry"
 
-class WordViewFragment : Fragment(),
+class WordViewFragment : DictionaryBaseFragment(),
     StrokeOrderFragment.ToggleHorizontalPagingListener {
 
     private lateinit var entry: Entry
@@ -73,21 +71,45 @@ class WordViewFragment : Fragment(),
         }
 
         wordViewViewModel.entry.observe(viewLifecycleOwner, Observer { entry ->
-            wordViewHeadword.text = HeadwordFormatter().format(entry, ChineseMode.SIMPLIFIED)
-            wordViewPinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, PinyinMode.MARKS)
+            this.entry = entry
+            setHeadwordAndPinyin(entry)
         })
 
         wordViewToolbar.setOnMenuItemClickListener(object: Toolbar.OnMenuItemClickListener {
             override fun onMenuItemClick(item: MenuItem?): Boolean {
                 return when (item?.itemId) {
                     R.id.copyToClipboard -> {
-                        val headword = wordViewViewModel.entry.value?.simplified
+                        var indicator = "(${getString(R.string.chinese_mode_simplified)})"
+                        val headword = when (MainApplication.chineseMode) {
+                            in listOf(ChineseMode.simplified, ChineseMode.simplifiedTraditional) -> {
+                                wordViewViewModel.entry.value?.simplified
+                            }
+                            in listOf(ChineseMode.traditional, ChineseMode.traditionalSimplified) -> {
+                                indicator = "(${getString(R.string.chinese_mode_traditional)})"
+                                wordViewViewModel.entry.value?.traditional
+                            }
+                            else -> ""
+                        }
+
                         val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         val clip = ClipData.newPlainText("Headword", headword)
 
                         clipboard.setPrimaryClip(clip)
 
-                        Toast.makeText(activity, "Copied $headword to clipboard", Toast.LENGTH_SHORT).show()
+                        if (MainApplication.chineseMode in listOf(ChineseMode.simplifiedTraditional, ChineseMode.traditionalSimplified)) {
+                            Toast.makeText(
+                                activity,
+                                "Copied $headword $indicator to clipboard",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        else {
+                            Toast.makeText(
+                                activity,
+                                "Copied $headword to clipboard",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
 
                         true
                     }
@@ -95,6 +117,16 @@ class WordViewFragment : Fragment(),
                 }
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setHeadwordAndPinyin(entry)
+    }
+
+    fun setHeadwordAndPinyin(entry: Entry) {
+        wordViewHeadword.text = HeadwordFormatter().format(entry, MainApplication.chineseMode)
+        wordViewPinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, MainApplication.pinyinMode)
     }
 
     override fun toggleHorizontalPaging() {

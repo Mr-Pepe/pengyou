@@ -1,36 +1,61 @@
 package com.mrpepe.pengyou
 
+import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.content.res.Resources
+import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel
-import com.mrpepe.pengyou.settings.SettingsFragment
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.fragment_dictionary_search.*
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 class HomeActivity : BaseActivity(),
-    SettingsFragment.SettingsFragmentInteractionListener {
+    PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     private lateinit var dictionarySearchViewModel: DictionarySearchViewModel
 
+    private var listener = object: SharedPreferences.OnSharedPreferenceChangeListener {
+                override fun onSharedPreferenceChanged(
+                    sharedPreferences: SharedPreferences?,
+                    key: String?
+                ) {
+                    if (key == "pinyin_notation") {
+                        MainApplication.pinyinMode = sharedPreferences?.getString(key, PinyinMode.marks) ?: PinyinMode.marks
+                    }
+                    else if (key == "chinese_mode") {
+                        MainApplication.chineseMode = sharedPreferences?.getString(key, ChineseMode.simplified) ?: ChineseMode.simplified
+                    }
+                    else if (key == "theme") {
+                        setTheme()
+                    }
+                }
+            }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        MainApplication.homeActivity = this
         setContentView(R.layout.activity_home)
         setupKeyboardVisibleListener(findViewById(R.id.homeActivity))
 
         dictionarySearchViewModel = ViewModelProvider(this)[DictionarySearchViewModel::class.java]
 
         val host: NavHostFragment = supportFragmentManager
-            .findFragmentById(R.id.main_container) as NavHostFragment
+            .findFragmentById(R.id.mainContainer) as NavHostFragment
 
         val navController = host.navController
 
@@ -49,6 +74,46 @@ class HomeActivity : BaseActivity(),
             Log.d("HomeActivity", "Navigated to $dest")
         }
 
+        MainApplication.pinyinMode =
+            PreferenceManager
+                .getDefaultSharedPreferences(MainApplication.getContext())
+                .getString("pinyin_notation", PinyinMode.marks) ?: PinyinMode.marks
+
+        MainApplication.chineseMode =
+            PreferenceManager
+                .getDefaultSharedPreferences(MainApplication.getContext())
+                .getString("chinese_mode", ChineseMode.simplified) ?: ChineseMode.simplified
+
+        setTheme()
+
+        PreferenceManager
+            .getDefaultSharedPreferences(this)
+            .registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    fun isNightMode(): Boolean {
+        return (getResources().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+                    Configuration.UI_MODE_NIGHT_YES
+    }
+
+    fun setTheme() {
+        val mode = PreferenceManager.getDefaultSharedPreferences(MainApplication.getContext())?.getString("theme", "") ?: ""
+
+        when (mode) {
+            getString(R.string.theme_light) -> AppCompatDelegate.setDefaultNightMode(
+                AppCompatDelegate.MODE_NIGHT_NO
+            )
+            getString(R.string.theme_dark) -> AppCompatDelegate.setDefaultNightMode(
+                AppCompatDelegate.MODE_NIGHT_YES
+            )
+            getString(R.string.theme_battery_saver) -> AppCompatDelegate.setDefaultNightMode(
+                AppCompatDelegate.MODE_NIGHT_AUTO_BATTERY
+            )
+            getString(R.string.theme_system_default) -> AppCompatDelegate.setDefaultNightMode(
+                AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            )
+            else -> {}
+        }
     }
 
     private fun setupBottomNavMenu(navController: NavController) {
@@ -59,10 +124,10 @@ class HomeActivity : BaseActivity(),
             when (item.title) {
                 getString(R.string.bottom_navigation_view_dictionary) -> {
                     dictionarySearchViewModel.searchQuery = ""
-                    findNavController(R.id.main_container).navigate(R.id.globalOpenDictionaryAction)
+                    findNavController(R.id.mainContainer).navigate(R.id.globalOpenDictionaryAction)
                 }
                 getString(R.string.bottom_navigation_view_settings) -> {
-                    findNavController(R.id.main_container).navigate(R.id.settingsFragment)
+                    findNavController(R.id.mainContainer).navigate(R.id.topLevelSettingsFragment)
                 }
                 else -> {}
             }
@@ -89,4 +154,17 @@ class HomeActivity : BaseActivity(),
         }
     }
 
+    override fun onPreferenceStartFragment(
+        caller: PreferenceFragmentCompat?,
+        pref: Preference?
+    ): Boolean {
+
+        when (pref?.key) {
+            "appearance" -> findNavController(R.id.mainContainer).navigate(R.id.actionTopLevelSettingsToAppearanceSettings)
+            "headword_coloring" -> findNavController(R.id.mainContainer).navigate(R.id.actionAppearanceSettingsToHeadwordColoringSettings)
+            else -> {}
+        }
+        
+        return true
+    }
 }

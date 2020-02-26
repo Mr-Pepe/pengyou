@@ -2,6 +2,7 @@
     <string name="app_name">Pengyou</string>
     <string name="title_home_activity">Home</string>
     <string name="title_dictionary_activity">Dictionary</string>
+    <string name="title_settings_fragment">Settings</string>
     <string name="title_activity_word_view">WordViewActivity</string>
     <string name="search_view_query_hint">Search Dictionary</string>
     <string name="no_definition_found">"No definition found, but this character might be used in other words."</string>
@@ -28,5 +29,28 @@
     <string name="no_history">NO HISTORY AVAILABLE</string>
     <string name="no_appearance_in_other_words">\u0020DOES NOT APPEAR IN OTHER WORDS</string>
     <string name="appears_in_other_words">WORDS CONTAINING:\u0020</string>
+
+    <!--  Settings  -->
+    <string name="appearance_settings_title">Appearance</string>
+        <string name="pinyin_notation">Pinyin notation</string>
+            <string name="pinyin_notation_numbers">Numbers</string>
+            <string name="pinyin_notation_marks">Marks</string>
+        <string name="chinese_mode">Chinese mode</string>
+            <string name="chinese_mode_simplified">Simplified</string>
+            <string name="chinese_mode_traditional">Traditional</string>
+            <string name="chinese_mode_simplified_traditional">Simplified | Traditional</string>
+            <string name="chinese_mode_traditional_simplified">Traditional | Simplified</string>
+        <string name="theme">Theme</string>
+            <string name="theme_light">Light</string>
+            <string name="theme_dark">Dark</string>
+            <string name="theme_battery_saver">Set by Battery Saver</string>
+            <string name="theme_system_default">Use system default</string>
+        <string name="headword_coloring">Headword coloring</string>
+            <string name="first_tone">First tone</string>
+            <string name="second_tone">Second tone</string>
+            <string name="third_tone">Third tone</string>
+            <string name="fourth_tone">Fourth tone</string>
+            <string name="fifth_tone">Fifth tone</string>
+            <string name="colorpicker_default">Reset to default</string>
 
 </resources>

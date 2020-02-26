@@ -2,6 +2,7 @@ package com.mrpepe.pengyou.dictionary.wordView
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -101,9 +102,17 @@ class StrokeOrderFragment : Fragment() {
 
         model.strokeOrders.observe(viewLifecycleOwner, Observer {strokeOrders ->
             currentStrokeOrder = strokeOrders[0].replace("\'", "\"")
-            nStrokes = (Parser.default().parse(StringBuilder(currentStrokeOrder)) as JsonObject).array<String>("strokes")!!.size
-            currentStroke = 0
-            initCharacter()
+
+            // TODO: Handle multiple characters and missing stroke order diagrams
+            if (!currentStrokeOrder.isBlank()) {
+                Log.d("", currentStrokeOrder)
+                nStrokes =
+                    (Parser.default().parse(StringBuilder(currentStrokeOrder)) as JsonObject).array<String>(
+                        "strokes"
+                    )!!.size
+                currentStroke = 0
+                initCharacter()
+            }
         })
 
         buttonPlay.setOnClickListener {
@@ -289,7 +298,9 @@ class StrokeOrderFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        webView.removeJavascriptInterface(JAVASCRIPT_OBJ)
+        if (::webView.isInitialized) {
+            webView.removeJavascriptInterface(JAVASCRIPT_OBJ)
+        }
         super.onDestroy()
     }
 

@@ -2,7 +2,7 @@ package com.mrpepe.pengyou
 
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.SystemClock
 import android.text.SpannableString
@@ -13,16 +13,19 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.util.Log
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
 import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
+import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
 import com.mrpepe.pengyou.dictionary.CEDict
 import com.mrpepe.pengyou.dictionary.Entry
@@ -34,7 +37,7 @@ import kotlinx.coroutines.launch
 
 class DefinitionFormatter {
 
-    fun formatDefinitions(entry: Entry, linkWords: Boolean, context: Context?, view: View, mode: ChineseMode): List<SpannableStringBuilder> {
+    fun formatDefinitions(entry: Entry, linkWords: Boolean, context: Context?, view: View, chineseMode: String, pinyinMode: String): List<SpannableStringBuilder> {
         val rawDefinitions = entry.definitions
         val definitions = mutableListOf<SpannableStringBuilder>()
 
@@ -43,14 +46,14 @@ class DefinitionFormatter {
         }
         else {
             rawDefinitions.split('/').forEach { rawDefinition ->
-                definitions.add(formatDefinition(entry, rawDefinition, linkWords, context, view, mode))
+                definitions.add(formatDefinition(entry, rawDefinition, linkWords, context, view, chineseMode, pinyinMode))
             }
 
             definitions
         }
     }
 
-    private fun formatDefinition(entry: Entry, rawDefinition: String, linkWords: Boolean, context: Context?, view: View, mode: ChineseMode) : SpannableStringBuilder {
+    private fun formatDefinition(entry: Entry, rawDefinition: String, linkWords: Boolean, context: Context?, view: View, chineseMode: String, pinyinMode: String) : SpannableStringBuilder {
 
         val definition = SpannableStringBuilder()
 
@@ -79,10 +82,10 @@ class DefinitionFormatter {
 
                         var word = SpannableString("")
 
-                        if (mode == ChineseMode.SIMPLIFIED || mode == ChineseMode.BOTH) {
+                        if (chineseMode == ChineseMode.simplified || chineseMode == ChineseMode.simplifiedTraditional) {
                             word = SpannableString(simplified)
                         }
-                        else if (mode == ChineseMode.TRADITIONAL){
+                        else if (chineseMode == ChineseMode.traditional || chineseMode == ChineseMode.traditionalSimplified){
                             word = SpannableString(traditional)
                         }
 
@@ -138,7 +141,7 @@ class DefinitionFormatter {
                         definition.append(
                             PinyinConverter().getFormattedPinyin(
                                 pinyin.toString(),
-                                PinyinMode.MARKS
+                                pinyinMode
                             )
                         )
                         definition.append(char)
@@ -174,6 +177,22 @@ fun WebView.runJavaScript(string: String) {
                 "javascript: " +
                         string, null
             )
+}
+
+class ChineseMode {
+    companion object {
+        val simplified = MainApplication.getContext().getString(R.string.chinese_mode_simplified)
+        val traditional = MainApplication.getContext().getString(R.string.chinese_mode_traditional)
+        val simplifiedTraditional = MainApplication.getContext().getString(R.string.chinese_mode_simplified_traditional)
+        val traditionalSimplified = MainApplication.getContext().getString(R.string.chinese_mode_traditional_simplified)
+    }
+}
+
+class PinyinMode {
+    companion object {
+        val marks = MainApplication.getContext().getString(R.string.pinyin_notation_marks)
+        val numbers = MainApplication.getContext().getString(R.string.pinyin_notation_numbers)
+    }
 }
 
 class WordLink(val entry: Entry,
@@ -269,15 +288,16 @@ class WordLink(val entry: Entry,
 }
 
 class PinyinConverter {
-    fun getFormattedPinyin(pinyin: String, mode: PinyinMode): String {
+    fun getFormattedPinyin(pinyin: String, mode: String): String {
         val result = pinyin.replace("u:", "ü")
 
         return when (mode) {
-            PinyinMode.NUMBERS -> {
+            PinyinMode.numbers -> {
+                Log.d("", "here")
                 return result.replace(",", ", ")
             }
 
-            PinyinMode.MARKS -> {
+            PinyinMode.marks -> {
                 val syllables = result.split(" ").toMutableList()
 
                 syllables.forEachIndexed { iSyllable, syllable ->
@@ -329,6 +349,8 @@ class PinyinConverter {
 
             }
 
+            else -> ""
+
 
         }
     }
@@ -350,24 +372,21 @@ class PinyinConverter {
     )
 }
 
-enum class PinyinMode {
-    NUMBERS,
-    MARKS
-}
-
 class HeadwordFormatter {
 
-    fun format(entry: Entry, mode: ChineseMode): SpannableStringBuilder {
+    fun format(entry: Entry, mode: String): SpannableStringBuilder {
         val headwordText = SpannableStringBuilder()
         val simplified = HeadwordFormatter().paintHeadword(entry.simplified, entry.pinyin)
         val traditional = HeadwordFormatter().paintHeadword(entry.traditional, entry.pinyin)
 
-        if (mode == ChineseMode.SIMPLIFIED || mode == ChineseMode.BOTH)
+        if (mode == ChineseMode.simplified || mode == ChineseMode.simplifiedTraditional)
             headwordText.append(simplified)
-        if (mode == ChineseMode.BOTH)
-            headwordText.append(" | ")
-        if (mode == ChineseMode.BOTH || mode == ChineseMode.TRADITIONAL)
+        else if (mode == ChineseMode.traditional || mode == ChineseMode.traditionalSimplified)
             headwordText.append(traditional)
+        if (mode == ChineseMode.simplifiedTraditional)
+            headwordText.append(" | ").append(traditional)
+        else if (mode == ChineseMode.traditionalSimplified)
+            headwordText.append(" | ").append(simplified)
 
         return headwordText
     }
@@ -391,28 +410,30 @@ class HeadwordFormatter {
 
                 val pinyinSyllable = syllables[iSyllable]
 
-                var color = R.color.notone
+                val noToneColor =
+                    when (MainApplication.homeActivity.isNightMode()) {
+                        true -> R.color.no_tone_dark_theme
+                        else -> R.color.no_tone_light_theme
+                    }
+
+                var color = noToneColor
+                val preferences = PreferenceManager.getDefaultSharedPreferences(MainApplication.getContext())
 
                 if (pinyinSyllable.length > 1 &&
                     (Character.getNumericValue(pinyinSyllable.last()) in 1..5) &&
                     !headword[iHeadword].isDigit()) {
 
                     color = when (Character.getNumericValue(pinyinSyllable.last())) {
-                        1 -> R.color.tone1
-                        2 -> R.color.tone2
-                        3 -> R.color.tone3
-                        4 -> R.color.tone4
-                        5 -> R.color.tone5
-                        else -> R.color.notone
+                        1 -> preferences.getInt("first_tone_color", noToneColor)
+                        2 -> preferences.getInt("second_tone_color", noToneColor)
+                        3 -> preferences.getInt("third_tone_color", noToneColor)
+                        4 -> preferences.getInt("fourth_tone_color", noToneColor)
+                        5 -> preferences.getInt("fifth_tone_color", noToneColor)
+                        else -> noToneColor
                     }
                 }
 
-                val foreGroundColor = ForegroundColorSpan(
-                    ResourcesCompat.getColor(
-                        MainApplication.getContext().resources,
-                        color, null
-                    )
-                )
+                val foreGroundColor = ForegroundColorSpan(color)
 
                 output.setSpan(
                     foreGroundColor,
@@ -429,12 +450,6 @@ class HeadwordFormatter {
         return output
     }
 
-}
-
-enum class ChineseMode {
-    SIMPLIFIED,
-    TRADITIONAL,
-    BOTH
 }
 
 fun String.countSurrogatePairs() = withIndex().count {

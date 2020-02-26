@@ -11,12 +11,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/dictionarySearchToolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
+            android:layout_height="?attr/actionBarSize">
 
             <SearchView
                 android:id="@+id/dictionarySearchSearchBox"
@@ -25,14 +23,13 @@
                 android:iconifiedByDefault="false"
                 android:queryHint="@string/search_view_query_hint" />
 
-        </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.MaterialToolbar>
 
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/dictionarySearchInputMethodTabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabIndicatorColor="@color/colorIndicator" />
+            android:layout_height="wrap_content"/>
 
         <com.mrpepe.pengyou.CustomViewPager
             android:id="@+id/dictionarySearchViewPager"
