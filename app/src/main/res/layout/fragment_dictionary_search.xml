@@ -11,11 +11,10 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.Toolbar
+        <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/dictionarySearchToolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
+            android:layout_height="?attr/actionBarSize">
 
             <SearchView
                 android:id="@+id/dictionarySearchSearchBox"
@@ -24,7 +23,7 @@
                 android:iconifiedByDefault="false"
                 android:queryHint="@string/search_view_query_hint" />
 
-        </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.MaterialToolbar>
 
 
         <com.google.android.material.tabs.TabLayout
