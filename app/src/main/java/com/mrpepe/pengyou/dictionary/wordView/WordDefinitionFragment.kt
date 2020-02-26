@@ -16,10 +16,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.mrpepe.pengyou.ChineseMode
-import com.mrpepe.pengyou.DefinitionFormatter
-import com.mrpepe.pengyou.MainApplication
-import com.mrpepe.pengyou.R
+import androidx.preference.PreferenceManager
+import com.mrpepe.pengyou.*
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_word_definition.view.*
 import kotlinx.android.synthetic.main.search_result.view.definitions
@@ -67,7 +65,7 @@ class WordDefinitionFragment : Fragment() {
 
             definitions.movementMethod = LinkMovementMethod.getInstance()
 
-            val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, true, activity, view, ChineseMode.SIMPLIFIED)
+            val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, true, activity, view, MainApplication.chineseMode, MainApplication.pinyinMode)
 
             if (formattedDefinitions.isEmpty())
                 definitions.text = MainApplication.getContext().getString(R.string.no_definition_found)

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.rarepebble.colorpicker.ColorPreference
+        android:key="first_tone_color"
+        android:title="@string/first_tone"
+        android:defaultValue="@color/tone1_default_color"
+        app:iconSpaceReserved="false"
+        />
+
+    <com.rarepebble.colorpicker.ColorPreference
+        android:key="second_tone_color"
+        android:title="@string/second_tone"
+        android:defaultValue="@color/tone2_default_color"
+        app:iconSpaceReserved="false"
+        />
+
+    <com.rarepebble.colorpicker.ColorPreference
+        android:key="third_tone_color"
+        android:title="@string/third_tone"
+        android:defaultValue="@color/tone3_default_color"
+        app:iconSpaceReserved="false"
+        />
+
+    <com.rarepebble.colorpicker.ColorPreference
+        android:key="fourth_tone_color"
+        android:title="@string/fourth_tone"
+        android:defaultValue="@color/tone4_default_color"
+        app:iconSpaceReserved="false"
+        />
+
+    <com.rarepebble.colorpicker.ColorPreference
+        android:key="fifth_tone_color"
+        android:title="@string/fifth_tone"
+        app:defaultValue="@color/tone5_default_color"
+        app:iconSpaceReserved="false"
+        app:allowDividerBelow="true"
+        />
+
+    <Preference
+        android:title="@string/colorpicker_default"
+        android:key="headword_colors_to_default"
+        app:allowDividerAbove="true"
+        app:iconSpaceReserved="false"/>
+
+</PreferenceScreen>

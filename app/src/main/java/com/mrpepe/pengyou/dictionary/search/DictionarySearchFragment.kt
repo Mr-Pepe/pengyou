@@ -15,16 +15,21 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
 import com.mrpepe.pengyou.*
+import com.mrpepe.pengyou.dictionary.DictionaryBaseFragment
 
 import kotlinx.android.synthetic.main.fragment_dictionary_search.*
 import kotlinx.android.synthetic.main.fragment_dictionary_search.dictionarySearchInputMethodTabs
 import kotlinx.android.synthetic.main.fragment_dictionary_search.dictionarySearchSearchBox
 import kotlinx.android.synthetic.main.fragment_dictionary_search.dictionarySearchViewPager
+import java.util.*
+import kotlin.concurrent.timerTask
 
-class DictionarySearchFragment : Fragment() {
+class DictionarySearchFragment : DictionaryBaseFragment() {
     private lateinit var modeSwitch: MenuItem
     private lateinit var dictionaryViewModel: DictionarySearchViewModel
     private var blockKeyboard = false
+
+    private var selectedInputMethodIndex = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +47,11 @@ class DictionarySearchFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_dictionary_search, container, false)
     }
 
+    override fun onResume() {
+        super.onResume()
+        dictionaryViewModel.displayedLanguage?.value?.let { setModeSwitchIcon(it) }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -49,15 +59,7 @@ class DictionarySearchFragment : Fragment() {
         modeSwitch = dictionarySearchToolbar.menu.getItem(0)
 
         dictionaryViewModel.displayedLanguage.observe(viewLifecycleOwner, Observer { language ->
-            when (language) {
-                DictionarySearchViewModel.SearchLanguage.ENGLISH -> {
-                    modeSwitch.icon = ContextCompat.getDrawable(MainApplication.getContext(), R.drawable.ic_english_mode);
-                }
-                DictionarySearchViewModel.SearchLanguage.CHINESE -> {
-                    modeSwitch.icon = ContextCompat.getDrawable(MainApplication.getContext(), R.drawable.ic_chinese_mode);
-                }
-                else -> {}
-            }
+            setModeSwitchIcon(language)
         })
 
         val sectionsPagerAdapter = DictionarySearchPagerAdapter(childFragmentManager)
@@ -73,6 +75,9 @@ class DictionarySearchFragment : Fragment() {
             tab.findViewById<ImageView>(R.id.tab_icon).setImageResource(sectionsPagerAdapter.tabIcons[iTab])
             dictionarySearchInputMethodTabs.getTabAt(iTab)?.customView = tab
         }
+
+        selectedInputMethodIndex = dictionarySearchInputMethodTabs.selectedTabPosition
+        dictionarySearchLinearLayout.removeView(dictionarySearchInputMethodTabs)
 
         dictionarySearchSearchBox.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextChange(newText: String?): Boolean {
@@ -95,8 +100,12 @@ class DictionarySearchFragment : Fragment() {
                 when (hasFocus) {
                     true -> if (dictionarySearchInputMethodTabs.parent == null) {
                         dictionarySearchLinearLayout.addView(dictionarySearchInputMethodTabs, 1)
+                        dictionarySearchInputMethodTabs.getTabAt(selectedInputMethodIndex)?.select()
                     }
-                    false -> dictionarySearchLinearLayout.removeView(dictionarySearchInputMethodTabs)
+                    false -> {
+                        selectedInputMethodIndex = dictionarySearchInputMethodTabs.selectedTabPosition
+                        dictionarySearchLinearLayout.removeView(dictionarySearchInputMethodTabs)
+                    }
                 }
             }
         })
@@ -132,6 +141,7 @@ class DictionarySearchFragment : Fragment() {
                 positionOffsetPixels: Int
             ) {
             }
+
         })
 
         dictionarySearchToolbar.setOnMenuItemClickListener(object: Toolbar.OnMenuItemClickListener {
@@ -157,6 +167,25 @@ class DictionarySearchFragment : Fragment() {
                 }
             }
         })
+    }
+
+    fun setModeSwitchIcon(language: DictionarySearchViewModel.SearchLanguage) {
+        when (language) {
+            DictionarySearchViewModel.SearchLanguage.ENGLISH -> {
+                modeSwitch.icon = ContextCompat.getDrawable(
+                    MainApplication.getContext(),
+                    R.drawable.ic_english_mode
+                )
+
+            }
+            DictionarySearchViewModel.SearchLanguage.CHINESE -> {
+                modeSwitch.icon = ContextCompat.getDrawable(
+                    MainApplication.getContext(),
+                    R.drawable.ic_chinese_mode
+                )
+
+            }
+        }
     }
 
     fun addCharacterToQuery(newChar: String) {

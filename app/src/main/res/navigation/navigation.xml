@@ -7,12 +7,6 @@
 
 
     <fragment
-        android:id="@+id/settingsFragment"
-        android:name="com.mrpepe.pengyou.settings.SettingsFragment"
-        tools:layout="@layout/fragment_settings">
-    </fragment>
-
-    <fragment
         android:id="@+id/dictionarySearchFragment"
         android:name="com.mrpepe.pengyou.dictionary.search.DictionarySearchFragment"
         android:label="DictionarySearchFragment" />
@@ -34,6 +28,28 @@
     <action
         android:id="@+id/globalOpenWordViewAction"
         app:destination="@id/wordViewFragment" />
+
+    <fragment
+        android:id="@+id/topLevelSettingsFragment"
+        android:name="com.mrpepe.pengyou.settings.TopLevelSettingsFragment"
+        android:label="TopLevelSettingsFragment" >
+        <action
+            android:id="@+id/actionTopLevelSettingsToAppearanceSettings"
+            app:destination="@id/appearanceSettingsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/appearanceSettingsFragment"
+        android:name="com.mrpepe.pengyou.settings.AppearanceSettingsFragment"
+        android:label="AppearanceSettingsFragment" >
+        <action
+            android:id="@+id/actionAppearanceSettingsToHeadwordColoringSettings"
+            app:destination="@id/headwordColoringSettingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/headwordColoringSettingsFragment"
+        android:name="com.mrpepe.pengyou.settings.HeadwordColoringSettingsFragment"
+        android:label="HeadwordColoringSettingsFragment" />
 
 
 </navigation>
