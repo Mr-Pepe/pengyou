@@ -21,6 +21,7 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.fragment_dictionary_search.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
@@ -124,6 +125,7 @@ class HomeActivity : BaseActivity(),
             when (item.title) {
                 getString(R.string.bottom_navigation_view_dictionary) -> {
                     dictionarySearchViewModel.searchQuery = ""
+                    dictionarySearchSearchBox?.requestFocus()
                     findNavController(R.id.mainContainer).navigate(R.id.globalOpenDictionaryAction)
                 }
                 getString(R.string.bottom_navigation_view_settings) -> {

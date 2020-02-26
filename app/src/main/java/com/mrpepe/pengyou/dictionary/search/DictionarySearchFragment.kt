@@ -98,9 +98,14 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
         dictionarySearchSearchBox.setOnQueryTextFocusChangeListener( object : View.OnFocusChangeListener {
             override fun onFocusChange(v: View?, hasFocus: Boolean) {
                 when (hasFocus) {
-                    true -> if (dictionarySearchInputMethodTabs.parent == null) {
-                        dictionarySearchLinearLayout.addView(dictionarySearchInputMethodTabs, 1)
-                        dictionarySearchInputMethodTabs.getTabAt(selectedInputMethodIndex)?.select()
+                    true -> if (dictionarySearchInputMethodTabs?.parent == null) {
+                        dictionarySearchInputMethodTabs?.let {
+                            dictionarySearchLinearLayout.addView(it, 1)
+                            it.getTabAt(selectedInputMethodIndex)?.select()
+                            if (selectedInputMethodIndex == 0) {
+                                showKeyboard()
+                            }
+                        }
                     }
                     false -> {
                         selectedInputMethodIndex = dictionarySearchInputMethodTabs.selectedTabPosition
@@ -119,9 +124,7 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
                     }
                     else {
                         if (!MainApplication.keyboardVisible) {
-                            val imm =
-                                activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
+                            showKeyboard()
                         }
                         dictionarySearchSearchBox.requestFocus()
                     }
@@ -186,6 +189,11 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
 
             }
         }
+    }
+
+    fun showKeyboard() {
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
 
     fun addCharacterToQuery(newChar: String) {
