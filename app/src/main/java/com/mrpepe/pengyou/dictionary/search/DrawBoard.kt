@@ -6,9 +6,12 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import androidx.lifecycle.MutableLiveData
+import com.mrpepe.pengyou.MainApplication
+import com.mrpepe.pengyou.R
 
 class DrawBoard (context: Context, attributeSet: AttributeSet): View(context, attributeSet) {
 
@@ -26,9 +29,13 @@ class DrawBoard (context: Context, attributeSet: AttributeSet): View(context, at
 
     var isClear = true
 
+    private var strokeColor = TypedValue()
+
     init {
+        MainApplication.homeActivity.theme.resolveAttribute(R.attr.colorOnBackground, strokeColor, true)
+
         mPaint.apply {
-            color = Color.BLACK
+            color = strokeColor.data
             style = Paint.Style.STROKE
             strokeJoin = Paint.Join.ROUND
             strokeCap = Paint.Cap.ROUND
