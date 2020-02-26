@@ -9,7 +9,6 @@ function initCharacter() {
     writer = HanziWriter.create('draw_board', '', {
       charDataLoader: function() {
         data = JSON.parse(Android.getJSON())
-        console.log(data)
         return data
       },
       width: width,

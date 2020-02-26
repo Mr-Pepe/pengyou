@@ -356,7 +356,9 @@ class StrokeOrderFragment : Fragment() {
 
     private fun initCharacter() {
         if (webViewLoaded && currentStrokeOrder != "") {
-            webView.runJavaScript("initCharacter()")
+            MainScope().launch {
+                webView.runJavaScript("initCharacter()")
+            }
         }
     }
 
