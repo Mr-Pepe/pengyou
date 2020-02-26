@@ -8,19 +8,32 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:layout_editor_absoluteY="56dp">
 
-    <TextView
-        android:id="@+id/resultCount"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/medium_padding"
-        android:paddingTop="@dimen/small_padding"
-        android:paddingEnd="@dimen/small_padding"
-        android:paddingBottom="@dimen/small_padding"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="resultCount" />
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/resultCount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingStart="@dimen/medium_padding"
+            android:paddingTop="@dimen/small_padding"
+            android:paddingEnd="@dimen/small_padding"
+            android:paddingBottom="@dimen/small_padding"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="resultCount" />
+
+        <TextView
+            android:id="@+id/clearHistoryLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="CLEAR HISTORY" />
+    </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/searchResultList"

@@ -2,11 +2,18 @@ package com.mrpepe.pengyou.dictionary.search
 
 import android.os.Bundle
 import android.os.SystemClock
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.text.toSpannable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +26,7 @@ import com.mrpepe.pengyou.SearchHistory
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.wordView.WordViewFragmentDirections
 import com.mrpepe.pengyou.hideKeyboard
+import kotlinx.android.synthetic.main.fragment_search_result_list.*
 import kotlinx.android.synthetic.main.fragment_search_result_list.view.*
 
 class SearchResultFragment : Fragment() {
@@ -102,9 +110,27 @@ class SearchResultFragment : Fragment() {
 
             // Show history
             true -> {
-                resultCount.text = when (dictionaryViewModel.searchHistoryIDs.size) {
-                    0 -> getString(R.string.no_history)
-                    else -> getString(R.string.history) + dictionaryViewModel.searchHistoryIDs.size.toString()
+                when (dictionaryViewModel.searchHistoryIDs.size) {
+                    0 -> {
+                        resultCount.text = getString(R.string.no_history)
+                        clearHistoryLink.text = ""
+                    }
+                    else -> {
+                        resultCount.text = getString(R.string.history) + dictionaryViewModel.searchHistoryIDs.size.toString()
+                        clearHistoryLink.movementMethod = LinkMovementMethod.getInstance()
+
+                        val clearHistoryText = getString(R.string.clear_history).toSpannable()
+                        clearHistoryText.setSpan(object: ClickableSpan() {
+                            override fun onClick(widget: View) {
+                                searchHistory.clear()
+                            }
+                            override fun updateDrawState(ds: TextPaint) {
+                                super.updateDrawState(ds)
+                                ds.isUnderlineText = false
+                            }
+                        }, 0, clearHistoryText.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        clearHistoryLink.text = SpannableStringBuilder().append(clearHistoryText)
+                    }
                 }
                 adapter.setEntries(dictionaryViewModel.searchHistoryEntries.value ?: listOf())
                 dictionaryViewModel.displayedLanguage.value = dictionaryViewModel.requestedLanguage.value
@@ -113,6 +139,7 @@ class SearchResultFragment : Fragment() {
 
             // Show search results
             false -> {
+                clearHistoryLink.text = ""
                 if (dictionaryViewModel.requestedLanguage.value == DictionarySearchViewModel.SearchLanguage.ENGLISH) {
 
                     when (dictionaryViewModel.englishSearchResults.value != null && dictionaryViewModel.englishSearchResults.value?.isNotEmpty()!!) {
