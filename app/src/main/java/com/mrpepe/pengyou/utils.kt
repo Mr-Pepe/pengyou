@@ -423,11 +423,11 @@ class HeadwordFormatter {
                     !headword[iHeadword].isDigit()) {
 
                     color = when (Character.getNumericValue(pinyinSyllable.last())) {
-                        1 -> preferences.getInt("first_tone_color", noToneColor)
-                        2 -> preferences.getInt("second_tone_color", noToneColor)
-                        3 -> preferences.getInt("third_tone_color", noToneColor)
-                        4 -> preferences.getInt("fourth_tone_color", noToneColor)
-                        5 -> preferences.getInt("fifth_tone_color", noToneColor)
+                        1 -> preferences.getInt("first_tone_color", MainApplication.getContext().getColor(R.color.tone1_default_color))
+                        2 -> preferences.getInt("second_tone_color", MainApplication.getContext().getColor(R.color.tone2_default_color))
+                        3 -> preferences.getInt("third_tone_color", MainApplication.getContext().getColor(R.color.tone3_default_color))
+                        4 -> preferences.getInt("fourth_tone_color", MainApplication.getContext().getColor(R.color.tone4_default_color))
+                        5 -> preferences.getInt("fifth_tone_color", MainApplication.getContext().getColor(R.color.tone5_default_color))
                         else -> noToneColor
                     }
                 }
