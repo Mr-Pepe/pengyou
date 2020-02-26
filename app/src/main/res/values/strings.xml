@@ -27,6 +27,7 @@
     <string name="search_results">SEARCH RESULTS:\u0020</string>
     <string name="history">HISTORY:\u0020</string>
     <string name="no_history">NO HISTORY AVAILABLE</string>
+    <string name="clear_history">CLEAR HISTORY</string>
     <string name="no_appearance_in_other_words">\u0020DOES NOT APPEAR IN OTHER WORDS</string>
     <string name="appears_in_other_words">WORDS CONTAINING:\u0020</string>
 

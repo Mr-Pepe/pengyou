@@ -282,7 +282,6 @@ class WordLink(val entry: Entry,
 
     override fun updateDrawState(ds: TextPaint) {
         super.updateDrawState(ds)
-        ds.color = Color.BLUE
         ds.isUnderlineText = false
     }
 }
@@ -510,6 +509,16 @@ object SearchHistory {
         }
     }
 
+    fun clear() {
+        val searchHistoryIDs = mutableListOf<String>()
+        MainScope().launch {
+            with(searchPreferences.edit()) {
+                putString("search_history", searchHistoryIDs.joinToString(","))
+                commit()
+            }
+        }
+    }
+
     fun getHistoryIds(): List<String> {
         val ids = searchPreferences.getString("search_history", "")!!.split(',')
 
@@ -531,6 +540,8 @@ object SearchHistory {
 
         searchHistoryIDs.remove(id)
         searchHistoryIDs.add(id)
+        searchHistoryIDs.remove("")
+
 
         MainScope().launch {
             with(searchPreferences.edit()) {
