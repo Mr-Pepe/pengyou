@@ -3,18 +3,24 @@ package com.mrpepe.pengyou.dictionary.wordView
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.text.method.LinkMovementMethod
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.TableRow
 import android.widget.TextView
 import androidx.core.text.bold
+import androidx.core.text.italic
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.mrpepe.pengyou.*
+import kotlinx.android.synthetic.main.definition_table_row.view.*
+import kotlinx.android.synthetic.main.fragment_word_definition.*
 import kotlinx.android.synthetic.main.fragment_word_view.*
 import kotlinx.android.synthetic.main.search_result.*
+import kotlinx.android.synthetic.main.search_result.searchResultDefinitions
 import kotlinx.android.synthetic.main.search_result.view.searchResultDefinitions
 
 class WordDefinitionFragment : Fragment() {
@@ -43,27 +49,26 @@ class WordDefinitionFragment : Fragment() {
 
         model.entry.observe(viewLifecycleOwner, Observer { entry ->
 
-            searchResultDefinitions.movementMethod = LinkMovementMethod.getInstance()
-
             val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, true, activity, view, MainApplication.chineseMode, MainApplication.pinyinMode)
 
             if (formattedDefinitions.isEmpty())
-                searchResultDefinitions.text = MainApplication.getContext().getString(R.string.no_definition_found)
+                definitionNotFounTextView.text = SpannableStringBuilder().italic { append(MainApplication.getContext().getString(R.string.no_definition_found)) }
             else {
-                val text = SpannableStringBuilder()
 
-                formattedDefinitions.forEachIndexed { iDefinition, definition ->
+                definitionTable.removeAllViews()
 
-                    text.bold { append("${iDefinition + 1}") }
-                    when (iDefinition < 9) {
-                        true -> text.append("    \t")
-                        false -> text.append("  \t")
-                    }
-                    text.append(definition)
-                    text.append("\n")
+                formattedDefinitions.forEachIndexed { iFormattedDefinition, formattedDefinition ->
+
+                    val row = layoutInflater.inflate(R.layout.definition_table_row, null)
+
+                    row.definitionIndex.text = SpannableStringBuilder().bold { append("${iFormattedDefinition + 1}  ") }
+
+                    row.definitionText.text = formattedDefinition
+                    row.definitionText.movementMethod = LinkMovementMethod.getInstance()
+
+                    definitionTable.addView(row)
                 }
 
-                searchResultDefinitions.text = text
             }
         })
     }
