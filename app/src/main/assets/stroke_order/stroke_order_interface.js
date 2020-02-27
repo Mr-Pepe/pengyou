@@ -14,7 +14,11 @@ function initCharacter() {
       width: width,
       height: height,
       showOutline: true,
-      showCharacter: false
+      showCharacter: false,
+      strokeColor: Android.getStrokeColor(),
+      outlineColor: Android.getOutlineColor(),
+      drawingColor: Android.getStrokeColor(),
+      drawingWidth: 10
     });
 }
 

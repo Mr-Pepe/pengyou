@@ -328,7 +328,6 @@ class PinyinConverter {
 
         return when (mode) {
             PinyinMode.numbers -> {
-                Log.d("", "here")
                 return result.replace(",", ", ")
             }
 
