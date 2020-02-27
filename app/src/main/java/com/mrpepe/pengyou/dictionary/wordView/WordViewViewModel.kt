@@ -18,22 +18,20 @@ class WordViewViewModel() : ViewModel() {
     val entry = MediatorLiveData<Entry>()
     val wordsContaining = MediatorLiveData<List<Entry>>()
 
-
     fun init(initEntry: Entry) {
+        repository = WordViewRepository(entryDao, initEntry)
+        entry.addSource(repository.entry) {value -> entry.value = value}
+        wordsContaining.addSource(repository.wordsContaining) {value -> wordsContaining.value = value}
+
         viewModelScope.launch {
-            repository = WordViewRepository(entryDao, initEntry)
-
-            entry.addSource(repository.entry) {value -> entry.value = value}
-            wordsContaining.addSource(repository.wordsContaining) {value -> wordsContaining.value = value}
-
             repository.decompose(initEntry.simplified)
             decompositions.postValue(repository.decompositions)
+        }
+        viewModelScope.launch {
             repository.getStrokeOrder(initEntry.simplified)
             strokeOrders.postValue(repository.strokeOrders)
-
-
-            isInitialized = true
         }
 
+        isInitialized = true
     }
 }
