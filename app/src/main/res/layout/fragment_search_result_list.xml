@@ -32,6 +32,7 @@
             android:id="@+id/clearHistoryLink"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/medium_padding"
             tools:text="CLEAR HISTORY" />
     </LinearLayout>
 
