@@ -34,6 +34,7 @@ class WordViewFragment : DictionaryBaseFragment(),
         super.onCreate(savedInstanceState)
         arguments?.let {
             entry = it.get(ARG_ENTRY) as Entry
+            SearchHistory.addToHistory(entry.id.toString())
         }
 
         activity?.let {

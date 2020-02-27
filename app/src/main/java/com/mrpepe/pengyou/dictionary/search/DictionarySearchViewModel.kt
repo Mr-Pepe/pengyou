@@ -11,7 +11,6 @@ import kotlinx.coroutines.launch
 class DictionarySearchViewModel() : ViewModel() {
 
     private val repository : DictionarySearchRepository
-    val searchHistory = SearchHistory
     var searchHistoryIDs = listOf<String>()
     var searchHistoryEntries = MutableLiveData<List<Entry>>()
 
@@ -35,7 +34,7 @@ class DictionarySearchViewModel() : ViewModel() {
             key: String?
         ) {
             if (key == "search_history") {
-                searchHistoryIDs = searchHistory.getHistoryIds()
+                searchHistoryIDs = SearchHistory.getHistoryIds()
                 reloadSearchHistory()
             }
         }
@@ -54,9 +53,9 @@ class DictionarySearchViewModel() : ViewModel() {
         requestedLanguage.value = SearchLanguage.CHINESE
         displayedLanguage.value = SearchLanguage.CHINESE
 
-        searchHistory.searchPreferences.registerOnSharedPreferenceChangeListener(listener)
+        SearchHistory.searchPreferences.registerOnSharedPreferenceChangeListener(listener)
 
-        searchHistoryIDs = searchHistory.getHistoryIds()
+        searchHistoryIDs = SearchHistory.getHistoryIds()
 
         viewModelScope.launch {
             repository.getSearchHistory(searchHistoryIDs.reversed())
