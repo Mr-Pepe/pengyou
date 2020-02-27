@@ -12,7 +12,7 @@ class WordViewPagerAdapter(fm: FragmentManager) :
     val tabIcons = arrayOf(
         R.drawable.ic_dictionary,
         R.drawable.ic_strokes,
-        R.drawable.ic_decomposition,
+//        R.drawable.ic_decomposition,
         R.drawable.ic_brush_line
     )
 
@@ -20,8 +20,8 @@ class WordViewPagerAdapter(fm: FragmentManager) :
         return when (position) {
             0 -> WordDefinitionFragment()
             1 -> StrokeOrderFragment()
-            2 -> DecompositionFragment()
-            3 -> WordsContainingFragment()
+//            2 -> DecompositionFragment()
+            2 -> WordsContainingFragment()
             else -> WordDefinitionFragment()
         }
     }
