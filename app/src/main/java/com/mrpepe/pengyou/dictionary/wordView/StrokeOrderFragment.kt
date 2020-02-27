@@ -1,8 +1,11 @@
 package com.mrpepe.pengyou.dictionary.wordView
 
+import android.app.Application
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -15,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
+import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.runJavaScript
 import kotlinx.android.synthetic.main.fragment_stroke_order.*
@@ -97,6 +101,9 @@ class StrokeOrderFragment : Fragment() {
         webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
         webView.loadUrl(BASE_URL)
         webView.settings.loadWithOverviewMode = true
+        webView.isVerticalScrollBarEnabled = false
+        webView.isHorizontalScrollBarEnabled = false
+        webView.setBackgroundColor(Color.TRANSPARENT)
 //        webView.settings.useWideViewPort = true
 
 
@@ -320,7 +327,6 @@ class StrokeOrderFragment : Fragment() {
         fun isLoaded() {
             webViewLoaded = true
             initCharacter()
-
         }
 
         @JavascriptInterface
@@ -345,6 +351,25 @@ class StrokeOrderFragment : Fragment() {
         fun showCharacterFinished() {
             var timer1 = Timer()
                 timer1.schedule(timerTask { showCharacterFinished.postValue(true) }, 100)
+        }
+
+        @JavascriptInterface
+        fun getStrokeColor(): String {
+            val typedValue = TypedValue()
+            MainApplication.homeActivity.theme.resolveAttribute(R.attr.colorOnBackground, typedValue, true)
+
+            return String.format("#%06X", (0xFFFFFF and typedValue.data))
+        }
+
+        @JavascriptInterface
+        fun getOutlineColor(): String {
+            val typedValue = TypedValue()
+            MainApplication.homeActivity.theme.resolveAttribute(R.attr.colorOnBackground, typedValue, true)
+
+            return when(MainApplication.homeActivity.isNightMode()) {
+                true -> String.format("#%06X", 0xFFFFFF and Color.GRAY)
+                false -> String.format("#%06X", 0xFFFFFF and Color.LTGRAY)
+            }
         }
     }
 
