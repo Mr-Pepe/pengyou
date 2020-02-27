@@ -41,8 +41,14 @@ class SearchResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         }
 
         hsk.text = when (entry.hsk) {
-            7 ->    "         "
-            else -> "HSK " + entry.hsk.toString()
+            7 -> {
+                hsk.setBackgroundResource(0)
+                "         "
+            }
+            else -> {
+                hsk.setBackgroundResource(R.drawable.rounded_corner_line)
+                "HSK " + entry.hsk.toString()
+            }
         }
     }
 }
