@@ -31,18 +31,15 @@ class WordViewFragment : DictionaryBaseFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        activity?.let { activity ->
-            wordViewViewModel = ViewModelProvider(activity).get(WordViewViewModel::class.java)
+        wordViewViewModel = ViewModelProvider(this).get(WordViewViewModel::class.java)
 
-            arguments?.let { arguments ->
-                val entry = arguments.get(ARG_ENTRY) as Entry
+        arguments?.let { arguments ->
+            val entry = arguments.get(ARG_ENTRY) as Entry
 
-                wordViewViewModel.entry.value = entry
-                SearchHistory.addToHistory(entry.id.toString())
-                wordViewViewModel.init(entry)
-            }
-
-        } ?: throw Exception("Invalid Activity")
+            wordViewViewModel.entry.value = entry
+            SearchHistory.addToHistory(entry.id.toString())
+            wordViewViewModel.init(entry)
+        }
     }
 
     override fun onCreateView(
