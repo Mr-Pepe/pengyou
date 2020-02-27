@@ -1,27 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".dictionary.wordView.WordDefinitionFragment">
+    android:layout_height="match_parent">
 
-    <TableLayout
-        android:id="@+id/definitionTable"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/large_padding"
-        android:paddingTop="@dimen/large_padding"
-        android:paddingEnd="@dimen/large_padding"
-        android:stretchColumns="*"/>
+        tools:context=".dictionary.wordView.WordDefinitionFragment">
 
-    <TextView
-        android:id="@+id/definitionNotFounTextView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:lineSpacingExtra="5sp"
-        android:paddingStart="@dimen/large_padding"
-        android:paddingTop="@dimen/large_padding"
-        android:paddingEnd="@dimen/medium_padding"
-        android:textSize="18sp" />
+        <TableLayout
+            android:id="@+id/definitionTable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/large_padding"
+            android:paddingTop="@dimen/large_padding"
+            android:paddingEnd="@dimen/large_padding"
+            android:paddingBottom="@dimen/large_padding"
+            android:stretchColumns="1"/>
 
-</FrameLayout>
+        <TextView
+            android:id="@+id/definitionNotFounTextView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:lineSpacingExtra="5sp"
+            android:paddingStart="@dimen/large_padding"
+            android:paddingTop="@dimen/large_padding"
+            android:paddingEnd="@dimen/medium_padding"
+            android:textSize="18sp" />
+
+    </FrameLayout>
+</ScrollView>
