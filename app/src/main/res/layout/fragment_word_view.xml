@@ -51,10 +51,11 @@
             android:layout_marginEnd="@dimen/large_padding"
             android:background="@drawable/rounded_corner_filled"
             android:paddingStart="@dimen/tiny_padding"
-            android:paddingEnd="@dimen/small_padding"
+            android:paddingEnd="@dimen/tiny_padding"
             android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/wordViewPinyin"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/wordViewHeadword"
+            app:layout_constraintTop_toTopOf="@+id/wordViewPinyin"
             tools:text="HSK 6" />
 
         <com.google.android.material.tabs.TabLayout
