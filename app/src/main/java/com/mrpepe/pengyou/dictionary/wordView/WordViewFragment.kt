@@ -4,7 +4,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -12,9 +11,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.mrpepe.pengyou.*
+import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.DictionaryBaseFragment
 
 import com.mrpepe.pengyou.dictionary.Entry
@@ -25,20 +24,24 @@ private const val ARG_ENTRY = "entry"
 class WordViewFragment : DictionaryBaseFragment(),
     StrokeOrderFragment.ToggleHorizontalPagingListener {
 
-    private lateinit var entry: Entry
     private lateinit var viewPager: CustomViewPager
 
     private lateinit var wordViewViewModel: WordViewViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            entry = it.get(ARG_ENTRY) as Entry
-            SearchHistory.addToHistory(entry.id.toString())
-        }
 
-        activity?.let {
-            wordViewViewModel = ViewModelProvider(it).get(WordViewViewModel::class.java)
+        activity?.let { activity ->
+            wordViewViewModel = ViewModelProvider(activity).get(WordViewViewModel::class.java)
+
+            arguments?.let { arguments ->
+                val entry = arguments.get(ARG_ENTRY) as Entry
+
+                wordViewViewModel.entry.value = entry
+                SearchHistory.addToHistory(entry.id.toString())
+                wordViewViewModel.init(entry)
+            }
+
         } ?: throw Exception("Invalid Activity")
     }
 
@@ -66,15 +69,6 @@ class WordViewFragment : DictionaryBaseFragment(),
         }
 
         wordViewToolbar.inflateMenu(R.menu.word_view_menu)
-
-        if (!wordViewViewModel.isInitialized || entry != wordViewViewModel.entry.value) {
-            wordViewViewModel.init(entry)
-        }
-
-        wordViewViewModel.entry.observe(viewLifecycleOwner, Observer { entry ->
-            this.entry = entry
-            setHeadwordAndPinyin(entry)
-        })
 
         wordViewToolbar.setOnMenuItemClickListener(object: Toolbar.OnMenuItemClickListener {
             override fun onMenuItemClick(item: MenuItem?): Boolean {
@@ -118,16 +112,32 @@ class WordViewFragment : DictionaryBaseFragment(),
                 }
             }
         })
+
+        wordViewViewModel.entry.observe(viewLifecycleOwner, Observer { entry ->
+            setHeadwordPinyinAndHsk(entry)
+        })
     }
 
     override fun onResume() {
         super.onResume()
-        setHeadwordAndPinyin(entry)
+        wordViewViewModel.entry.value?.let { setHeadwordPinyinAndHsk(it) }
     }
 
-    fun setHeadwordAndPinyin(entry: Entry) {
+    fun setHeadwordPinyinAndHsk(entry: Entry) {
         wordViewHeadword.text = HeadwordFormatter().format(entry, MainApplication.chineseMode)
         wordViewPinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, MainApplication.pinyinMode)
+
+        when (entry.hsk) {
+            7 -> {
+                wordViewContainer.removeView(wordViewHsk)
+            }
+            else -> {
+                if (wordViewHsk.parent == null) {
+                    wordViewContainer.addView(wordViewHsk)
+                }
+                wordViewHsk.text = "HSK " + entry.hsk.toString()
+            }
+        }
     }
 
     override fun toggleHorizontalPaging() {
@@ -138,8 +148,6 @@ class WordViewFragment : DictionaryBaseFragment(),
 //        onBackPressed()
         return true
     }
-
-
 
     companion object {
         @JvmStatic

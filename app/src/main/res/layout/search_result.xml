@@ -31,14 +31,14 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/headword"
+                    android:id="@+id/searchResultHeadword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="24sp"
                     tools:text="Headword" />
 
                 <TextView
-                    android:id="@+id/pinyin"
+                    android:id="@+id/searchResultPinyin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingBottom="2dp"
@@ -48,7 +48,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/hsk"
+                android:id="@+id/searchResultHsk"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/tiny_padding"
@@ -63,7 +63,7 @@
             android:layout_height="match_parent">
 
             <TextView
-                android:id="@+id/definitions"
+                android:id="@+id/searchResultDefinitions"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="3"

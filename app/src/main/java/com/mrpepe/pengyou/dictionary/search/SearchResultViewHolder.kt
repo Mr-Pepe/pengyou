@@ -1,20 +1,18 @@
 package com.mrpepe.pengyou.dictionary.search
 
-import android.content.SharedPreferences
 import android.text.SpannableStringBuilder
 import android.view.View
 import android.widget.TextView
 import androidx.core.text.bold
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.*
 import com.mrpepe.pengyou.dictionary.Entry
 
 class SearchResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    private var headword: TextView = itemView.findViewById(R.id.headword)
-    private var pinyin: TextView = itemView.findViewById(R.id.pinyin)
-    private var definitions: TextView = itemView.findViewById(R.id.definitions)
-    private var hsk: TextView = itemView.findViewById(R.id.hsk)
+    private var headword: TextView = itemView.findViewById(R.id.searchResultHeadword)
+    private var pinyin: TextView = itemView.findViewById(R.id.searchResultPinyin)
+    private var definitions: TextView = itemView.findViewById(R.id.searchResultDefinitions)
+    private var hsk: TextView = itemView.findViewById(R.id.searchResultHsk)
 
     fun bind(entry: Entry, clickListener: (Entry) -> Unit) {
 
