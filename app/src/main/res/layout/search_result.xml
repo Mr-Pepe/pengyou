@@ -49,11 +49,14 @@
 
             <TextView
                 android:id="@+id/searchResultHsk"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/tiny_padding"
+                android:background="@drawable/rounded_corner_line"
+                android:paddingStart="@dimen/tiny_padding"
+                android:paddingEnd="@dimen/tiny_padding"
+                android:layout_marginTop="@dimen/small_padding"
                 android:textAlignment="viewEnd"
-                android:textSize="18sp"
+                android:textSize="14sp"
                 tools:text="HSK 6" />
 
         </TableRow>
