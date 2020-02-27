@@ -20,7 +20,7 @@ class DecompositionFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        activity?.let {
+        parentFragment?.let {
             model = ViewModelProvider(it).get(WordViewViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
