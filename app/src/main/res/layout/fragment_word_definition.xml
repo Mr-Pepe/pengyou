@@ -5,11 +5,20 @@
     android:layout_height="match_parent"
     tools:context=".dictionary.wordView.WordDefinitionFragment">
 
+    <TableLayout
+        android:id="@+id/definitionTable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/large_padding"
+        android:paddingTop="@dimen/large_padding"
+        android:paddingEnd="@dimen/large_padding"
+        android:stretchColumns="*"/>
+
     <TextView
-        android:id="@+id/searchResultDefinitions"
+        android:id="@+id/definitionNotFounTextView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:lineSpacingExtra="18sp"
+        android:lineSpacingExtra="5sp"
         android:paddingStart="@dimen/large_padding"
         android:paddingTop="@dimen/large_padding"
         android:paddingEnd="@dimen/medium_padding"

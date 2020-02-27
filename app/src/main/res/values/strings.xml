@@ -5,7 +5,7 @@
     <string name="title_settings_fragment">Settings</string>
     <string name="title_activity_word_view">WordViewActivity</string>
     <string name="search_view_query_hint">Search Dictionary</string>
-    <string name="no_definition_found">"No definition found, but this character might be used in other words."</string>
+    <string name="no_definition_found">"No definition found, but this entry might be used in other words."</string>
     <string name="search_history">com.mrpepe.pengyou.search_history</string>
 
     <!--  Bottom Navigation View  -->

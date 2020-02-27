@@ -4,6 +4,7 @@ import android.text.SpannableStringBuilder
 import android.view.View
 import android.widget.TextView
 import androidx.core.text.bold
+import androidx.core.text.italic
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.*
 import com.mrpepe.pengyou.dictionary.Entry
@@ -28,7 +29,7 @@ class SearchResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         val formattedDefinitions = DefinitionFormatter().formatDefinitions(entry, false, null, itemView, MainApplication.chineseMode, MainApplication.pinyinMode)
 
         if (formattedDefinitions.isEmpty())
-            definitions.text = MainApplication.getContext().getString(R.string.no_definition_found)
+            definitions.text = SpannableStringBuilder().italic { append(MainApplication.getContext().getString(R.string.no_definition_found)) }
         else {
             val text = SpannableStringBuilder()
 
