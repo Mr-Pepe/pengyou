@@ -3,8 +3,9 @@
 <!--    <color name="colorPrimary">#8BC34A</color>-->
 <!--    <color name="colorPrimaryDark">#000000</color>-->
 <!--    <color name="colorSecondary">#4CAF50</color>-->
-<!--    <color name="colorAccent">#D81B60</color>-->
+    <color name="colorAccent">#FFE05C30</color>
 <!--    <color name="colorIndicator">#FF5722</color>-->
+    <color name="colorPrimary">#FFE05C30</color>
 
     <color name="tone1_default_color">#FF0000</color>
     <color name="tone2_default_color">#03C700</color>

@@ -49,7 +49,7 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        dictionaryViewModel.displayedLanguage?.value?.let { setModeSwitchIcon(it) }
+        dictionaryViewModel.displayedLanguage.value?.let { setModeSwitchIcon(it) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
