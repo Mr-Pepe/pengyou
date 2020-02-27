@@ -26,7 +26,6 @@ class WordsContainingFragment : Fragment() {
     private lateinit var searchResultList: RecyclerView
     private lateinit var resultCount: TextView
     private var lastClickTime : Long = 0
-    private var searchHistory = SearchHistory
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,8 +82,6 @@ class WordsContainingFragment : Fragment() {
             return
         }
         lastClickTime = SystemClock.elapsedRealtime()
-
-        searchHistory.addToHistory(entry.id.toString())
 
         findNavController().navigate(WordViewFragmentDirections.globalOpenWordViewAction(entry))
     }

@@ -37,8 +37,6 @@ class SearchResultFragment : Fragment() {
     private lateinit var adapter : SearchResultAdapter
     private var lastClickTime: Long = 0
 
-    private var searchHistory = SearchHistory
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -98,8 +96,6 @@ class SearchResultFragment : Fragment() {
         }
         lastClickTime = SystemClock.elapsedRealtime()
 
-        searchHistory.addToHistory(entry.id.toString())
-
         hideKeyboard()
 
         findNavController().navigate(WordViewFragmentDirections.globalOpenWordViewAction(entry))
@@ -122,7 +118,7 @@ class SearchResultFragment : Fragment() {
                         val clearHistoryText = getString(R.string.clear_history).toSpannable()
                         clearHistoryText.setSpan(object: ClickableSpan() {
                             override fun onClick(widget: View) {
-                                searchHistory.clear()
+                                SearchHistory.clear()
                             }
                             override fun updateDrawState(ds: TextPaint) {
                                 super.updateDrawState(ds)
