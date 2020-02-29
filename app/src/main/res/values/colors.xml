@@ -12,8 +12,14 @@
     <color name="tone3_default_color">#1B3FD1</color>
     <color name="tone4_default_color">#FFC107</color>
     <color name="tone5_default_color">#757774</color>
-    <color name="no_tone_dark_theme">@android:color/primary_text_dark</color>
-    <color name="no_tone_light_theme">@android:color/primary_text_light</color>
+
+    <color name="general_color_dark_theme">@android:color/primary_text_dark</color>
+    <color name="control_color_enabled_dark_theme">#535353</color>
+    <color name="control_color_disabled_dark_theme">#535353</color>
+
+    <color name="general_color_light_theme">#323232</color>
+    <color name="control_color_enabled_light_theme">#535353</color>
+    <color name="control_color_disabled_light_theme">#CACACA</color>
 
 <!--    <color name="background">#FFFFFF</color>-->
 </resources>
