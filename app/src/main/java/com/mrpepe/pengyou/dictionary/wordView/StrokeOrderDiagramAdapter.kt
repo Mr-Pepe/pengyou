@@ -3,12 +3,13 @@ package com.mrpepe.pengyou.dictionary.wordView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.search.SearchResultViewHolder
 
-class StrokeOrderDiagramAdapter:
+class StrokeOrderDiagramAdapter(val viewLifecycleOwner: LifecycleOwner, val fragment: StrokeOrderFragment):
     RecyclerView.Adapter<StrokeOrderDiagramViewholder>() {
 
     var strokeOrders = emptyList<String>()
@@ -25,7 +26,7 @@ class StrokeOrderDiagramAdapter:
     }
 
     override fun onBindViewHolder(holder: StrokeOrderDiagramViewholder, position: Int) {
-        holder.bind(this.strokeOrders[position])
+        holder.bind(this.strokeOrders[position], viewLifecycleOwner, fragment, position)
     }
 
     override fun getItemCount(): Int {
