@@ -40,8 +40,6 @@ class DefinitionFormatter {
     fun formatDefinitions(entry: Entry, linkWords: Boolean, context: Context?, view: View, chineseMode: String, pinyinMode: String): List<SpannableStringBuilder> {
         val rawDefinitions = entry.definitions
         val definitions = mutableListOf<SpannableStringBuilder>()
-        val longDefinitions = mutableListOf<String>()
-        var iLongDefinition = -10
 
         return if (rawDefinitions.isBlank()) {
             definitions
@@ -49,42 +47,18 @@ class DefinitionFormatter {
         else {
             rawDefinitions.split('/').forEachIndexed { iRawDefinition, rawDefinition ->
 
-                // If the definition is longer than 30 characters or if the definition before this was
-                // long and this one is a measure word, add them later to the end of the definitions,
-                // so that more definitions are visible from the search result list
-                if (rawDefinition.length > 30 || (iRawDefinition == iLongDefinition+1 && "measure word" in rawDefinition)) {
-                    longDefinitions.add(rawDefinition)
-                    iLongDefinition = iRawDefinition
-                }
-                else {
-                    definitions.add(
-                        formatDefinition(
-                            entry,
-                            rawDefinition,
-                            linkWords,
-                            context,
-                            view,
-                            chineseMode,
-                            pinyinMode
-                        )
-                    )
-                }
-            }
-
-            longDefinitions.forEach { rawDefinition ->
                 definitions.add(
-                        formatDefinition(
-                            entry,
-                            rawDefinition,
-                            linkWords,
-                            context,
-                            view,
-                            chineseMode,
-                            pinyinMode
-                        )
+                    formatDefinition(
+                        entry,
+                        rawDefinition,
+                        linkWords,
+                        context,
+                        view,
+                        chineseMode,
+                        pinyinMode
                     )
+                )
             }
-
             definitions
         }
     }
