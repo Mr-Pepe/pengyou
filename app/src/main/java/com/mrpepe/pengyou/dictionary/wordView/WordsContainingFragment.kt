@@ -46,8 +46,6 @@ class WordsContainingFragment : Fragment() {
         searchResultList = root.searchResultList
         resultCount = root.resultCount
 
-        val scale = getResources().getDisplayMetrics().density;
-
         resultCount.setPadding(
             resources.getDimension(R.dimen.medium_padding).toInt(),
             resources.getDimension(R.dimen.large_padding).toInt(),
