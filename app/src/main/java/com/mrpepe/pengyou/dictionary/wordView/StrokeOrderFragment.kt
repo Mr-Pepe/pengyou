@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.webkit.JavascriptInterface
@@ -13,33 +12,29 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.mrpepe.pengyou.*
 import kotlinx.android.synthetic.main.fragment_stroke_order.*
+import kotlinx.android.synthetic.main.fragment_stroke_order.view.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.concurrent.timerTask
-import kotlin.math.min
 
 
 class StrokeOrderFragment : Fragment() {
     private lateinit var model: WordViewViewModel
     private lateinit var webView : WebView
     var character : String = "我"
-    var webViewLoaded : Boolean = false
-
-    private val BASE_URL = "file:///android_asset/stroke_order/stroke_order.html"
-    private val JAVASCRIPT_OBJ = "Android"
 
     private var currentStrokeOrder = ""
     private var nStrokes = 0
     private var currentStroke = 0
 
     private var isAnimating = MutableLiveData<Boolean>()
-
-    private var outlineMode = OutlineMode.SHOW
 
     private var resetRequest = false
     private var resetFinished = MutableLiveData<Boolean>()
@@ -55,15 +50,10 @@ class StrokeOrderFragment : Fragment() {
 
     private var diagramSize = 0
 
-    private lateinit var toggleHorizontalPagingListener: ToggleHorizontalPagingListener
+    private lateinit var strokeOrderDiagramList: RecyclerView
+    private lateinit var adapter: StrokeOrderDiagramAdapter
 
-    private lateinit var viewTreeObserver: ViewTreeObserver
-    private val onPreDrawListener = object:  ViewTreeObserver.OnPreDrawListener {
-        override fun onPreDraw(): Boolean {
-            resizeAndLoad()
-            return true
-        }
-    }
+    private lateinit var toggleHorizontalPagingListener: StrokeOrderFragment.ToggleHorizontalPagingListener
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -87,9 +77,6 @@ class StrokeOrderFragment : Fragment() {
         model.entry.observe(this, Observer { entry ->
             character = entry.simplified
         })
-
-        isAnimating.value = false
-        isQuizzing.value = false
     }
 
     override fun onCreateView(
@@ -97,13 +84,6 @@ class StrokeOrderFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root =  inflater.inflate(R.layout.fragment_stroke_order, container, false)
-
-        root.post(object : Runnable {
-            override fun run() {
-                viewTreeObserver = root.viewTreeObserver as ViewTreeObserver
-                viewTreeObserver.addOnPreDrawListener(onPreDrawListener)
-            }
-        })
 
         return root
     }
@@ -113,57 +93,63 @@ class StrokeOrderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        strokeOrderDiagramList = view.strokeOrderDiagramList
+
+        adapter = StrokeOrderDiagramAdapter()
+        strokeOrderDiagramList.layoutManager = LinearLayoutManager(activity)
+        strokeOrderDiagramList.adapter = adapter
+
         buttonPlay.setOnClickListener {
 
-            if (!block) {
-                block = true
-                if (isAnimating.value!!) {
-                    isAnimating.value = false
-                }
-                else {
-                    isAnimating.value = true
-
-                    if (currentStroke == nStrokes) {
-                        startAnimatingAfterReset = true
-                        MainScope().launch {
-                            webView.runJavaScript("reset()")
-                        }
-                    }
-                    else {
-                        animateStroke()
-                    }
-                }
-            }
+//            if (!block) {
+//                block = true
+//                if (isAnimating.value!!) {
+//                    isAnimating.value = false
+//                }
+//                else {
+//                    isAnimating.value = true
+//
+//                    if (currentStroke == nStrokes) {
+//                        startAnimatingAfterReset = true
+//                        MainScope().launch {
+//                            webView.runJavaScript("reset()")
+//                        }
+//                    }
+//                    else {
+//                        animateStroke()
+//                    }
+//                }
+//            }
         }
 
         buttonNext.setOnClickListener {
-            if (!block) {
-                if (!isAnimating.value!!) {
-                    block = true
-                    if (currentStroke == nStrokes) {
-                        startAnimatingAfterReset = true
-                        MainScope().launch {
-                            webView.runJavaScript("reset()")
-                        }
-                    }
-                    else {
-                        animateStroke()
-                    }
-                }
-            }
+//            if (!block) {
+//                if (!isAnimating.value!!) {
+//                    block = true
+//                    if (currentStroke == nStrokes) {
+//                        startAnimatingAfterReset = true
+//                        MainScope().launch {
+//                            webView.runJavaScript("reset()")
+//                        }
+//                    }
+//                    else {
+//                        animateStroke()
+//                    }
+//                }
+//            }
         }
 
         buttonReset.setOnClickListener {
-            block = true
-            if (isAnimating.value!!) {
-                resetRequest = true
-                isAnimating.value = false
-            }
-            else {
-                MainScope().launch {
-                    webView.runJavaScript("reset()")
-                }
-            }
+//            block = true
+//            if (isAnimating.value!!) {
+//                resetRequest = true
+//                isAnimating.value = false
+//            }
+//            else {
+//                MainScope().launch {
+//                    webView.runJavaScript("reset()")
+//                }
+//            }
         }
 
 //        buttonFull.setOnClickListener {
@@ -180,62 +166,63 @@ class StrokeOrderFragment : Fragment() {
 //        }
 
         buttonOutline.setOnClickListener {
-            when (outlineMode) {
-                OutlineMode.SHOW -> {
-                    outlineMode = OutlineMode.HIDE
-                    webView.runJavaScript("hideOutline()")
-                    buttonOutline.contentDescription = getString(R.string.button_outline_show)
-                }
-                OutlineMode.HIDE -> {
-                    outlineMode = OutlineMode.SHOW
-                    webView.runJavaScript("showOutline()")
-                    buttonOutline.contentDescription = getString(R.string.button_outline_hide)
-                }
-            }
+//            when (outlineMode) {
+//                OutlineMode.SHOW -> {
+//                    outlineMode = OutlineMode.HIDE
+//                    webView.runJavaScript("hideOutline()")
+//                    buttonOutline.contentDescription = getString(R.string.button_outline_show)
+//                }
+//                OutlineMode.HIDE -> {
+//                    outlineMode = OutlineMode.SHOW
+//                    webView.runJavaScript("showOutline()")
+//                    buttonOutline.contentDescription = getString(R.string.button_outline_hide)
+//                }
+//            }
         }
 
         buttonQuiz.setOnClickListener {
-            toggleHorizontalPagingListener.toggleHorizontalPaging()
-            if (!isQuizzing.value!!) {
-                isQuizzing.value = true
-                MainScope().launch {
-                    webView.runJavaScript("startQuiz()")
-                }
-            }
-            else {
-                isQuizzing.value = false
-                MainScope().launch {
-                    webView.runJavaScript("reset()")
-                }
-            }
+//            toggleHorizontalPagingListener.toggleHorizontalPaging()
+//            if (!isQuizzing.value!!) {
+//                isQuizzing.value = true
+//                MainScope().launch {
+//                    webView.runJavaScript("startQuiz()")
+//                }
+//            }
+//            else {
+//                isQuizzing.value = false
+//                MainScope().launch {
+//                    webView.runJavaScript("reset()")
+//                }
+//            }
         }
 
 
+        model.strokeOrders.observe(viewLifecycleOwner, Observer {strokeOrders ->
+
+            val cleanStrokeOrders = mutableListOf<String>()
+//            currentStrokeOrder = cleanStrokeOrders[0].replace("\'", "\"")
+
+            strokeOrders.forEach { strokeOrder ->
+                cleanStrokeOrders.add(strokeOrder.replace("\'", "\""))
+            }
+            // TODO: Handle multiple characters and missing stroke order diagrams
+            if (!cleanStrokeOrders.isEmpty()) {
+//                Log.d("", currentStrokeOrder)
+
+                adapter.setEntries(cleanStrokeOrders)
+
+//                nStrokes =
+//                    (Parser.default().parse(StringBuilder(currentStrokeOrder)) as JsonObject).array<String>(
+//                        "strokes"
+//                    )!!.size
+//                currentStroke = 0
+}
+        })
     }
 
     fun resizeAndLoad(){
 
-        viewTreeObserver.removeOnPreDrawListener(onPreDrawListener)
 
-        diagramSize = (min(
-                strokeOrderDiagramConstraintLayout.measuredHeight,
-                strokeOrderDiagramConstraintLayout.measuredWidth
-            ) * 0.9).toInt()
-
-        val params = strokeOrderDiagramContainer.layoutParams
-        params.height = diagramSize
-        params.width = diagramSize
-        strokeOrderDiagramContainer.requestLayout()
-
-        webView = strokeOrderWebView
-        webView.settings.javaScriptEnabled = true
-        webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
-        webView.loadUrl(BASE_URL)
-        webView.settings.loadWithOverviewMode = true
-        webView.isVerticalScrollBarEnabled = false
-        webView.isHorizontalScrollBarEnabled = false
-        webView.setBackgroundColor(Color.TRANSPARENT)
-//        webView.settings.useWideViewPort = true
 
         resetFinished.observe(viewLifecycleOwner, Observer {
             currentStroke = 0
@@ -323,26 +310,13 @@ class StrokeOrderFragment : Fragment() {
             }
         })
 
-         model.strokeOrders.observe(viewLifecycleOwner, Observer {strokeOrders ->
-            currentStrokeOrder = strokeOrders[0].replace("\'", "\"")
 
-            // TODO: Handle multiple characters and missing stroke order diagrams
-            if (!currentStrokeOrder.isBlank()) {
-                Log.d("", currentStrokeOrder)
-                nStrokes =
-                    (Parser.default().parse(StringBuilder(currentStrokeOrder)) as JsonObject).array<String>(
-                        "strokes"
-                    )!!.size
-                currentStroke = 0
-                initCharacter()
-            }
-        })
     }
 
     override fun onDestroy() {
-        if (::webView.isInitialized) {
-            webView.removeJavascriptInterface(JAVASCRIPT_OBJ)
-        }
+//        if (::webView.isInitialized) {
+//            webView.removeJavascriptInterface(JAVASCRIPT_OBJ)
+//        }
         super.onDestroy()
     }
 
@@ -350,68 +324,45 @@ class StrokeOrderFragment : Fragment() {
         fun toggleHorizontalPaging()
     }
 
-    private inner class JavaScriptInterface {
-        @JavascriptInterface
-        fun getJSON(): String {
-            val json : JsonObject = Parser.default().parse(StringBuilder(currentStrokeOrder)) as JsonObject
-
-            return json.toJsonString()
-        }
-
-        @JavascriptInterface
-        fun isLoaded() {
-            webViewLoaded = true
-            initCharacter()
-        }
-
-        @JavascriptInterface
-        fun strokeComplete() {
-            var timer1 = Timer()
-                timer1.schedule(timerTask { completedStroke.postValue(true) }, 10)
-
-        }
-
-        @JavascriptInterface
-        fun resetFinished() {
-            var timer1 = Timer()
-                timer1.schedule(timerTask { resetFinished.postValue(true) }, 200)
-        }
-
-        @JavascriptInterface
-        fun getCurrentStroke(): Int{
-            return currentStroke
-        }
-
-        @JavascriptInterface
-        fun showCharacterFinished() {
-            var timer1 = Timer()
-                timer1.schedule(timerTask { showCharacterFinished.postValue(true) }, 100)
-        }
-
-        @JavascriptInterface
-        fun getStrokeColor(): String {
-            val typedValue = TypedValue()
-            MainApplication.homeActivity.theme.resolveAttribute(R.attr.colorOnBackground, typedValue, true)
-
-            return String.format("#%06X", (0xFFFFFF and typedValue.data))
-        }
-
-        @JavascriptInterface
-        fun getOutlineColor(): String {
-            val typedValue = TypedValue()
-            MainApplication.homeActivity.theme.resolveAttribute(R.attr.colorOnBackground, typedValue, true)
-
-            return when(MainApplication.homeActivity.isNightMode()) {
-                true -> String.format("#%06X", 0xFFFFFF and Color.GRAY)
-                false -> String.format("#%06X", 0xFFFFFF and Color.LTGRAY)
-            }
-        }
-
-        @JavascriptInterface
-        fun getSize(): Int {
-            return (diagramSize/resources.displayMetrics.density).toInt()
-        }
-    }
+//    private inner class JavaScriptInterface {
+////        @JavascriptInterface
+////        fun getJSON(): String {
+////            val json : JsonObject = Parser.default().parse(StringBuilder(currentStrokeOrder)) as JsonObject
+////
+////            return json.toJsonString()
+////        }
+////
+////        @JavascriptInterface
+////        fun isLoaded() {
+////            webViewLoaded = true
+////            initCharacter()
+////        }
+//
+//        @JavascriptInterface
+//        fun strokeComplete() {
+//            var timer1 = Timer()
+//                timer1.schedule(timerTask { completedStroke.postValue(true) }, 10)
+//
+//        }
+//
+//        @JavascriptInterface
+//        fun resetFinished() {
+//            var timer1 = Timer()
+//                timer1.schedule(timerTask { resetFinished.postValue(true) }, 200)
+//        }
+//
+//        @JavascriptInterface
+//        fun getCurrentStroke(): Int{
+//            return currentStroke
+//        }
+//
+//        @JavascriptInterface
+//        fun showCharacterFinished() {
+//            var timer1 = Timer()
+//                timer1.schedule(timerTask { showCharacterFinished.postValue(true) }, 100)
+//        }
+//
+//    }
 
     private fun animateStroke() {
         MainScope().launch {
@@ -419,13 +370,13 @@ class StrokeOrderFragment : Fragment() {
         }
     }
 
-    private fun initCharacter() {
-        if (webViewLoaded && currentStrokeOrder != "") {
-            MainScope().launch {
-                webView.runJavaScript("initCharacter()")
-            }
-        }
-    }
+//    private fun initCharacter() {
+//        if (webViewLoaded && currentStrokeOrder != "") {
+//            MainScope().launch {
+//                webView.runJavaScript("initCharacter()")
+//            }
+//        }
+//    }
 
     enum class OutlineMode {
         SHOW,
