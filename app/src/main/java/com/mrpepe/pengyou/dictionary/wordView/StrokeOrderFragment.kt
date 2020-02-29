@@ -6,15 +6,9 @@ import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
-import android.widget.FrameLayout
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -26,7 +20,6 @@ import kotlinx.android.synthetic.main.fragment_stroke_order.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.util.*
-import java.util.Collections.min
 import kotlin.concurrent.timerTask
 import kotlin.math.min
 
@@ -60,12 +53,22 @@ class StrokeOrderFragment : Fragment() {
 
     private var isQuizzing = MutableLiveData<Boolean>()
 
-    private lateinit var listener: ToggleHorizontalPagingListener
+    private var diagramSize = 0
+
+    private lateinit var toggleHorizontalPagingListener: ToggleHorizontalPagingListener
+
+    private lateinit var viewTreeObserver: ViewTreeObserver
+    private val onPreDrawListener = object:  ViewTreeObserver.OnPreDrawListener {
+        override fun onPreDraw(): Boolean {
+            resizeAndLoad()
+            return true
+        }
+        }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (parentFragment is ToggleHorizontalPagingListener) {
-            listener = parentFragment as ToggleHorizontalPagingListener
+            toggleHorizontalPagingListener = parentFragment as ToggleHorizontalPagingListener
         }
         else {
             throw ClassCastException(
@@ -93,42 +96,22 @@ class StrokeOrderFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_stroke_order, container, false)
+        val root =  inflater.inflate(R.layout.fragment_stroke_order, container, false)
+
+        root.post(object : Runnable {
+            override fun run() {
+                viewTreeObserver = root.viewTreeObserver as ViewTreeObserver
+                viewTreeObserver.addOnPreDrawListener(onPreDrawListener)
+            }
+        })
+
+        return root
     }
+
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-//        view.findViewById<ConstraintLayout>(R.id.strokeOrderDiagramConstraintLayout)
-//
-//        val diagramSize = min(strokeOrderDiagramConstraintLayout.measuredHeight, strokeOrderDiagramConstraintLayout.measuredWidth).toInt()
-//        strokeOrderDiagramContainer.layoutParams = FrameLayout.LayoutParams(diagramSize, diagramSize)
-
-        webView = strokeOrderWebView
-        webView.settings.javaScriptEnabled = true
-        webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
-        webView.loadUrl(BASE_URL)
-        webView.settings.loadWithOverviewMode = true
-        webView.isVerticalScrollBarEnabled = false
-        webView.isHorizontalScrollBarEnabled = false
-        webView.setBackgroundColor(Color.TRANSPARENT)
-//        webView.settings.useWideViewPort = true
-
-
-        model.strokeOrders.observe(viewLifecycleOwner, Observer {strokeOrders ->
-            currentStrokeOrder = strokeOrders[0].replace("\'", "\"")
-
-            // TODO: Handle multiple characters and missing stroke order diagrams
-            if (!currentStrokeOrder.isBlank()) {
-                Log.d("", currentStrokeOrder)
-                nStrokes =
-                    (Parser.default().parse(StringBuilder(currentStrokeOrder)) as JsonObject).array<String>(
-                        "strokes"
-                    )!!.size
-                currentStroke = 0
-                initCharacter()
-            }
-        })
 
         buttonPlay.setOnClickListener {
 
@@ -212,7 +195,7 @@ class StrokeOrderFragment : Fragment() {
         }
 
         buttonQuiz.setOnClickListener {
-            listener.toggleHorizontalPaging()
+            toggleHorizontalPagingListener.toggleHorizontalPaging()
             if (!isQuizzing.value!!) {
                 isQuizzing.value = true
                 MainScope().launch {
@@ -226,6 +209,33 @@ class StrokeOrderFragment : Fragment() {
                 }
             }
         }
+
+
+    }
+
+    fun resizeAndLoad(){
+
+        viewTreeObserver.removeOnPreDrawListener(onPreDrawListener)
+
+        diagramSize = (min(
+                strokeOrderDiagramConstraintLayout.measuredHeight,
+                strokeOrderDiagramConstraintLayout.measuredWidth
+            ) * 0.9).toInt()
+
+        val params = strokeOrderDiagramContainer.layoutParams
+        params.height = diagramSize
+        params.width = diagramSize
+        strokeOrderDiagramContainer.requestLayout()
+
+        webView = strokeOrderWebView
+        webView.settings.javaScriptEnabled = true
+        webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
+        webView.loadUrl(BASE_URL)
+        webView.settings.loadWithOverviewMode = true
+        webView.isVerticalScrollBarEnabled = false
+        webView.isHorizontalScrollBarEnabled = false
+        webView.setBackgroundColor(Color.TRANSPARENT)
+//        webView.settings.useWideViewPort = true
 
         resetFinished.observe(viewLifecycleOwner, Observer {
             currentStroke = 0
@@ -312,6 +322,21 @@ class StrokeOrderFragment : Fragment() {
                 }
             }
         })
+
+         model.strokeOrders.observe(viewLifecycleOwner, Observer {strokeOrders ->
+            currentStrokeOrder = strokeOrders[0].replace("\'", "\"")
+
+            // TODO: Handle multiple characters and missing stroke order diagrams
+            if (!currentStrokeOrder.isBlank()) {
+                Log.d("", currentStrokeOrder)
+                nStrokes =
+                    (Parser.default().parse(StringBuilder(currentStrokeOrder)) as JsonObject).array<String>(
+                        "strokes"
+                    )!!.size
+                currentStroke = 0
+                initCharacter()
+            }
+        })
     }
 
     override fun onDestroy() {
@@ -380,6 +405,11 @@ class StrokeOrderFragment : Fragment() {
                 true -> String.format("#%06X", 0xFFFFFF and Color.GRAY)
                 false -> String.format("#%06X", 0xFFFFFF and Color.LTGRAY)
             }
+        }
+
+        @JavascriptInterface
+        fun getSize(): Int {
+            return (diagramSize/resources.displayMetrics.density).toInt()
         }
     }
 

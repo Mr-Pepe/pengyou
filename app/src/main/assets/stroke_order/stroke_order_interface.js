@@ -3,8 +3,8 @@ var writer;
 
 function initCharacter() {
 
-    var width = 300;
-    var height = 300;
+    var width = Android.getSize();
+    var height = Android.getSize();
 
     writer = HanziWriter.create('draw_board', '', {
       charDataLoader: function() {
