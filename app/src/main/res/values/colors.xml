@@ -21,5 +21,8 @@
     <color name="control_color_enabled_light_theme">#535353</color>
     <color name="control_color_disabled_light_theme">#CACACA</color>
 
+
+
+    <color name="launcher_background">#ff4b4b4b</color>
 <!--    <color name="background">#FFFFFF</color>-->
 </resources>

@@ -48,6 +48,8 @@ class HomeActivity : BaseActivity(),
             }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.AppTheme)
+        setTheme()
         super.onCreate(savedInstanceState)
         MainApplication.homeActivity = this
         setContentView(R.layout.activity_home)
@@ -84,8 +86,6 @@ class HomeActivity : BaseActivity(),
             PreferenceManager
                 .getDefaultSharedPreferences(MainApplication.getContext())
                 .getString("chinese_mode", ChineseMode.simplified) ?: ChineseMode.simplified
-
-        setTheme()
 
         PreferenceManager
             .getDefaultSharedPreferences(this)
