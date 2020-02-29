@@ -7,7 +7,10 @@
 <!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
         <item name="colorAccent">@color/colorAccent</item>
 <!--        <item name="android:colorBackground">@color/background</item>-->
-<!--        <item name="android:textColor">@color/notone</item>-->
+        <item name="android:textColor">@color/general_color_light_theme</item>
+
+        <item name="colorControlNormal">@color/control_color_enabled_light_theme</item>
+
 
 
         <item name="preferenceTheme">@style/AppPreferenceTheme</item>

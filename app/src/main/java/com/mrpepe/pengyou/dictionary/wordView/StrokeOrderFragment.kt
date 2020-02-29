@@ -1,8 +1,8 @@
 package com.mrpepe.pengyou.dictionary.wordView
 
-import android.app.Application
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -12,20 +12,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
-import com.mrpepe.pengyou.MainApplication
-import com.mrpepe.pengyou.R
-import com.mrpepe.pengyou.runJavaScript
+import com.mrpepe.pengyou.*
 import kotlinx.android.synthetic.main.fragment_stroke_order.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import java.util.*
+import java.util.Collections.min
 import kotlin.concurrent.timerTask
+import kotlin.math.min
 
 
 class StrokeOrderFragment : Fragment() {
@@ -96,7 +99,12 @@ class StrokeOrderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        webView = stroke_order_web_view
+//        view.findViewById<ConstraintLayout>(R.id.strokeOrderDiagramConstraintLayout)
+//
+//        val diagramSize = min(strokeOrderDiagramConstraintLayout.measuredHeight, strokeOrderDiagramConstraintLayout.measuredWidth).toInt()
+//        strokeOrderDiagramContainer.layoutParams = FrameLayout.LayoutParams(diagramSize, diagramSize)
+
+        webView = strokeOrderWebView
         webView.settings.javaScriptEnabled = true
         webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
         webView.loadUrl(BASE_URL)
@@ -175,30 +183,30 @@ class StrokeOrderFragment : Fragment() {
             }
         }
 
-        buttonFull.setOnClickListener {
-            block = true
-            if (isAnimating.value!!) {
-                showCharacterRequest = true
-                isAnimating.value = false
-            }
-            else {
-                MainScope().launch {
-                    webView.runJavaScript("showCharacter()")
-                }
-            }
-        }
+//        buttonFull.setOnClickListener {
+//            block = true
+//            if (isAnimating.value!!) {
+//                showCharacterRequest = true
+//                isAnimating.value = false
+//            }
+//            else {
+//                MainScope().launch {
+//                    webView.runJavaScript("showCharacter()")
+//                }
+//            }
+//        }
 
         buttonOutline.setOnClickListener {
             when (outlineMode) {
                 OutlineMode.SHOW -> {
                     outlineMode = OutlineMode.HIDE
                     webView.runJavaScript("hideOutline()")
-                    buttonOutline.text = getString(R.string.button_outline_show)
+                    buttonOutline.contentDescription = getString(R.string.button_outline_show)
                 }
                 OutlineMode.HIDE -> {
                     outlineMode = OutlineMode.SHOW
                     webView.runJavaScript("showOutline()")
-                    buttonOutline.text = getString(R.string.button_outline_hide)
+                    buttonOutline.contentDescription = getString(R.string.button_outline_hide)
                 }
             }
         }
@@ -269,14 +277,16 @@ class StrokeOrderFragment : Fragment() {
         isAnimating.observe(viewLifecycleOwner, Observer {
             when(it) {
                 true -> {
-                    buttonPlay.text = getString(R.string.button_play_pause)
-                    buttonNext.isEnabled = false
-                    buttonQuiz.isEnabled = false
+                    buttonPlay.setImageResource(R.drawable.ic_pause)
+                    buttonPlay.contentDescription = getString(R.string.button_play_pause)
+                    buttonNext.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                    buttonQuiz.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
                 }
                 false -> {
-                    buttonPlay.text = getString(R.string.button_play_play)
-                    buttonNext.isEnabled = true
-                    buttonQuiz.isEnabled = true
+                    buttonPlay.setImageResource(R.drawable.ic_play_arrow)
+                    buttonPlay.contentDescription = getString(R.string.button_play_play)
+                    buttonNext.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                    buttonQuiz.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
                 }
             }
         })
@@ -284,16 +294,16 @@ class StrokeOrderFragment : Fragment() {
         isQuizzing.observe(viewLifecycleOwner, Observer {
             when(it) {
                 true -> {
-                    buttonPlay.isEnabled = false
-                    buttonNext.isEnabled = false
-                    buttonFull.isEnabled = false
+                    buttonPlay.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                    buttonNext.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+//                    buttonFull.isEnabled = false
                     webView.setOnTouchListener { _, _ -> false}
 
                 }
                 false -> {
-                    buttonPlay.isEnabled = true
-                    buttonNext.isEnabled = true
-                    buttonFull.isEnabled = true
+                    buttonPlay.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                    buttonNext.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+//                    buttonFull.isEnabled = true
                     webView.setOnTouchListener(object : View.OnTouchListener {
                         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                             return (event?.action == MotionEvent.ACTION_MOVE)

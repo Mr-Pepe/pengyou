@@ -2,8 +2,6 @@ package com.mrpepe.pengyou
 
 import android.app.Activity
 import android.content.Context
-import android.content.res.Configuration
-import android.graphics.Color
 import android.os.SystemClock
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -12,17 +10,11 @@ import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
-import android.util.Log
-import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
 import android.widget.Toast
-import androidx.annotation.AttrRes
-import androidx.annotation.ColorInt
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
@@ -420,8 +412,8 @@ class HeadwordFormatter {
 
                 val noToneColor =
                     when (MainApplication.homeActivity.isNightMode()) {
-                        true -> R.color.no_tone_dark_theme
-                        else -> R.color.no_tone_light_theme
+                        true -> MainApplication.getContext().getColor(R.color.general_color_dark_theme)
+                        else -> MainApplication.getContext().getColor(R.color.general_color_light_theme)
                     }
 
                 var color = noToneColor
@@ -458,6 +450,20 @@ class HeadwordFormatter {
         return output
     }
 
+}
+
+fun getControlEnabledColor(): Int {
+    return when (MainApplication.homeActivity.isNightMode()) {
+        true -> MainApplication.getContext().getColor(R.color.control_color_enabled_dark_theme)
+        false -> MainApplication.getContext().getColor(R.color.control_color_enabled_light_theme)
+    }
+}
+
+fun getControlDisabledColor(): Int {
+    return when (MainApplication.homeActivity.isNightMode()) {
+        true -> MainApplication.getContext().getColor(R.color.control_color_disabled_dark_theme)
+        false -> MainApplication.getContext().getColor(R.color.control_color_disabled_light_theme)
+    }
 }
 
 fun String.countSurrogatePairs() = withIndex().count {
