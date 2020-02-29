@@ -63,7 +63,7 @@ class StrokeOrderFragment : Fragment() {
             resizeAndLoad()
             return true
         }
-        }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
