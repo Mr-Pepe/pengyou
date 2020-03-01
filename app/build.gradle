@@ -63,5 +63,5 @@ dependencies {
     implementation "androidx.preference:preference:1.1.0"
 
     implementation 'com.rarepebble:colorpicker:3.0.1'
-
+    implementation 'me.relex:circleindicator:2.1.4'
 }
