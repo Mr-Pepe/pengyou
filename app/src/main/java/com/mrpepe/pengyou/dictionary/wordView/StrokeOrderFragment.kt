@@ -243,7 +243,7 @@ class StrokeOrderFragment : Fragment() {
         }
 
         override fun getExtraLayoutSpace(state: RecyclerView.State?): Int {
-            return 500
+            return 50
         }
     }
 }
