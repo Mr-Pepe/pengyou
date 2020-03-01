@@ -8,6 +8,11 @@
     <string name="no_definition_found">"No definition found, but this entry might be used in other words."</string>
     <string name="search_history">com.mrpepe.pengyou.search_history</string>
 
+    <!-- Word view tabs   -->
+    <string name="definition_tab">DEFINITION</string>
+    <string name="stroke_tab">STROKE</string>
+    <string name="word_tab">WORDS</string>
+
     <!--  Bottom Navigation View  -->
     <string name="bottom_navigation_view_dictionary">DICTIONARY</string>
     <string name="bottom_navigation_view_settings">SETTINGS</string>

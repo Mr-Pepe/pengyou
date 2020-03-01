@@ -74,7 +74,7 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
     var quizActive = false
     var buttonResetEnabled = true
     var buttonOutlineEnabled = true
-    var buttonOutlineIsHide = true
+    var buttonOutlineIsHide = false
 
     init {
         itemView.post(object : Runnable {

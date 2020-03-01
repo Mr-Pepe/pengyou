@@ -59,11 +59,11 @@ class WordViewFragment : DictionaryBaseFragment(),
         wordViewTabs.setupWithViewPager(viewPager)
 
         // Setup tab icons
-        for (iTab in 0 until wordViewTabs.tabCount) {
-            val tab = LayoutInflater.from(activity).inflate(R.layout.tab_item, null)
-            tab.findViewById<ImageView>(R.id.tab_icon).setImageResource(sectionsPagerAdapter.tabIcons[iTab])
-            wordViewTabs.getTabAt(iTab)?.customView = tab
-        }
+//        for (iTab in 0 until wordViewTabs.tabCount) {
+//            val tab = LayoutInflater.from(activity).inflate(R.layout.tab_item, null)
+//            tab.findViewById<ImageView>(R.id.tab_icon).setImageResource(sectionsPagerAdapter.tabIcons[iTab])
+//            wordViewTabs.getTabAt(iTab)?.customView = tab
+//        }
 
         wordViewToolbar.inflateMenu(R.menu.word_view_menu)
 
