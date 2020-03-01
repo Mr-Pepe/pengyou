@@ -110,8 +110,10 @@ class StrokeOrderFragment : Fragment() {
 
             val cleanStrokeOrders = mutableListOf<String>()
 
-            strokeOrders.forEach { strokeOrder ->
-                cleanStrokeOrders.add(strokeOrder.replace("\'", "\""))
+            strokeOrders.forEachIndexed { iCharacter, strokeOrder ->
+                if (model.entry.value!!.simplified[iCharacter].toString() !in listOf("，")){
+                    cleanStrokeOrders.add(strokeOrder.replace("\'", "\""))
+                }
             }
 
             if (!cleanStrokeOrders.isEmpty()) {
@@ -206,6 +208,10 @@ class StrokeOrderFragment : Fragment() {
 
         override fun canScrollVertically(): Boolean {
             return scrollEnabled && super.canScrollVertically()
+        }
+
+        override fun getExtraLayoutSpace(state: RecyclerView.State?): Int {
+            return 500
         }
     }
 }

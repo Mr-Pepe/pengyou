@@ -56,7 +56,7 @@ class WordViewRepository(private val entryDao: EntryDAO, val initEntry: Entry) {
 
     suspend fun getStrokeOrder(word: String) {
         word.forEach { character ->
-            var strokeOrderList = entryDao.getStrokeOrder(character.toString())
+            val strokeOrderList = entryDao.getStrokeOrder(character.toString())
 
             if (strokeOrderList.isNotEmpty()) {
                 strokeOrders.add(strokeOrderList[0].json)

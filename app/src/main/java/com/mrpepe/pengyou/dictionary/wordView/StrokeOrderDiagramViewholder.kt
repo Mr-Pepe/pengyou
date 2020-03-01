@@ -83,7 +83,7 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
 
     fun bind(strokeOrder: String, viewLifecycleOwner: LifecycleOwner, fragment: StrokeOrderFragment, index: Int) {
 
-        // TODO: Handle multiple characters and missing stroke order diagrams
+        // TODO: Handle missing stroke order diagrams
         this.strokeOrder = strokeOrder
         this.viewLifecycleOwner = viewLifecycleOwner
         this.fragment = fragment
@@ -116,12 +116,12 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
 
         webView.settings.javaScriptEnabled = true
         webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
-        webView.loadUrl(BASE_URL)
         webView.settings.loadWithOverviewMode = true
         webView.isVerticalScrollBarEnabled = false
         webView.isHorizontalScrollBarEnabled = false
         webView.setBackgroundColor(Color.TRANSPARENT)
         webView.settings.useWideViewPort = true
+        webView.loadUrl(BASE_URL)
 
         resetFinished.observe(viewLifecycleOwner, Observer {
             currentStroke = 0
