@@ -33,6 +33,14 @@ class StrokeOrderDiagramAdapter(val viewLifecycleOwner: LifecycleOwner, val frag
         return this.strokeOrders.size
     }
 
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
+    }
+
     internal fun setEntries(strokeOrders: List<String>) {
         this.strokeOrders = strokeOrders
         notifyDataSetChanged()
