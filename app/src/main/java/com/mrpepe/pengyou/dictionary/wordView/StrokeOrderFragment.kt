@@ -14,6 +14,7 @@ import com.mrpepe.pengyou.*
 import com.mrpepe.pengyou.dictionary.StrokeOrder
 import kotlinx.android.synthetic.main.fragment_stroke_order.*
 import kotlinx.android.synthetic.main.fragment_stroke_order.view.*
+import me.relex.circleindicator.CircleIndicator2
 
 
 class StrokeOrderFragment : Fragment() {
@@ -22,7 +23,9 @@ class StrokeOrderFragment : Fragment() {
     private lateinit var strokeOrderDiagramList: RecyclerView
     private lateinit var adapter: StrokeOrderDiagramAdapter
     private lateinit var layoutManager: StrokeOrderFragmentListLayoutManager
+    private lateinit var strokeOrderPageIndicatorView: CircleIndicator2
 
+    private var indicatorCount = 0
     private var currenPosition = 0
 
     private lateinit var toggleHorizontalPagingListener: StrokeOrderFragment.ToggleHorizontalPagingListener
@@ -58,6 +61,7 @@ class StrokeOrderFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         strokeOrderDiagramList = view.strokeOrderDiagramList
+        strokeOrderPageIndicatorView = view.strokeOrderPageIndicatorView
 
         adapter = StrokeOrderDiagramAdapter(viewLifecycleOwner, this)
         layoutManager = StrokeOrderFragmentListLayoutManager(activity?.baseContext!!)
@@ -66,6 +70,7 @@ class StrokeOrderFragment : Fragment() {
 
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(strokeOrderDiagramList)
+        strokeOrderPageIndicatorView.attachToRecyclerView(strokeOrderDiagramList, snapHelper)
 
         strokeOrderDiagramList.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -102,8 +107,11 @@ class StrokeOrderFragment : Fragment() {
             strokeOrders.forEachIndexed { iCharacter, strokeOrder ->
                 if (model.entry.value!!.simplified[iCharacter].toString() !in listOf("，")){
                     filteredStrokeOrders.add(strokeOrder)
+                    indicatorCount++
                 }
             }
+
+            strokeOrderPageIndicatorView.createIndicators(indicatorCount, 0)
 
             if (!filteredStrokeOrders.isEmpty()) {
                 adapter.setEntries(filteredStrokeOrders)
@@ -115,6 +123,8 @@ class StrokeOrderFragment : Fragment() {
         val position = layoutManager.findFirstCompletelyVisibleItemPosition()
         if (position != RecyclerView.NO_POSITION) {
             currenPosition = position
+
+            strokeOrderPageIndicatorView.animatePageSelected(currenPosition)
         }
         return when (strokeOrderDiagramList.findViewHolderForAdapterPosition(currenPosition) != null) {
             true -> strokeOrderDiagramList.findViewHolderForAdapterPosition(currenPosition) as StrokeOrderDiagramViewholder
