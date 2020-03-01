@@ -2,10 +2,12 @@ package com.mrpepe.pengyou.dictionary.wordView
 
 import android.app.Application
 import androidx.lifecycle.*
+import com.mrpepe.pengyou.ChineseMode
 import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.dictionary.CEDict
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
+import com.mrpepe.pengyou.dictionary.StrokeOrder
 import kotlinx.coroutines.launch
 
 class WordViewViewModel() : ViewModel() {
@@ -14,7 +16,7 @@ class WordViewViewModel() : ViewModel() {
     private var entryDao : EntryDAO = CEDict.getDatabase(MainApplication.getContext()).entryDao()
 
     var decompositions : MutableLiveData<List<Decomposition>> = MutableLiveData()
-    var strokeOrders : MutableLiveData<List<String>> = MutableLiveData()
+    var strokeOrders : MutableLiveData<List<StrokeOrder>> = MutableLiveData()
     val entry = MediatorLiveData<Entry>()
     val wordsContaining = MediatorLiveData<List<Entry>>()
 
@@ -23,12 +25,20 @@ class WordViewViewModel() : ViewModel() {
         entry.addSource(repository.entry) {value -> entry.value = value}
         wordsContaining.addSource(repository.wordsContaining) {value -> wordsContaining.value = value}
 
+        val word = when (MainApplication.chineseMode) {
+            ChineseMode.simplified -> initEntry.simplified
+            ChineseMode.simplifiedTraditional -> initEntry.simplified
+            ChineseMode.traditional -> initEntry.traditional
+            ChineseMode.traditionalSimplified -> initEntry.traditional
+            else -> initEntry.simplified
+        }
+
         viewModelScope.launch {
-            repository.decompose(initEntry.simplified)
+            repository.decompose(word)
             decompositions.postValue(repository.decompositions)
         }
         viewModelScope.launch {
-            repository.getStrokeOrder(initEntry.simplified)
+            repository.getStrokeOrder(word)
             strokeOrders.postValue(repository.strokeOrders)
         }
 
