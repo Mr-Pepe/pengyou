@@ -71,9 +71,10 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
     var buttonPlayEnabled = true
     var buttonNextEnabled = true
     var buttonQuizEnabled = true
+    var quizActive = false
     var buttonResetEnabled = true
     var buttonOutlineEnabled = true
-    var buttonOutlineIsOutline = true
+    var buttonOutlineIsHide = true
 
     init {
         itemView.post(object : Runnable {
@@ -216,11 +217,13 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
                     true -> {
                         buttonPlayEnabled = false
                         buttonNextEnabled = false
+                        quizActive = true
                         webView.setOnTouchListener { _, _ -> false }
                     }
                     false -> {
                         buttonPlayEnabled = true
                         buttonNextEnabled = true
+                        quizActive = false
                         webView.setOnTouchListener(object : View.OnTouchListener {
                             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                                 return (event?.action == MotionEvent.ACTION_MOVE)
@@ -366,12 +369,12 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
                 OutlineMode.SHOW -> {
                     outlineMode = OutlineMode.HIDE
                     webView.runJavaScript("hideOutline()")
-                    buttonOutlineIsOutline = false
+                    buttonOutlineIsHide = true
                 }
                 OutlineMode.HIDE -> {
                     outlineMode = OutlineMode.SHOW
                     webView.runJavaScript("showOutline()")
-                    buttonOutlineIsOutline = true
+                    buttonOutlineIsHide = false
                 }
             }
             fragment.updateButtonStatesFromDiagram(index)
