@@ -73,6 +73,7 @@
                 android:maxLines="3"
                 android:minLines="1"
                 android:paddingBottom="2dp"
+                android:scrollbars="none"
                 android:textSize="14sp"
                 tools:text="DefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitions" />
 
