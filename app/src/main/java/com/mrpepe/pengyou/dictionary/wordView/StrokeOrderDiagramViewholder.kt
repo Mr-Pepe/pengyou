@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
 import com.mrpepe.pengyou.*
+import com.mrpepe.pengyou.dictionary.StrokeOrder
 import kotlinx.android.synthetic.main.stroke_order_diagram.view.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -50,6 +51,9 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
     private lateinit var fragment: StrokeOrderFragment
     private var index = -1
 
+    private var strokeOrderExists = false
+    private var character = ""
+
     private lateinit var viewTreeObserver: ViewTreeObserver
     private val onPreDrawListener = object:  ViewTreeObserver.OnPreDrawListener {
         override fun onPreDraw(): Boolean {
@@ -67,6 +71,8 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
     var buttonPlayEnabled = true
     var buttonNextEnabled = true
     var buttonQuizEnabled = true
+    var buttonResetEnabled = true
+    var buttonOutlineEnabled = true
     var buttonOutlineIsOutline = true
 
     init {
@@ -81,17 +87,22 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
         isQuizzing.value = false
     }
 
-    fun bind(strokeOrder: String, viewLifecycleOwner: LifecycleOwner, fragment: StrokeOrderFragment, index: Int) {
+    fun bind(strokeOrder: StrokeOrder, viewLifecycleOwner: LifecycleOwner, fragment: StrokeOrderFragment, index: Int) {
 
-        // TODO: Handle missing stroke order diagrams
-        this.strokeOrder = strokeOrder
+        // If stroke order exists
+        if (strokeOrder.id != -1) {
+            strokeOrderExists = true
+            this.strokeOrder = strokeOrder.json.replace("\'", "\"")
+            nStrokes = (Parser.default().parse(StringBuilder(this.strokeOrder)) as JsonObject).array<String>(
+                        "strokes"
+                    )!!.size
+        }
+
+        character = strokeOrder.character
+
         this.viewLifecycleOwner = viewLifecycleOwner
         this.fragment = fragment
         this.index = index
-
-        nStrokes = (Parser.default().parse(StringBuilder(strokeOrder)) as JsonObject).array<String>(
-                        "strokes"
-                    )!!.size
         currentStroke = 0
     }
 
@@ -102,6 +113,7 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
 
         val strokeOrderDiagramConstraintLayout = itemView.strokeOrderDiagramConstraintLayout
         val strokeOrderDiagramContainer = itemView.strokeOrderDiagramContainer
+        val noStrokesFoundTextView = itemView.noStrokesFoundTextView
         webView = itemView.strokeOrderWebView
 
         diagramSize = (min(
@@ -114,97 +126,111 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
         params.width = diagramSize
         strokeOrderDiagramContainer.requestLayout()
 
-        webView.settings.javaScriptEnabled = true
-        webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
-        webView.settings.loadWithOverviewMode = true
-        webView.isVerticalScrollBarEnabled = false
-        webView.isHorizontalScrollBarEnabled = false
-        webView.setBackgroundColor(Color.TRANSPARENT)
-        webView.settings.useWideViewPort = true
-        webView.loadUrl(BASE_URL)
+        if (!strokeOrderExists) {
+            strokeOrderDiagramContainer.visibility = View.INVISIBLE
+            noStrokesFoundTextView.visibility = View.VISIBLE
+            noStrokesFoundTextView.text = MainApplication.getContext().getString(R.string.no_strokes_found) + character
+            buttonPlayEnabled = false
+            buttonNextEnabled = false
+            buttonQuizEnabled = false
+            buttonResetEnabled = false
+            buttonOutlineEnabled = false
+            fragment.updateButtonStatesFromDiagram(index)
+        }
+        else {
+            strokeOrderDiagramContainer.visibility = View.VISIBLE
+            noStrokesFoundTextView.visibility = View.INVISIBLE
 
-        resetFinished.observe(viewLifecycleOwner, Observer {
-            currentStroke = 0
+            webView.settings.javaScriptEnabled = true
+            webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
+            webView.settings.loadWithOverviewMode = true
+            webView.isVerticalScrollBarEnabled = false
+            webView.isHorizontalScrollBarEnabled = false
+            webView.setBackgroundColor(Color.TRANSPARENT)
+            webView.settings.useWideViewPort = true
+            webView.loadUrl(BASE_URL)
 
-            if (startAnimatingAfterReset) {
-                startAnimatingAfterReset = false
-                animateStroke()
-            }
-            else if (isQuizzing.value!!) {
-                MainScope().launch {
-                    webView.runJavaScript("startQuiz()")
-                }
-            }
-            else {
-                block = false
-            }
-        })
+            resetFinished.observe(viewLifecycleOwner, Observer {
+                currentStroke = 0
 
-        showCharacterFinished.observe(viewLifecycleOwner, Observer {
-            currentStroke = nStrokes
-            block = false
-        })
-
-        completedStroke.observe(viewLifecycleOwner, Observer {
-            if (resetRequest) {
-                resetRequest = false
-                MainScope().launch {
-                    webView.runJavaScript("reset()")
-                }
-            } else if (showCharacterRequest) {
-                showCharacterRequest = false
-                MainScope().launch {
-                    webView.runJavaScript("showCharacter()")
-                }
-
-            } else {
-                block = false
-                currentStroke++
-
-                if (currentStroke == nStrokes) {
-                    isAnimating.value = false
-                }
-                if (isAnimating.value!!) {
+                if (startAnimatingAfterReset) {
+                    startAnimatingAfterReset = false
                     animateStroke()
+                } else if (isQuizzing.value!!) {
+                    MainScope().launch {
+                        webView.runJavaScript("startQuiz()")
+                    }
+                } else {
+                    block = false
                 }
-            }
-        })
+            })
 
-        isAnimating.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                true -> {
-                    buttonPlayIsPlay = false
-                    buttonNextEnabled = false
-                    buttonQuizEnabled = false
-                }
-                false -> {
-                    buttonPlayIsPlay = true
-                    buttonNextEnabled = true
-                    buttonQuizEnabled = true
-                }
-            }
-            fragment.updateButtonStatesFromDiagram(index)
-        })
+            showCharacterFinished.observe(viewLifecycleOwner, Observer {
+                currentStroke = nStrokes
+                block = false
+            })
 
-        isQuizzing.observe(viewLifecycleOwner, Observer {
-            when(it) {
-                true -> {
-                    buttonPlayEnabled = false
-                    buttonNextEnabled = false
-                    webView.setOnTouchListener { _, _ -> false}
+            completedStroke.observe(viewLifecycleOwner, Observer {
+                if (resetRequest) {
+                    resetRequest = false
+                    MainScope().launch {
+                        webView.runJavaScript("reset()")
+                    }
+                } else if (showCharacterRequest) {
+                    showCharacterRequest = false
+                    MainScope().launch {
+                        webView.runJavaScript("showCharacter()")
+                    }
+
+                } else {
+                    block = false
+                    currentStroke++
+
+                    if (currentStroke == nStrokes) {
+                        isAnimating.value = false
+                    }
+                    if (isAnimating.value!!) {
+                        animateStroke()
+                    }
                 }
-                false -> {
-                    buttonPlayEnabled = true
-                    buttonNextEnabled = true
-                    webView.setOnTouchListener(object : View.OnTouchListener {
-                        override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                            return (event?.action == MotionEvent.ACTION_MOVE)
-                        }
-                    })
+            })
+
+            isAnimating.observe(viewLifecycleOwner, Observer {
+                when (it) {
+                    true -> {
+                        buttonPlayIsPlay = false
+                        buttonNextEnabled = false
+                        buttonQuizEnabled = false
+                    }
+                    false -> {
+                        buttonPlayIsPlay = true
+                        buttonNextEnabled = true
+                        buttonQuizEnabled = true
+                    }
                 }
-            }
-            fragment.updateButtonStatesFromDiagram(index)
-        })
+                fragment.updateButtonStatesFromDiagram(index)
+            })
+
+            isQuizzing.observe(viewLifecycleOwner, Observer {
+                when (it) {
+                    true -> {
+                        buttonPlayEnabled = false
+                        buttonNextEnabled = false
+                        webView.setOnTouchListener { _, _ -> false }
+                    }
+                    false -> {
+                        buttonPlayEnabled = true
+                        buttonNextEnabled = true
+                        webView.setOnTouchListener(object : View.OnTouchListener {
+                            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                                return (event?.action == MotionEvent.ACTION_MOVE)
+                            }
+                        })
+                    }
+                }
+                fragment.updateButtonStatesFromDiagram(index)
+            })
+        }
     }
 
     private inner class JavaScriptInterface {
@@ -282,7 +308,7 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
     }
 
     fun playButtonPressed() {
-        if (!block) {
+        if (!block && strokeOrderExists) {
             block = true
             if (isAnimating.value!!) {
                 isAnimating.value = false
@@ -304,8 +330,7 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
     }
 
     fun nextButtonPressed() {
-
-        if (!block) {
+        if (!block && strokeOrderExists) {
             if (!isAnimating.value!!) {
                 block = true
                 if (currentStroke == nStrokes) {
@@ -322,50 +347,50 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
     }
 
     fun resetButtonPressed() {
-
-        block = true
-        if (isAnimating.value!!) {
-            resetRequest = true
-            isAnimating.value = false
-        }
-        else {
-            MainScope().launch {
-                webView.runJavaScript("reset()")
+        if (strokeOrderExists) {
+            block = true
+            if (isAnimating.value!!) {
+                resetRequest = true
+                isAnimating.value = false
+            } else {
+                MainScope().launch {
+                    webView.runJavaScript("reset()")
+                }
             }
         }
-
     }
 
     fun outlineButtonPressed() {
-
-        when (outlineMode) {
-            OutlineMode.SHOW -> {
-                outlineMode = OutlineMode.HIDE
-                webView.runJavaScript("hideOutline()")
-                buttonOutlineIsOutline = false
+        if (strokeOrderExists) {
+            when (outlineMode) {
+                OutlineMode.SHOW -> {
+                    outlineMode = OutlineMode.HIDE
+                    webView.runJavaScript("hideOutline()")
+                    buttonOutlineIsOutline = false
+                }
+                OutlineMode.HIDE -> {
+                    outlineMode = OutlineMode.SHOW
+                    webView.runJavaScript("showOutline()")
+                    buttonOutlineIsOutline = true
+                }
             }
-            OutlineMode.HIDE -> {
-                outlineMode = OutlineMode.SHOW
-                webView.runJavaScript("showOutline()")
-                buttonOutlineIsOutline = true
-            }
+            fragment.updateButtonStatesFromDiagram(index)
         }
-        fragment.updateButtonStatesFromDiagram(index)
     }
 
     fun quizButtonPressed() {
-
-        fragment.togglePaging()
-        if (!isQuizzing.value!!) {
-            isQuizzing.value = true
-            MainScope().launch {
-                webView.runJavaScript("startQuiz()")
-            }
-        }
-        else {
-            isQuizzing.value = false
-            MainScope().launch {
-                webView.runJavaScript("reset()")
+        if (strokeOrderExists) {
+            fragment.togglePaging()
+            if (!isQuizzing.value!!) {
+                isQuizzing.value = true
+                MainScope().launch {
+                    webView.runJavaScript("startQuiz()")
+                }
+            } else {
+                isQuizzing.value = false
+                MainScope().launch {
+                    webView.runJavaScript("reset()")
+                }
             }
         }
     }

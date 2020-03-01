@@ -6,6 +6,7 @@ import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.dictionary.CEDict
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
+import com.mrpepe.pengyou.dictionary.StrokeOrder
 import kotlinx.coroutines.launch
 
 class WordViewViewModel() : ViewModel() {
@@ -14,7 +15,7 @@ class WordViewViewModel() : ViewModel() {
     private var entryDao : EntryDAO = CEDict.getDatabase(MainApplication.getContext()).entryDao()
 
     var decompositions : MutableLiveData<List<Decomposition>> = MutableLiveData()
-    var strokeOrders : MutableLiveData<List<String>> = MutableLiveData()
+    var strokeOrders : MutableLiveData<List<StrokeOrder>> = MutableLiveData()
     val entry = MediatorLiveData<Entry>()
     val wordsContaining = MediatorLiveData<List<Entry>>()
 
