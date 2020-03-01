@@ -145,7 +145,7 @@ class StrokeOrderFragment : Fragment() {
                 buttonPlay.contentDescription = getString(R.string.button_play_pause)
             }
             true -> {
-                buttonPlay.setImageResource(R.drawable.ic_play_arrow)
+                buttonPlay.setImageResource(R.drawable.ic_play)
                 buttonPlay.contentDescription = getString(R.string.button_play_play)
             }
         }
@@ -183,11 +183,13 @@ class StrokeOrderFragment : Fragment() {
             }
         }
 
-        when (getCurrentDiagram()?.buttonOutlineIsOutline) {
+        when (getCurrentDiagram()?.buttonOutlineIsHide) {
             false -> {
+                buttonOutline.setImageResource(R.drawable.ic_hide)
                 buttonOutline.contentDescription = getString(R.string.button_outline_show)
             }
             true -> {
+                buttonOutline.setImageResource(R.drawable.ic_unhide)
                 buttonOutline.contentDescription = getString(R.string.button_outline_hide)
             }
         }
@@ -211,6 +213,15 @@ class StrokeOrderFragment : Fragment() {
             true -> {
                 buttonReset.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
                 buttonReset.isEnabled = true
+            }
+        }
+
+        when (getCurrentDiagram()?.quizActive) {
+            false -> {
+                buttonQuiz.setImageResource(R.drawable.ic_pencil)
+            }
+            true -> {
+                buttonQuiz.setImageResource(R.drawable.ic_cancel)
             }
         }
     }

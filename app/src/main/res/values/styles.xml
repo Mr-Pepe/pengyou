@@ -34,4 +34,11 @@
         <item name="android:windowBackground">@drawable/launch_screen</item>
     </style>
 
+    <style name="StrokeOrderButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_marginLeft">@dimen/medium_padding</item>
+        <item name="android:layout_marginRight">@dimen/medium_padding</item>
+        <item name="android:layout_width">@dimen/stroke_order_button_size</item>
+        <item name="android:layout_height">@dimen/stroke_order_button_size</item>
+    </style>
+
 </resources>

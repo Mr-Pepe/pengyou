@@ -37,7 +37,6 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            style="@android:style/Widget.Material.ButtonBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/small_padding"
@@ -51,35 +50,31 @@
 
             <ImageButton
                 android:id="@+id/buttonOutline"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                style="@style/StrokeOrderButton"
                 android:background="@android:drawable/screen_background_light_transparent"
                 android:contentDescription="@string/button_outline_hide"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_outline_bold" />
+                app:srcCompat="@drawable/ic_hide" />
 
             <ImageButton
                 android:id="@+id/buttonReset"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                style="@style/StrokeOrderButton"
                 android:background="@android:drawable/screen_background_light_transparent"
                 android:contentDescription="@string/button_reset"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_replay" />
+                app:srcCompat="@drawable/ic_eraser" />
 
             <ImageButton
                 android:id="@+id/buttonPlay"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                style="@style/StrokeOrderButton"
                 android:background="@android:drawable/screen_background_light_transparent"
                 android:contentDescription="@string/button_play_play"
                 android:scaleType="fitCenter"
-                app:srcCompat="@drawable/ic_play_arrow" />
+                app:srcCompat="@drawable/ic_play" />
 
             <ImageButton
                 android:id="@+id/buttonNext"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                style="@style/StrokeOrderButton"
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/button_next"
                 android:scaleType="fitCenter"
@@ -87,8 +82,7 @@
 
             <ImageButton
                 android:id="@+id/buttonQuiz"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                style="@style/StrokeOrderButton"
                 android:background="@android:drawable/screen_background_light_transparent"
                 android:contentDescription="@string/button_quiz"
                 android:scaleType="fitCenter"
