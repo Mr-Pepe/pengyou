@@ -1,30 +1,19 @@
 package com.mrpepe.pengyou.dictionary.wordView
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.*
-import android.webkit.JavascriptInterface
-import android.webkit.WebView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SnapHelper
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Parser
 import com.mrpepe.pengyou.*
+import com.mrpepe.pengyou.dictionary.StrokeOrder
 import kotlinx.android.synthetic.main.fragment_stroke_order.*
 import kotlinx.android.synthetic.main.fragment_stroke_order.view.*
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
-import java.util.*
-import kotlin.concurrent.timerTask
 
 
 class StrokeOrderFragment : Fragment() {
@@ -108,16 +97,16 @@ class StrokeOrderFragment : Fragment() {
 
         model.strokeOrders.observe(viewLifecycleOwner, Observer {strokeOrders ->
 
-            val cleanStrokeOrders = mutableListOf<String>()
+            val filteredStrokeOrders = mutableListOf<StrokeOrder>()
 
             strokeOrders.forEachIndexed { iCharacter, strokeOrder ->
                 if (model.entry.value!!.simplified[iCharacter].toString() !in listOf("，")){
-                    cleanStrokeOrders.add(strokeOrder.replace("\'", "\""))
+                    filteredStrokeOrders.add(strokeOrder)
                 }
             }
 
-            if (!cleanStrokeOrders.isEmpty()) {
-                adapter.setEntries(cleanStrokeOrders)
+            if (!filteredStrokeOrders.isEmpty()) {
+                adapter.setEntries(filteredStrokeOrders)
             }
         })
     }
@@ -190,6 +179,28 @@ class StrokeOrderFragment : Fragment() {
             }
             true -> {
                 buttonOutline.contentDescription = getString(R.string.button_outline_hide)
+            }
+        }
+
+        when (getCurrentDiagram()?.buttonOutlineEnabled) {
+            false -> {
+                buttonOutline.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonOutline.isEnabled = false
+            }
+            true -> {
+                buttonOutline.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonOutline.isEnabled = true
+            }
+        }
+
+        when (getCurrentDiagram()?.buttonResetEnabled) {
+            false -> {
+                buttonReset.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonReset.isEnabled = false
+            }
+            true -> {
+                buttonReset.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonReset.isEnabled = true
             }
         }
     }

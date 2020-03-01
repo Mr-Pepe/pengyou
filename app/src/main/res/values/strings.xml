@@ -23,6 +23,7 @@
     <string name="button_quiz">Quiz</string>
     <string name="switch_language_button_title">Switch Language</string>
     <string name="copy_to_clipboard_button_title">Copy to Clipboard</string>
+    <string name="no_strokes_found">No stroke order diagram found for:\u0020</string>
 
     <string name="search_results">SEARCH RESULTS:\u0020</string>
     <string name="history">HISTORY:\u0020</string>

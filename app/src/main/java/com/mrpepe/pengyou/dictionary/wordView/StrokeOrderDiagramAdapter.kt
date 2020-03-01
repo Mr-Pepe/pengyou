@@ -7,12 +7,13 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.Entry
+import com.mrpepe.pengyou.dictionary.StrokeOrder
 import com.mrpepe.pengyou.dictionary.search.SearchResultViewHolder
 
 class StrokeOrderDiagramAdapter(val viewLifecycleOwner: LifecycleOwner, val fragment: StrokeOrderFragment):
     RecyclerView.Adapter<StrokeOrderDiagramViewholder>() {
 
-    var strokeOrders = emptyList<String>()
+    var strokeOrders = emptyList<StrokeOrder>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StrokeOrderDiagramViewholder {
         return StrokeOrderDiagramViewholder(
@@ -41,7 +42,7 @@ class StrokeOrderDiagramAdapter(val viewLifecycleOwner: LifecycleOwner, val frag
         return position
     }
 
-    internal fun setEntries(strokeOrders: List<String>) {
+    internal fun setEntries(strokeOrders: List<StrokeOrder>) {
         this.strokeOrders = strokeOrders
         notifyDataSetChanged()
     }
