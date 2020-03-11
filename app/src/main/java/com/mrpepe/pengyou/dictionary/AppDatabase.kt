@@ -110,6 +110,14 @@ interface EntryDAO {
 
     @Query("SELECT * " +
             "FROM entries " +
+            "WHERE " +
+                "traditional >= :lowerString AND " +
+                "traditional < :upperString " +
+            "LIMIT " + MainApplication.MAX_SEARCH_RESULTS)
+    fun searchInDictByTraditional(lowerString: String, upperString: String) : LiveData<List<Entry>>
+
+    @Query("SELECT * " +
+            "FROM entries " +
             "WHERE definitions LIKE :query " +
             "LIMIT 1000")
     fun searchInDictByEnglish1(query: String) : LiveData<List<Entry>>
