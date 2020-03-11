@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.*
 import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.SearchHistory
-import com.mrpepe.pengyou.dictionary.CEDict
+import com.mrpepe.pengyou.dictionary.AppDatabase
 import com.mrpepe.pengyou.dictionary.Entry
 import kotlinx.coroutines.launch
 
@@ -41,7 +41,7 @@ class DictionarySearchViewModel() : ViewModel() {
     }
 
     init {
-        val entryDao = CEDict.getDatabase(MainApplication.getContext()).entryDao()
+        val entryDao = AppDatabase.getDatabase(MainApplication.getContext()).entryDao()
         repository = DictionarySearchRepository(entryDao)
         oldEnglishResults1 = repository.englishSearchResults1
         oldEnglishResults2 = repository.englishSearchResults1

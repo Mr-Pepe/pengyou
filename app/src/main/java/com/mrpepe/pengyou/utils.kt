@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
-import com.mrpepe.pengyou.dictionary.CEDict
+import com.mrpepe.pengyou.dictionary.AppDatabase
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
 import com.mrpepe.pengyou.dictionary.wordView.WordViewFragmentDirections
@@ -215,7 +215,7 @@ class WordLink(val entry: Entry,
 
         lastTimeClicked = SystemClock.elapsedRealtime()
 
-        val entryDao : EntryDAO = CEDict.getDatabase(MainApplication.getContext()).entryDao()
+        val entryDao : EntryDAO = AppDatabase.getDatabase(MainApplication.getContext()).entryDao()
 
         val scope = MainScope()
 

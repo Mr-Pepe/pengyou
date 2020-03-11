@@ -9,15 +9,16 @@ import java.io.Serializable
 @Database(entities= arrayOf(Entry::class,
                             Permutation::class,
                             DbDecomposition::class,
-                            StrokeOrder::class), version = 1)
-abstract class CEDict : RoomDatabase() {
+                            StrokeOrder::class,
+                            TraditionalToSimplified::class), version = 1)
+abstract class AppDatabase : RoomDatabase() {
     abstract fun entryDao() : EntryDAO
 
     companion object {
         @Volatile
-        private var INSTANCE: CEDict? = null
+        private var INSTANCE: AppDatabase? = null
 
-        fun getDatabase(context: Context): CEDict {
+        fun getDatabase(context: Context): AppDatabase {
             val tempInstance = INSTANCE
             if (tempInstance != null) {
                 return tempInstance
@@ -25,8 +26,8 @@ abstract class CEDict : RoomDatabase() {
             synchronized(this){
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    CEDict::class.java,
-                    "cedict"
+                    AppDatabase::class.java,
+                    "AppDatabase"
                 ).createFromAsset("data.db")
 //                    .allowMainThreadQueries()
                     .build()
@@ -55,6 +56,13 @@ data class Permutation(
     @PrimaryKey val id: Int?,
     @ColumnInfo(name = "entry_id") val wordID: Int,
     @ColumnInfo(name = "permutation") val definition: String
+)
+
+@Entity(tableName = "traditional2simplified")
+data class TraditionalToSimplified(
+    @PrimaryKey val id: Int?,
+    @ColumnInfo(name = "traditional") val traditional: String,
+    @ColumnInfo(name = "simplified") val simplified: String
 )
 
 @Entity(tableName = "decompositions")
