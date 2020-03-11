@@ -84,11 +84,17 @@ class DefinitionFormatter {
 
                         var word = SpannableString("")
 
-                        if (chineseMode == ChineseMode.simplified || chineseMode == ChineseMode.simplifiedTraditional) {
+                        if (chineseMode == ChineseMode.simplified) {
                             word = SpannableString(simplified)
                         }
-                        else if (chineseMode == ChineseMode.traditional || chineseMode == ChineseMode.traditionalSimplified){
+                        else if (chineseMode == ChineseMode.simplifiedTraditional) {
+                            word = SpannableString("$simplified|$traditional")
+                        }
+                        else if (chineseMode == ChineseMode.traditional){
                             word = SpannableString(traditional)
+                        }
+                        else if (chineseMode == ChineseMode.traditionalSimplified){
+                            word = SpannableString("$traditional|$simplified")
                         }
 
                         // Try to find pinyin corresponding to this word
