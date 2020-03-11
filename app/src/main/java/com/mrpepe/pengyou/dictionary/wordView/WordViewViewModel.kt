@@ -1,10 +1,9 @@
 package com.mrpepe.pengyou.dictionary.wordView
 
-import android.app.Application
 import androidx.lifecycle.*
 import com.mrpepe.pengyou.ChineseMode
 import com.mrpepe.pengyou.MainApplication
-import com.mrpepe.pengyou.dictionary.CEDict
+import com.mrpepe.pengyou.dictionary.AppDatabase
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
 import com.mrpepe.pengyou.dictionary.StrokeOrder
@@ -13,7 +12,7 @@ import kotlinx.coroutines.launch
 class WordViewViewModel() : ViewModel() {
     var isInitialized = false
     private lateinit var repository : WordViewRepository
-    private var entryDao : EntryDAO = CEDict.getDatabase(MainApplication.getContext()).entryDao()
+    private var entryDao : EntryDAO = AppDatabase.getDatabase(MainApplication.getContext()).entryDao()
 
     var decompositions : MutableLiveData<List<Decomposition>> = MutableLiveData()
     var strokeOrders : MutableLiveData<List<StrokeOrder>> = MutableLiveData()
