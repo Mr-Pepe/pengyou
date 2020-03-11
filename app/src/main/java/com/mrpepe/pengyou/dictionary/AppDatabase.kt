@@ -149,6 +149,9 @@ interface EntryDAO {
     suspend fun getEntryBySimplifiedTraditional(simplified: String,
                                                 traditional: String): List<Entry>
 
+    @Query("SELECT simplified FROM traditional2simplified WHERE traditional = :query")
+    suspend fun getTraditionalToSimplified(query: String): List<String>
+
     @Query("SELECT * " +
                 "FROM entries " +
                 "WHERE " +
