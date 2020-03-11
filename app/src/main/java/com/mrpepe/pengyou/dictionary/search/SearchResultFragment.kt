@@ -175,12 +175,16 @@ class SearchResultFragment : Fragment() {
     }
 
     private fun setEnglish() {
-        adapter.setEntries(dictionaryViewModel.englishSearchResults.value ?: listOf())
+        adapter.setEntries(dictionaryViewModel.englishSearchResults.value?.sortedWith(
+            compareBy({it.priority})
+        ) ?: listOf())
         dictionaryViewModel.displayedLanguage.value = DictionarySearchViewModel.SearchLanguage.ENGLISH
     }
 
     private fun setChinese() {
-        adapter.setEntries(dictionaryViewModel.chineseSearchResults.value ?: listOf())
+        adapter.setEntries(dictionaryViewModel.chineseSearchResults.value?.sortedWith(
+            compareBy({it.wordLength}, {it.hsk}, {it.pinyinLength}, {it.priority})
+        ) ?: listOf())
         dictionaryViewModel.displayedLanguage.value = DictionarySearchViewModel.SearchLanguage.CHINESE
     }
 }
