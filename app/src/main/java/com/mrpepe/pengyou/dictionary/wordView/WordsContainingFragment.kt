@@ -67,7 +67,9 @@ class WordsContainingFragment : Fragment() {
         searchResultList.adapter = adapter
 
         model.wordsContaining.observe(viewLifecycleOwner, Observer { wordsContaining ->
-            wordsContaining?.let { adapter.setEntries(wordsContaining) }
+            adapter.setEntries(wordsContaining?.sortedWith(
+                compareBy({it.hsk}, {it.wordLength}, {it.priority})
+            ) ?: listOf())
             resultCount.text = when(wordsContaining.size) {
                 0 -> (model.entry.value?.simplified ?: "") + getString(R.string.no_appearance_in_other_words)
                 else -> getString(R.string.appears_in_other_words) + wordsContaining.size.toString()

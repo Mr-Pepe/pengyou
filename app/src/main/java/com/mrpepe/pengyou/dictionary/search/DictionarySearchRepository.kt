@@ -2,6 +2,7 @@ package com.mrpepe.pengyou.dictionary.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
 
@@ -12,6 +13,7 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
     private val _chineseSearchResults = MediatorLiveData<List<Entry>>()
     var chineseSearchResults: LiveData<List<Entry>> = _chineseSearchResults
     private val chineseSearchResultSources = mutableListOf<LiveData<List<Entry>>>()
+    val chineseQueryCompleted = MutableLiveData<Boolean>()
     var searchHistory = mutableListOf<Entry>()
 
     init {
@@ -69,7 +71,7 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
             }
         }
 
-        _chineseSearchResults.postValue(listOf())
+        _chineseSearchResults.value = listOf()
         chineseSearchResultSources.forEach { _chineseSearchResults.removeSource(it) }
         chineseSearchResultSources.clear()
 
@@ -77,7 +79,8 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
             val chineseSearchResult = entryDao.searchInDictByChinese(query, query + 'z')
             chineseSearchResultSources.add(chineseSearchResult)
                 _chineseSearchResults.addSource(chineseSearchResult) {entries ->
-                    _chineseSearchResults.postValue(chineseSearchResults.value?.union(entries)?.toList())
+                    _chineseSearchResults.value = chineseSearchResults.value?.union(entries)?.toList()
+                    _chineseSearchResults.postValue(_chineseSearchResults.value)
             }
         }
     }
