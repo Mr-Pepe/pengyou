@@ -83,6 +83,14 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
                     _chineseSearchResults.postValue(_chineseSearchResults.value)
             }
         }
+
+        val chineseSearchResult = entryDao.searchInDictByTraditional(rawQuery, rawQuery + 'z')
+            chineseSearchResultSources.add(chineseSearchResult)
+                _chineseSearchResults.addSource(chineseSearchResult) {entries ->
+                    _chineseSearchResults.value = chineseSearchResults.value?.union(entries)?.toList()
+                    _chineseSearchResults.postValue(_chineseSearchResults.value)
+            }
+
     }
 
     fun clearChineseResults() {
