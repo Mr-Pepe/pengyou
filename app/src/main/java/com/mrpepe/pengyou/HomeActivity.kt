@@ -125,7 +125,6 @@ class HomeActivity : BaseActivity(),
             when (item.title) {
                 getString(R.string.bottom_navigation_view_dictionary) -> {
                     dictionarySearchViewModel.searchQuery = ""
-                    dictionarySearchSearchBox?.requestFocus()
                     findNavController(R.id.mainContainer).navigate(R.id.globalOpenDictionaryAction)
                 }
                 getString(R.string.bottom_navigation_view_settings) -> {

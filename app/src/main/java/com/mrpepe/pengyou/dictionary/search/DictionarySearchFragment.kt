@@ -170,6 +170,8 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
                 }
             }
         })
+
+        dictionarySearchSearchBox?.requestFocus()
     }
 
     fun setModeSwitchIcon(language: DictionarySearchViewModel.SearchLanguage) {
