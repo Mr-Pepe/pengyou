@@ -14,11 +14,13 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/dictionarySearchToolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme" >
 
             <SearchView
                 android:id="@+id/dictionarySearchSearchBox"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:iconifiedByDefault="false"
                 android:queryHint="@string/search_view_query_hint" />

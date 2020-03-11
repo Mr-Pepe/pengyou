@@ -19,8 +19,7 @@
             android:theme="?attr/actionBarTheme"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:title="Pengyou" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/wordViewPinyin"

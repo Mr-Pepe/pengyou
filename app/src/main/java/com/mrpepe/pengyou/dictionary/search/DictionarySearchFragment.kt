@@ -178,14 +178,14 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
         when (language) {
             DictionarySearchViewModel.SearchLanguage.ENGLISH -> {
                 modeSwitch.icon = ContextCompat.getDrawable(
-                    MainApplication.getContext(),
+                    MainApplication.homeActivity,
                     R.drawable.ic_english_mode
                 )
 
             }
             DictionarySearchViewModel.SearchLanguage.CHINESE -> {
                 modeSwitch.icon = ContextCompat.getDrawable(
-                    MainApplication.getContext(),
+                    MainApplication.homeActivity,
                     R.drawable.ic_chinese_mode
                 )
 
