@@ -51,7 +51,7 @@ data class Entry (
     @ColumnInfo(name = "definitions") val definitions: String
 ) : Serializable
 
-@Entity(tableName = "permutations", indices = arrayOf(Index(value = ["permutation"], name = "search_index")))
+@Entity(tableName = "permutations", indices = [Index(value = ["permutation"], name = "search_index")])
 data class Permutation(
     @PrimaryKey val id: Int?,
     @ColumnInfo(name = "entry_id") val wordID: Int,
@@ -119,7 +119,7 @@ interface EntryDAO {
     @Query("SELECT * " +
             "FROM entries " +
             "WHERE definitions LIKE :query " +
-            "LIMIT 1000")
+            "LIMIT " + MainApplication.MAX_SEARCH_RESULTS)
     fun searchInDictByEnglish1(query: String) : LiveData<List<Entry>>
 
     @Query("SELECT * " +
