@@ -70,10 +70,10 @@ class DictionarySearchViewModel() : ViewModel() {
                 searchForChinese(searchQuery
                             .replace("ü", "u:")
                             .replace("v", "u:")
-                            .trimEnd())
+                            .trimEnd().toLowerCase())
             }
             viewModelScope.launch {
-                searchForEnglish(searchQuery.trimEnd())
+                searchForEnglish(searchQuery.trimEnd().toLowerCase())
             }
         } else {
             englishSearchResults.value = listOf()
