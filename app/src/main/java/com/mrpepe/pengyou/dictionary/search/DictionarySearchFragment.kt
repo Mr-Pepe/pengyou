@@ -181,7 +181,6 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
                     MainApplication.homeActivity,
                     R.drawable.ic_english_mode
                 )
-
             }
             DictionarySearchViewModel.SearchLanguage.CHINESE -> {
                 modeSwitch.icon = ContextCompat.getDrawable(

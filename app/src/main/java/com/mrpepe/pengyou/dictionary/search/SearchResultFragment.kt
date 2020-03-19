@@ -1,6 +1,7 @@
 package com.mrpepe.pengyou.dictionary.search
 
 import android.os.Bundle
+import android.os.Handler
 import android.os.SystemClock
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -11,8 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
-import androidx.core.os.bundleOf
 import androidx.core.text.toSpannable
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -36,6 +35,7 @@ class SearchResultFragment : Fragment() {
     private lateinit var resultCount: TextView
     private lateinit var adapter : SearchResultAdapter
     private var lastClickTime: Long = 0
+    private var delayedUpdateHandler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,19 +67,19 @@ class SearchResultFragment : Fragment() {
         searchResultList.adapter = adapter
 
         dictionaryViewModel.requestedLanguage.observe(viewLifecycleOwner, Observer {
-            updateSearchResults()
+            updateSearchResults(false)
         })
 
         dictionaryViewModel.englishSearchResults.observe(viewLifecycleOwner, Observer {
-            updateSearchResults()
+            updateSearchResults(false)
         })
 
         dictionaryViewModel.chineseSearchResults.observe(viewLifecycleOwner, Observer {
-            updateSearchResults()
+            updateSearchResults(false)
         })
 
         dictionaryViewModel.searchHistoryEntries.observe(viewLifecycleOwner, Observer {
-            updateSearchResults()
+            updateSearchResults(false)
         })
 
         dictionaryViewModel.newSearchLive.observe(viewLifecycleOwner, Observer {
@@ -101,7 +101,7 @@ class SearchResultFragment : Fragment() {
         findNavController().navigate(WordViewFragmentDirections.globalOpenWordViewAction(entry))
     }
 
-    private fun updateSearchResults() {
+    private fun updateSearchResults(calledFromDelayedHandler: Boolean) {
         when (dictionaryViewModel.searchQuery.isBlank()) {
 
             // Show history
@@ -139,12 +139,19 @@ class SearchResultFragment : Fragment() {
                 if (dictionaryViewModel.requestedLanguage.value == DictionarySearchViewModel.SearchLanguage.ENGLISH) {
 
                     when (dictionaryViewModel.englishSearchResults.value != null && dictionaryViewModel.englishSearchResults.value?.isNotEmpty()!!) {
-                        true -> setEnglish()
+                        true -> {
+                            setEnglish()
+                        }
                         false -> {
-                            if (dictionaryViewModel.chineseSearchResults.value != null && dictionaryViewModel.chineseSearchResults.value?.isNotEmpty()!! || dictionaryViewModel.displayedLanguage.value == DictionarySearchViewModel.SearchLanguage.CHINESE) {
-                                setChinese()
-                            } else {
-                                setEnglish()
+                            if (calledFromDelayedHandler) {
+                                if (dictionaryViewModel.chineseSearchResults.value != null && dictionaryViewModel.chineseSearchResults.value?.isNotEmpty()!! || dictionaryViewModel.displayedLanguage.value == DictionarySearchViewModel.SearchLanguage.CHINESE) {
+                                    setChinese()
+                                } else {
+                                    setEnglish()
+                                }
+                            }
+                            else {
+                                delayedUpdateHandler.postDelayed({ updateSearchResults(true) }, 500)
                             }
                         }
                     }
@@ -153,12 +160,19 @@ class SearchResultFragment : Fragment() {
                 else if (dictionaryViewModel.requestedLanguage.value == DictionarySearchViewModel.SearchLanguage.CHINESE) {
 
                     when (dictionaryViewModel.chineseSearchResults.value != null && dictionaryViewModel.chineseSearchResults.value?.isNotEmpty()!!) {
-                        true -> setChinese()
+                        true -> {
+                            setChinese()
+                        }
                         false -> {
-                            if (dictionaryViewModel.englishSearchResults.value != null && dictionaryViewModel.englishSearchResults.value?.isNotEmpty()!! || dictionaryViewModel.displayedLanguage.value == DictionarySearchViewModel.SearchLanguage.ENGLISH) {
-                                setEnglish()
-                            } else {
-                                setChinese()
+                            if (calledFromDelayedHandler) {
+                                if (dictionaryViewModel.englishSearchResults.value != null && dictionaryViewModel.englishSearchResults.value?.isNotEmpty()!! || dictionaryViewModel.displayedLanguage.value == DictionarySearchViewModel.SearchLanguage.ENGLISH) {
+                                    setEnglish()
+                                } else {
+                                    setChinese()
+                                }
+                            }
+                            else {
+                                delayedUpdateHandler.postDelayed({ updateSearchResults(true) }, 500)
                             }
                         }
                     }
@@ -175,12 +189,16 @@ class SearchResultFragment : Fragment() {
     }
 
     private fun setEnglish() {
-        adapter.setEntries(dictionaryViewModel.englishSearchResults.value ?: listOf())
+        adapter.setEntries(dictionaryViewModel.englishSearchResults.value?.sortedWith(
+            compareBy({it.priority})
+        ) ?: listOf())
         dictionaryViewModel.displayedLanguage.value = DictionarySearchViewModel.SearchLanguage.ENGLISH
     }
 
     private fun setChinese() {
-        adapter.setEntries(dictionaryViewModel.chineseSearchResults.value ?: listOf())
+        adapter.setEntries(dictionaryViewModel.chineseSearchResults.value?.sortedWith(
+            compareBy({it.wordLength}, {it.hsk}, {it.pinyinLength}, {it.priority})
+        ) ?: listOf())
         dictionaryViewModel.displayedLanguage.value = DictionarySearchViewModel.SearchLanguage.CHINESE
     }
 }

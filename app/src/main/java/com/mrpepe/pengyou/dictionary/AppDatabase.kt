@@ -9,15 +9,17 @@ import java.io.Serializable
 @Database(entities= arrayOf(Entry::class,
                             Permutation::class,
                             DbDecomposition::class,
-                            StrokeOrder::class), version = 1)
-abstract class CEDict : RoomDatabase() {
+                            StrokeOrder::class,
+                            TraditionalToSimplifiedCharacters::class,
+                            TraditionalToSimplifiedPhrases::class), version = 1)
+abstract class AppDatabase : RoomDatabase() {
     abstract fun entryDao() : EntryDAO
 
     companion object {
         @Volatile
-        private var INSTANCE: CEDict? = null
+        private var INSTANCE: AppDatabase? = null
 
-        fun getDatabase(context: Context): CEDict {
+        fun getDatabase(context: Context): AppDatabase {
             val tempInstance = INSTANCE
             if (tempInstance != null) {
                 return tempInstance
@@ -25,8 +27,8 @@ abstract class CEDict : RoomDatabase() {
             synchronized(this){
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
-                    CEDict::class.java,
-                    "cedict"
+                    AppDatabase::class.java,
+                    "AppDatabase"
                 ).createFromAsset("data.db")
 //                    .allowMainThreadQueries()
                     .build()
@@ -50,11 +52,25 @@ data class Entry (
     @ColumnInfo(name = "definitions") val definitions: String
 ) : Serializable
 
-@Entity(tableName = "permutations", indices = arrayOf(Index(value = ["permutation"], name = "search_index")))
+@Entity(tableName = "permutations", indices = [Index(value = ["permutation"], name = "search_index")])
 data class Permutation(
     @PrimaryKey val id: Int?,
     @ColumnInfo(name = "entry_id") val wordID: Int,
     @ColumnInfo(name = "permutation") val definition: String
+)
+
+@Entity(tableName = "trad_to_simpl_characters")
+data class TraditionalToSimplifiedCharacters(
+    @PrimaryKey val id: Int?,
+    @ColumnInfo(name = "traditional") val traditional: String,
+    @ColumnInfo(name = "simplified") val simplified: String
+)
+
+@Entity(tableName = "trad_to_simpl_phrases")
+data class TraditionalToSimplifiedPhrases(
+    @PrimaryKey val id: Int?,
+    @ColumnInfo(name = "traditional") val traditional: String,
+    @ColumnInfo(name = "simplified") val simplified: String
 )
 
 @Entity(tableName = "decompositions")
@@ -86,8 +102,7 @@ interface EntryDAO {
                 "WHERE " +
                     "simplified LIKE :wildcardQuery " +
                     "AND " +
-                    "simplified != :query " +
-                "ORDER BY hsk, word_length, priority")
+                    "simplified != :query ")
     fun getWordsContaining(query: String, wildcardQuery: String) : LiveData<List<Entry>>
 
     @Query("SELECT * " +
@@ -98,28 +113,32 @@ interface EntryDAO {
                     "WHERE " +
                         "permutation >= :lowerString AND " +
                         "permutation < :upperString " +
-                    "LIMIT " + MainApplication.MAX_SEARCH_RESULTS + ") " +
-                "ORDER BY word_length, hsk, pinyin_length, priority")
+                    "LIMIT " + MainApplication.MAX_SEARCH_RESULTS + ") ")
     fun searchInDictByChinese(lowerString: String, upperString: String) : LiveData<List<Entry>>
 
     @Query("SELECT * " +
             "FROM entries " +
+            "WHERE " +
+                "traditional >= :lowerString AND " +
+                "traditional < :upperString " +
+            "LIMIT " + MainApplication.MAX_SEARCH_RESULTS)
+    fun searchInDictByTraditional(lowerString: String, upperString: String) : LiveData<List<Entry>>
+
+    @Query("SELECT * " +
+            "FROM entries " +
             "WHERE definitions LIKE :query " +
-            "ORDER BY priority " +
-            "LIMIT 1000")
+            "LIMIT " + MainApplication.MAX_SEARCH_RESULTS)
     fun searchInDictByEnglish1(query: String) : LiveData<List<Entry>>
 
     @Query("SELECT * " +
             "FROM entries " +
             "WHERE definitions LIKE :query1 OR definitions LIKE :query2 OR definitions LIKE :query3 " +
-            "ORDER BY priority " +
             "LIMIT " + MainApplication.MAX_SEARCH_RESULTS)
     fun searchInDictByEnglish3(query1: String, query2: String, query3: String) : LiveData<List<Entry>>
 
     @Query("SELECT * " +
             "FROM entries " +
             "WHERE definitions LIKE :query1 OR definitions LIKE :query2 OR definitions LIKE :query3 OR definitions LIKE :query4 " +
-            "ORDER BY priority " +
             "LIMIT " + MainApplication.MAX_SEARCH_RESULTS)
     fun searchInDictByEnglish4(query1: String, query2: String, query3: String, query4: String) : LiveData<List<Entry>>
 
@@ -141,6 +160,12 @@ interface EntryDAO {
     suspend fun getEntryBySimplifiedTraditional(simplified: String,
                                                 traditional: String): List<Entry>
 
+    @Query("SELECT simplified FROM trad_to_simpl_characters WHERE traditional = :query")
+    suspend fun getTraditionalToSimplifiedCharacters(query: String): List<String>
+
+    @Query("SELECT simplified FROM trad_to_simpl_phrases WHERE traditional = :query")
+    suspend fun getTraditionalToSimplifiedPhrases(query: String): List<String>
+
     @Query("SELECT * " +
                 "FROM entries " +
                 "WHERE " +
@@ -148,8 +173,7 @@ interface EntryDAO {
                     "simplified < :upperSimplified " +
                     " OR " +
                     "traditional >= :lowerTraditional AND " +
-                    "traditional < :upperTraditional " +
-                "ORDER BY word_length, hsk, pinyin_length, priority")
+                    "traditional < :upperTraditional ")
     suspend fun searchChineseBySimplifiedTraditional(lowerSimplified: String,
                                                      upperSimplified: String,
                                                      lowerTraditional: String,

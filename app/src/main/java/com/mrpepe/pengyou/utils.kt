@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
 import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
-import com.mrpepe.pengyou.dictionary.CEDict
+import com.mrpepe.pengyou.dictionary.AppDatabase
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
 import com.mrpepe.pengyou.dictionary.wordView.WordViewFragmentDirections
@@ -84,11 +84,17 @@ class DefinitionFormatter {
 
                         var word = SpannableString("")
 
-                        if (chineseMode == ChineseMode.simplified || chineseMode == ChineseMode.simplifiedTraditional) {
+                        if (chineseMode == ChineseMode.simplified) {
                             word = SpannableString(simplified)
                         }
-                        else if (chineseMode == ChineseMode.traditional || chineseMode == ChineseMode.traditionalSimplified){
+                        else if (chineseMode == ChineseMode.simplifiedTraditional) {
+                            word = SpannableString("$simplified|$traditional")
+                        }
+                        else if (chineseMode == ChineseMode.traditional){
                             word = SpannableString(traditional)
+                        }
+                        else if (chineseMode == ChineseMode.traditionalSimplified){
+                            word = SpannableString("$traditional|$simplified")
                         }
 
                         // Try to find pinyin corresponding to this word
@@ -215,7 +221,7 @@ class WordLink(val entry: Entry,
 
         lastTimeClicked = SystemClock.elapsedRealtime()
 
-        val entryDao : EntryDAO = CEDict.getDatabase(MainApplication.getContext()).entryDao()
+        val entryDao : EntryDAO = AppDatabase.getDatabase(MainApplication.getContext()).entryDao()
 
         val scope = MainScope()
 

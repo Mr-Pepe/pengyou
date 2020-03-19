@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.*
 import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.SearchHistory
-import com.mrpepe.pengyou.dictionary.CEDict
+import com.mrpepe.pengyou.dictionary.AppDatabase
 import com.mrpepe.pengyou.dictionary.Entry
 import kotlinx.coroutines.launch
 
@@ -18,7 +18,6 @@ class DictionarySearchViewModel() : ViewModel() {
     private var oldEnglishResults2 : LiveData<List<Entry>>
     private var oldEnglishResults3 : LiveData<List<Entry>>
     val englishSearchResults = MediatorLiveData<List<Entry>>()
-    private var oldChineseResults : LiveData<List<Entry>>
     val chineseSearchResults = MediatorLiveData<List<Entry>>()
 
     var requestedLanguage = MutableLiveData<SearchLanguage>()
@@ -41,15 +40,14 @@ class DictionarySearchViewModel() : ViewModel() {
     }
 
     init {
-        val entryDao = CEDict.getDatabase(MainApplication.getContext()).entryDao()
+        val entryDao = AppDatabase.getDatabase(MainApplication.getContext()).entryDao()
         repository = DictionarySearchRepository(entryDao)
         oldEnglishResults1 = repository.englishSearchResults1
         oldEnglishResults2 = repository.englishSearchResults1
         oldEnglishResults3 = repository.englishSearchResults1
 
-        oldChineseResults = repository.chineseSearchResults
         englishSearchResults.addSource(repository.englishSearchResults1) { }
-        chineseSearchResults.addSource(repository.chineseSearchResults) { }
+        chineseSearchResults.addSource(repository.chineseSearchResults) { value -> chineseSearchResults.postValue(value)}
         requestedLanguage.value = SearchLanguage.CHINESE
         displayedLanguage.value = SearchLanguage.CHINESE
 
@@ -72,14 +70,14 @@ class DictionarySearchViewModel() : ViewModel() {
                 searchForChinese(searchQuery
                             .replace("ü", "u:")
                             .replace("v", "u:")
-                            .trimEnd())
+                            .trimEnd().toLowerCase())
             }
             viewModelScope.launch {
-                searchForEnglish(searchQuery.trimEnd())
+                searchForEnglish(searchQuery.trimEnd().toLowerCase())
             }
         } else {
             englishSearchResults.value = listOf()
-            chineseSearchResults.value = listOf()
+            repository.clearChineseResults()
         }
     }
 
@@ -92,10 +90,6 @@ class DictionarySearchViewModel() : ViewModel() {
 
     private fun searchForChinese(query: String) = viewModelScope.launch {
         repository.searchForChinese(query)
-
-        chineseSearchResults.removeSource(oldChineseResults)
-        oldChineseResults = repository.chineseSearchResults
-        chineseSearchResults.addSource(repository.chineseSearchResults) { value -> chineseSearchResults.postValue(value)}
     }
 
     private fun searchForEnglish(query: String) = viewModelScope.launch {
