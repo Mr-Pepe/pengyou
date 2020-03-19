@@ -43,7 +43,7 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
                 iCharacter += 1
             }
 
-            val conversionsList = entryDao.getTraditionalToSimplified(character)
+            val conversionsList = entryDao.getTraditionalToSimplifiedCharacters(character)
             var conversions = listOf<String>()
 
             if (conversionsList.isNotEmpty()) {
@@ -69,6 +69,13 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
                     iterator.set(prevValue + character)
                 }
             }
+        }
+
+        // Check if query is part of traditional phrase and replace with simplified
+        val conversionsList = entryDao.getTraditionalToSimplifiedPhrases("$rawQuery")
+
+        if (conversionsList.isNotEmpty()) {
+            queries.add(conversionsList[0])
         }
 
         _chineseSearchResults.value = listOf()
