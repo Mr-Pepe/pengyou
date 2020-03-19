@@ -10,7 +10,8 @@ import java.io.Serializable
                             Permutation::class,
                             DbDecomposition::class,
                             StrokeOrder::class,
-                            TraditionalToSimplified::class), version = 1)
+                            TraditionalToSimplifiedCharacters::class,
+                            TraditionalToSimplifiedPhrases::class), version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun entryDao() : EntryDAO
 
@@ -58,8 +59,15 @@ data class Permutation(
     @ColumnInfo(name = "permutation") val definition: String
 )
 
-@Entity(tableName = "traditional2simplified")
-data class TraditionalToSimplified(
+@Entity(tableName = "trad_to_simpl_characters")
+data class TraditionalToSimplifiedCharacters(
+    @PrimaryKey val id: Int?,
+    @ColumnInfo(name = "traditional") val traditional: String,
+    @ColumnInfo(name = "simplified") val simplified: String
+)
+
+@Entity(tableName = "trad_to_simpl_phrases")
+data class TraditionalToSimplifiedPhrases(
     @PrimaryKey val id: Int?,
     @ColumnInfo(name = "traditional") val traditional: String,
     @ColumnInfo(name = "simplified") val simplified: String
@@ -152,8 +160,11 @@ interface EntryDAO {
     suspend fun getEntryBySimplifiedTraditional(simplified: String,
                                                 traditional: String): List<Entry>
 
-    @Query("SELECT simplified FROM traditional2simplified WHERE traditional = :query")
-    suspend fun getTraditionalToSimplified(query: String): List<String>
+    @Query("SELECT simplified FROM trad_to_simpl_characters WHERE traditional = :query")
+    suspend fun getTraditionalToSimplifiedCharacters(query: String): List<String>
+
+    @Query("SELECT simplified FROM trad_to_simpl_phrases WHERE traditional = :query")
+    suspend fun getTraditionalToSimplifiedPhrases(query: String): List<String>
 
     @Query("SELECT * " +
                 "FROM entries " +
