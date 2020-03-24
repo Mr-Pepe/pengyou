@@ -3,16 +3,13 @@ var writer;
 
 function initCharacter() {
 
-    var width = Android.getSize();
-    var height = Android.getSize();
-
     writer = HanziWriter.create('draw_board', '', {
       charDataLoader: function() {
         data = JSON.parse(Android.getJSON())
         return data
       },
-      width: width,
-      height: height,
+      width: 1000,
+      height: 1000,
       showOutline: true,
       showCharacter: false,
       strokeColor: Android.getStrokeColor(),

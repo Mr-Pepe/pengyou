@@ -24,6 +24,8 @@
             android:id="@+id/strokeOrderDiagramContainer"
             android:layout_width="300dp"
             android:layout_height="300dp"
+            android:maxWidth="1000dp"
+            android:maxHeight="1000dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -43,9 +43,9 @@ class StrokeOrderDiagramBackground: View {
 
         val offset = 50F
 
-        val start = height.toFloat() * 0.05F
-        val stopY = height.toFloat() * 0.95F
-        val stopX = width.toFloat() * 0.95F
+        val start = height.toFloat() * 0.02F
+        val stopY = height.toFloat() * 0.98F
+        val stopX = width.toFloat() * 0.98F
 
         // Bounding box
         canvas?.drawLine(start, start, start, stopY, paint)

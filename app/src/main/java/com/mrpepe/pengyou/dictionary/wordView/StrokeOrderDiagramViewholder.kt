@@ -149,6 +149,7 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
             webView.isHorizontalScrollBarEnabled = false
             webView.setBackgroundColor(Color.TRANSPARENT)
             webView.settings.useWideViewPort = true
+            webView.setInitialScale(10)
             webView.loadUrl(BASE_URL)
 
             resetFinished.observe(viewLifecycleOwner, Observer {
@@ -269,11 +270,6 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
             }
         }
 
-        @JavascriptInterface
-        fun getSize(): Int {
-            return (diagramSize)
-//                    /MainApplication.getContext().resources.displayMetrics.density).toInt()
-        }
         @JavascriptInterface
         fun strokeComplete() {
             Timer().schedule(timerTask { completedStroke.postValue(true) }, 10)
