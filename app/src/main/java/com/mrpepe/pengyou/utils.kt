@@ -419,7 +419,7 @@ class HeadwordFormatter {
                 val noToneColor =
                     when (MainApplication.homeActivity.isNightMode()) {
                         true -> MainApplication.getContext().getColor(R.color.general_color_dark_theme)
-                        else -> MainApplication.getContext().getColor(R.color.general_color_light_theme)
+                        else -> MainApplication.getContext().getColor(R.color.lightThemeGeneralTextColor)
                     }
 
                 var color = noToneColor
@@ -430,11 +430,11 @@ class HeadwordFormatter {
                     !headword[iHeadword].isDigit()) {
 
                     color = when (Character.getNumericValue(pinyinSyllable.last())) {
-                        1 -> preferences.getInt("first_tone_color", MainApplication.getContext().getColor(R.color.tone1_default_color))
-                        2 -> preferences.getInt("second_tone_color", MainApplication.getContext().getColor(R.color.tone2_default_color))
-                        3 -> preferences.getInt("third_tone_color", MainApplication.getContext().getColor(R.color.tone3_default_color))
-                        4 -> preferences.getInt("fourth_tone_color", MainApplication.getContext().getColor(R.color.tone4_default_color))
-                        5 -> preferences.getInt("fifth_tone_color", MainApplication.getContext().getColor(R.color.tone5_default_color))
+                        1 -> preferences.getInt("first_tone_color", MainApplication.getContext().getColor(R.color.tone1DefaultColor))
+                        2 -> preferences.getInt("second_tone_color", MainApplication.getContext().getColor(R.color.tone2DefaultColor))
+                        3 -> preferences.getInt("third_tone_color", MainApplication.getContext().getColor(R.color.tone3DefaultColor))
+                        4 -> preferences.getInt("fourth_tone_color", MainApplication.getContext().getColor(R.color.tone4DefaultColor))
+                        5 -> preferences.getInt("fifth_tone_color", MainApplication.getContext().getColor(R.color.tone5DefaultColor))
                         else -> noToneColor
                     }
                 }
@@ -461,14 +461,14 @@ class HeadwordFormatter {
 fun getControlEnabledColor(): Int {
     return when (MainApplication.homeActivity.isNightMode()) {
         true -> MainApplication.getContext().getColor(R.color.control_color_enabled_dark_theme)
-        false -> MainApplication.getContext().getColor(R.color.control_color_enabled_light_theme)
+        false -> MainApplication.getContext().getColor(R.color.lightThemeControlColorEnabled)
     }
 }
 
 fun getControlDisabledColor(): Int {
     return when (MainApplication.homeActivity.isNightMode()) {
         true -> MainApplication.getContext().getColor(R.color.control_color_disabled_dark_theme)
-        false -> MainApplication.getContext().getColor(R.color.control_color_disabled_light_theme)
+        false -> MainApplication.getContext().getColor(R.color.lightThemeControlColorDisabled)
     }
 }
 

@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--    <color name="colorPrimary">#8BC34A</color>-->
-<!--    <color name="colorPrimaryDark">#000000</color>-->
+    <color name="lightThemeColorPrimary">#D94E18</color>
+    <color name="lightThemeColorOnPrimary">@android:color/white</color>
+    <color name="lightThemeColorPrimaryDark">#BB4314</color>
 <!--    <color name="colorSecondary">#4CAF50</color>-->
-    <color name="colorAccent">#FFE05C30</color>
+    <color name="lightThemeColorAccent">@color/lightThemeColorPrimary</color>
 <!--    <color name="colorIndicator">#FF5722</color>-->
-    <color name="colorPrimary">#FFE05C30</color>
-
-    <color name="tone1_default_color">#FF0000</color>
-    <color name="tone2_default_color">#03C700</color>
-    <color name="tone3_default_color">#1B3FD1</color>
-    <color name="tone4_default_color">#FFC107</color>
-    <color name="tone5_default_color">#757774</color>
+    <color name="lightThemeGeneralTextColor">#323232</color>
+    <color name="lightThemeTextColorHintOnPrimary">#DBDBDB</color>
+    <color name="lightThemeButtonBackground">#EDEDED</color>
+    <color name="lightThemeControlColorEnabled">#535353</color>
+    <color name="lightThemeControlColorDisabled">#CACACA</color>
 
     <color name="general_color_dark_theme">@android:color/primary_text_dark</color>
     <color name="control_color_enabled_dark_theme">#535353</color>
     <color name="control_color_disabled_dark_theme">#535353</color>
 
-    <color name="general_color_light_theme">#323232</color>
-    <color name="button_background_light_theme">#EDEDED</color>
-    <color name="control_color_enabled_light_theme">#535353</color>
-    <color name="control_color_disabled_light_theme">#CACACA</color>
 
+    <color name="tone1DefaultColor">#FF0000</color>
+    <color name="tone2DefaultColor">#03C700</color>
+    <color name="tone3DefaultColor">#1B3FD1</color>
+    <color name="tone4DefaultColor">#FFC107</color>
+    <color name="tone5DefaultColor">#757774</color>
 
 
     <color name="launcher_background">#ff4b4b4b</color>

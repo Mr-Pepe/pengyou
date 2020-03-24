@@ -3,14 +3,15 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-<!--        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>-->
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/lightThemeColorPrimary</item>
+        <item name="colorOnPrimary">@color/lightThemeColorOnPrimary</item>
+        <item name="colorPrimaryDark">@color/lightThemeColorPrimaryDark</item>
+        <item name="colorAccent">@color/lightThemeColorAccent</item>
 <!--        <item name="android:colorBackground">@color/background</item>-->
-        <item name="android:textColor">@color/general_color_light_theme</item>
-        <item name="android:colorEdgeEffect">@color/button_background_light_theme</item>
+        <item name="android:textColor">@color/lightThemeGeneralTextColor</item>
+        <item name="android:colorEdgeEffect">@color/lightThemeButtonBackground</item>
 
-        <item name="colorControlNormal">@color/control_color_enabled_light_theme</item>
+        <item name="colorControlNormal">@color/lightThemeControlColorEnabled</item>
 
 
 
@@ -41,6 +42,15 @@
         <item name="android:layout_width">@dimen/stroke_order_button_size</item>
         <item name="android:layout_height">@dimen/stroke_order_button_size</item>
         <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="ToolbarStyle" parent="AppTheme">
+        <item name="colorAccent">@color/lightThemeColorOnPrimary</item>
+        <item name="android:background">@color/lightThemeColorPrimary</item>
+        <item name="android:textColorHint">@color/lightThemeTextColorHintOnPrimary</item>
+        <item name="android:editTextColor">@color/lightThemeColorOnPrimary</item>
+        <item name="android:queryBackground">@color/lightThemeColorOnPrimary</item>
+        <item name="queryBackground">@color/lightThemeColorOnPrimary</item>
     </style>
 
 </resources>

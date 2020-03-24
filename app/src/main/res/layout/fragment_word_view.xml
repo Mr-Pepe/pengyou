@@ -16,10 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:background="?attr/colorPrimary"/>
 
         <TextView
             android:id="@+id/wordViewPinyin"
@@ -65,7 +65,9 @@
             android:paddingTop="@dimen/medium_padding"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/wordViewPinyin" />
+            app:layout_constraintTop_toBottomOf="@id/wordViewPinyin"
+            app:tabTextColor="?attr/colorControlNormal"
+            app:tabSelectedTextColor="?attr/colorControlNormal"/>
 
         <com.mrpepe.pengyou.CustomViewPager
             android:id="@+id/wordViewViewPager"

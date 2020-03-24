@@ -5,35 +5,35 @@
     <com.rarepebble.colorpicker.ColorPreference
         android:key="first_tone_color"
         android:title="@string/first_tone"
-        android:defaultValue="@color/tone1_default_color"
+        android:defaultValue="@color/tone1DefaultColor"
         app:iconSpaceReserved="false"
         />
 
     <com.rarepebble.colorpicker.ColorPreference
         android:key="second_tone_color"
         android:title="@string/second_tone"
-        android:defaultValue="@color/tone2_default_color"
+        android:defaultValue="@color/tone2DefaultColor"
         app:iconSpaceReserved="false"
         />
 
     <com.rarepebble.colorpicker.ColorPreference
         android:key="third_tone_color"
         android:title="@string/third_tone"
-        android:defaultValue="@color/tone3_default_color"
+        android:defaultValue="@color/tone3DefaultColor"
         app:iconSpaceReserved="false"
         />
 
     <com.rarepebble.colorpicker.ColorPreference
         android:key="fourth_tone_color"
         android:title="@string/fourth_tone"
-        android:defaultValue="@color/tone4_default_color"
+        android:defaultValue="@color/tone4DefaultColor"
         app:iconSpaceReserved="false"
         />
 
     <com.rarepebble.colorpicker.ColorPreference
         android:key="fifth_tone_color"
         android:title="@string/fifth_tone"
-        app:defaultValue="@color/tone5_default_color"
+        app:defaultValue="@color/tone5DefaultColor"
         app:iconSpaceReserved="false"
         app:allowDividerBelow="true"
         />

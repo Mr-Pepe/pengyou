@@ -16,14 +16,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme" >
+            android:theme="@style/ToolbarStyle"
+            app:popupTheme="@style/ToolbarStyle">
 
             <SearchView
                 android:id="@+id/dictionarySearchSearchBox"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:iconifiedByDefault="false"
-                android:queryHint="@string/search_view_query_hint" />
+                android:queryHint="@string/search_view_query_hint"
+                android:searchIcon="@null"
+                android:queryBackground="@drawable/search_view_underline"/>
 
         </com.google.android.material.appbar.MaterialToolbar>
 
