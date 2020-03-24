@@ -113,6 +113,10 @@ class StrokeOrderFragment : Fragment() {
 
             strokeOrderPageIndicatorView.createIndicators(indicatorCount, 0)
 
+            if (indicatorCount <= 1) {
+                strokeOrderPageIndicatorView.visibility = View.INVISIBLE
+            }
+
             if (!filteredStrokeOrders.isEmpty()) {
                 adapter.setEntries(filteredStrokeOrders)
             }
