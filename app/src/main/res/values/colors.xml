@@ -10,11 +10,13 @@
     <color name="lightThemeTextColorHintOnPrimary">#DBDBDB</color>
     <color name="lightThemeButtonBackground">#EDEDED</color>
     <color name="lightThemeControlColorEnabled">#535353</color>
-    <color name="lightThemeControlColorDisabled">#CACACA</color>
+    <color name="lightThemeControlColorDisabled">#A5A5A5</color>
 
-    <color name="general_color_dark_theme">@android:color/primary_text_dark</color>
-    <color name="control_color_enabled_dark_theme">#535353</color>
-    <color name="control_color_disabled_dark_theme">#535353</color>
+    <color name="darkThemeColorPrimary">#FF0057</color>
+    <color name="darkThemeColorOnPrimary">#8BC34A</color>
+    <color name="darkThemeGeneralTextColor">@android:color/primary_text_dark</color>
+    <color name="darkThemeControlColorEnabled">#535353</color>
+    <color name="darkThemeControlColorDisabled">#535353</color>
 
 
     <color name="tone1DefaultColor">#FF0000</color>
@@ -25,5 +27,6 @@
 
 
     <color name="launcher_background">#ff4b4b4b</color>
+    <color name="modeSwitchBackground">#88FFFFFF</color>
 <!--    <color name="background">#FFFFFF</color>-->
 </resources>

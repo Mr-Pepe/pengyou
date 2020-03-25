@@ -44,6 +44,16 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <style name="ModeSwitchButton" parent="Widget.AppCompat.TextView">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:paddingBottom">@dimen/tiny_padding</item>
+        <item name="android:paddingTop">@dimen/tiny_padding</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:textColor">@color/lightThemeColorOnPrimary</item>
+    </style>
+
     <style name="ToolbarStyle" parent="AppTheme">
         <item name="colorAccent">@color/lightThemeColorOnPrimary</item>
         <item name="android:background">@color/lightThemeColorPrimary</item>
@@ -52,6 +62,7 @@
         <item name="android:queryBackground">@color/lightThemeColorOnPrimary</item>
         <item name="queryBackground">@color/lightThemeColorOnPrimary</item>
         <item name="titleTextColor">@color/lightThemeColorOnPrimary</item>
+        <item name="android:textSize">20dp</item>
     </style>
 
 </resources>

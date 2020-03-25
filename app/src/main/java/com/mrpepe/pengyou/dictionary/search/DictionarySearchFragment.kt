@@ -1,16 +1,11 @@
 package com.mrpepe.pengyou.dictionary.search
 
 import android.content.Context
-import android.graphics.ColorFilter
-import android.graphics.Rect
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
-import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
@@ -21,8 +16,6 @@ import kotlinx.android.synthetic.main.fragment_dictionary_search.*
 import kotlinx.android.synthetic.main.fragment_dictionary_search.dictionarySearchInputMethodTabs
 import kotlinx.android.synthetic.main.fragment_dictionary_search.dictionarySearchSearchBox
 import kotlinx.android.synthetic.main.fragment_dictionary_search.dictionarySearchViewPager
-import java.util.*
-import kotlin.concurrent.timerTask
 
 class DictionarySearchFragment : DictionaryBaseFragment() {
     private lateinit var modeSwitch: MenuItem
@@ -49,17 +42,14 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        dictionaryViewModel.displayedLanguage.value?.let { setModeSwitchIcon(it) }
+        dictionaryViewModel.displayedLanguage.value?.let { updateModeSwitch(it) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dictionarySearchToolbar.inflateMenu(R.menu.dictionary_search_menu)
-        modeSwitch = dictionarySearchToolbar.menu.getItem(0)
-
         dictionaryViewModel.displayedLanguage.observe(viewLifecycleOwner, Observer { language ->
-            setModeSwitchIcon(language)
+            updateModeSwitch(language)
         })
 
         val sectionsPagerAdapter = DictionarySearchPagerAdapter(childFragmentManager)
@@ -147,47 +137,47 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
 
         })
 
-        dictionarySearchToolbar.setOnMenuItemClickListener(object: Toolbar.OnMenuItemClickListener {
-            override fun onMenuItemClick(item: MenuItem?): Boolean {
-                return when (item?.itemId) {
-                    R.id.modeSwitch -> {
-                        if (dictionaryViewModel.displayedLanguage.value != dictionaryViewModel.requestedLanguage.value &&
-                                dictionarySearchSearchBox.query.isNotBlank()) {
-                            val message = when (dictionaryViewModel.requestedLanguage.value) {
-                                DictionarySearchViewModel.SearchLanguage.CHINESE -> "No results for Chinese search available."
-                                DictionarySearchViewModel.SearchLanguage.ENGLISH -> "No results for English search available."
-                                else -> ""
-                            }
-                            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
-                        }
-                        else {
-                            dictionaryViewModel.toggleDisplayedLanguage()
-                        }
-
-                        true
-                    }
-                        else -> true
-                }
-            }
-        })
+//        dictionarySearchToolbar.setOnMenuItemClickListener(object: Toolbar.OnMenuItemClickListener {
+//            override fun onMenuItemClick(item: MenuItem?): Boolean {
+//                return when (item?.itemId) {
+//                    R.id.modeSwitch -> {
+//                        if (dictionaryViewModel.displayedLanguage.value != dictionaryViewModel.requestedLanguage.value &&
+//                                dictionarySearchSearchBox.query.isNotBlank()) {
+//                            val message = when (dictionaryViewModel.requestedLanguage.value) {
+//                                DictionarySearchViewModel.SearchLanguage.CHINESE -> "No results for Chinese search available."
+//                                DictionarySearchViewModel.SearchLanguage.ENGLISH -> "No results for English search available."
+//                                else -> ""
+//                            }
+//                            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+//                        }
+//                        else {
+//                            dictionaryViewModel.toggleDisplayedLanguage()
+//                        }
+//
+//                        true
+//                    }
+//                        else -> true
+//                }
+//            }
+//        })
 
         dictionarySearchSearchBox?.requestFocus()
     }
 
-    fun setModeSwitchIcon(language: DictionarySearchViewModel.SearchLanguage) {
+    private fun updateModeSwitch(language: DictionarySearchViewModel.SearchLanguage) {
+        val nightMode = MainApplication.homeActivity.isNightMode()
+
+        val activeColor = if (nightMode) R.color.darkThemeColorOnPrimary else R.color.lightThemeColorOnPrimary
+        val inactiveColor = if (nightMode) R.color.darkThemeColorPrimary else R.color.lightThemeColorPrimary
+
         when (language) {
             DictionarySearchViewModel.SearchLanguage.ENGLISH -> {
-                modeSwitch.icon = ContextCompat.getDrawable(
-                    MainApplication.homeActivity,
-                    R.drawable.ic_english_mode
-                )
+                activity?.let { modeSwitchEnglish.setTextColor(it.getColor(activeColor)) }
+                activity?.let { modeSwitchChinese.setTextColor(it.getColor(inactiveColor)) }
             }
             DictionarySearchViewModel.SearchLanguage.CHINESE -> {
-                modeSwitch.icon = ContextCompat.getDrawable(
-                    MainApplication.homeActivity,
-                    R.drawable.ic_chinese_mode
-                )
-
+                activity?.let { modeSwitchEnglish.setTextColor(it.getColor(inactiveColor)) }
+                activity?.let { modeSwitchChinese.setTextColor(it.getColor(activeColor)) }
             }
         }
     }
