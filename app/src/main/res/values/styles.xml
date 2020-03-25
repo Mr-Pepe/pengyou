@@ -69,6 +69,7 @@
         <item name="queryBackground">@color/lightThemeColorOnPrimary</item>
         <item name="titleTextColor">@color/lightThemeColorOnPrimary</item>
         <item name="android:textSize">20sp</item>
+        <item name="colorControlNormal">@color/lightThemeColorOnPrimary</item>
     </style>
 
 </resources>

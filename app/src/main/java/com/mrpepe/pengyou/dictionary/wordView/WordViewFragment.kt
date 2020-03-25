@@ -8,14 +8,12 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import androidx.lifecycle.*
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.mrpepe.pengyou.*
-import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.DictionaryBaseFragment
-
 import com.mrpepe.pengyou.dictionary.Entry
 import kotlinx.android.synthetic.main.fragment_word_view.*
 
@@ -64,6 +62,10 @@ class WordViewFragment : DictionaryBaseFragment(),
 //            tab.findViewById<ImageView>(R.id.tab_icon).setImageResource(sectionsPagerAdapter.tabIcons[iTab])
 //            wordViewTabs.getTabAt(iTab)?.customView = tab
 //        }
+
+        wordViewToolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
 
         wordViewToolbar.inflateMenu(R.menu.word_view_menu)
 

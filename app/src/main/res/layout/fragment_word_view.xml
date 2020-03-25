@@ -19,7 +19,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:background="?attr/colorPrimary"/>
+            android:background="?attr/colorPrimary"
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            android:theme="@style/ToolbarStyle"/>
 
         <TextView
             android:id="@+id/wordViewPinyin"
