@@ -1,28 +1,21 @@
 package com.mrpepe.pengyou.dictionary.search
 
 import android.content.Context
-import android.graphics.ColorFilter
-import android.graphics.Rect
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager.widget.ViewPager
-import com.mrpepe.pengyou.*
+import com.mrpepe.pengyou.CustomViewPager
+import com.mrpepe.pengyou.MainApplication
+import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.DictionaryBaseFragment
-
+import com.mrpepe.pengyou.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_dictionary_search.*
-import kotlinx.android.synthetic.main.fragment_dictionary_search.dictionarySearchInputMethodTabs
-import kotlinx.android.synthetic.main.fragment_dictionary_search.dictionarySearchSearchBox
-import kotlinx.android.synthetic.main.fragment_dictionary_search.dictionarySearchViewPager
-import java.util.*
-import kotlin.concurrent.timerTask
 
 class DictionarySearchFragment : DictionaryBaseFragment() {
     private lateinit var modeSwitch: MenuItem
@@ -49,17 +42,16 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        dictionaryViewModel.displayedLanguage.value?.let { setModeSwitchIcon(it) }
+        dictionaryViewModel.displayedLanguage.value?.let { updateModeSwitch(it, null, null) }
+        dictionaryViewModel.englishSearchResults.value?.let { updateModeSwitch(null, it.size, null) }
+        dictionaryViewModel.chineseSearchResults.value?.let { updateModeSwitch(null, null, it.size) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dictionarySearchToolbar.inflateMenu(R.menu.dictionary_search_menu)
-        modeSwitch = dictionarySearchToolbar.menu.getItem(0)
-
         dictionaryViewModel.displayedLanguage.observe(viewLifecycleOwner, Observer { language ->
-            setModeSwitchIcon(language)
+            updateModeSwitch(language, null, null)
         })
 
         val sectionsPagerAdapter = DictionarySearchPagerAdapter(childFragmentManager)
@@ -147,48 +139,88 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
 
         })
 
-        dictionarySearchToolbar.setOnMenuItemClickListener(object: Toolbar.OnMenuItemClickListener {
-            override fun onMenuItemClick(item: MenuItem?): Boolean {
-                return when (item?.itemId) {
-                    R.id.modeSwitch -> {
-                        if (dictionaryViewModel.displayedLanguage.value != dictionaryViewModel.requestedLanguage.value &&
-                                dictionarySearchSearchBox.query.isNotBlank()) {
-                            val message = when (dictionaryViewModel.requestedLanguage.value) {
-                                DictionarySearchViewModel.SearchLanguage.CHINESE -> "No results for Chinese search available."
-                                DictionarySearchViewModel.SearchLanguage.ENGLISH -> "No results for English search available."
-                                else -> ""
-                            }
-                            Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
-                        }
-                        else {
-                            dictionaryViewModel.toggleDisplayedLanguage()
-                        }
-
-                        true
-                    }
-                        else -> true
-                }
-            }
+        dictionaryViewModel.englishSearchResults.observe(viewLifecycleOwner, Observer { results ->
+            updateModeSwitch(
+                null,
+                results?.size,
+                null)
         })
 
+        dictionaryViewModel.chineseSearchResults.observe(viewLifecycleOwner, Observer { results ->
+            updateModeSwitch(
+                null,
+                null,
+                results?.size)
+        })
+
+        modeSwitchEnglish.setOnClickListener {
+            if (dictionaryViewModel.displayedLanguage.value != DictionarySearchViewModel.SearchLanguage.ENGLISH) {
+                requestToggleDisplayedLanguage()
+            }
+        }
+
+        modeSwitchChinese.setOnClickListener {
+            if (dictionaryViewModel.displayedLanguage.value != DictionarySearchViewModel.SearchLanguage.CHINESE) {
+                requestToggleDisplayedLanguage()
+            }
+        }
+
         dictionarySearchSearchBox?.requestFocus()
+
     }
 
-    fun setModeSwitchIcon(language: DictionarySearchViewModel.SearchLanguage) {
-        when (language) {
-            DictionarySearchViewModel.SearchLanguage.ENGLISH -> {
-                modeSwitch.icon = ContextCompat.getDrawable(
-                    MainApplication.homeActivity,
-                    R.drawable.ic_english_mode
-                )
-            }
-            DictionarySearchViewModel.SearchLanguage.CHINESE -> {
-                modeSwitch.icon = ContextCompat.getDrawable(
-                    MainApplication.homeActivity,
-                    R.drawable.ic_chinese_mode
-                )
+    private fun updateModeSwitch(
+        language: DictionarySearchViewModel.SearchLanguage?,
+        nEnglishResults: Int?,
+        nChineseResults: Int?) {
 
+        nEnglishResults?.let {
+            modeSwitchEnglish.text = "ENGLISH  (${formatResultCount(it)})"
+        }
+
+        nChineseResults?.let {
+            modeSwitchChinese.text = "中文  (${formatResultCount(it)})"
+        }
+
+        language?.let {language ->
+            val nightMode = MainApplication.homeActivity.isNightMode()
+
+            val activeColor = if (nightMode) R.color.darkThemeColorOnPrimary else R.color.lightThemeColorOnPrimary
+            val inactiveColor = if (nightMode) R.color.darkThemeColorPrimaryDark else R.color.lightThemeColorPrimaryDark
+
+            when (language) {
+                DictionarySearchViewModel.SearchLanguage.ENGLISH -> {
+                    activity?.let { activity -> modeSwitchEnglish.setTextColor(activity.getColor(activeColor)) }
+                    activity?.let { activity -> modeSwitchChinese.setTextColor(activity.getColor(inactiveColor)) }
+                }
+                DictionarySearchViewModel.SearchLanguage.CHINESE -> {
+                    activity?.let { activity -> modeSwitchEnglish.setTextColor(activity.getColor(inactiveColor)) }
+                    activity?.let { activity -> modeSwitchChinese.setTextColor(activity.getColor(activeColor)) }
+                }
             }
+        }
+
+    }
+
+    private fun requestToggleDisplayedLanguage() {
+        if (dictionaryViewModel.displayedLanguage.value != dictionaryViewModel.requestedLanguage.value &&
+                dictionarySearchSearchBox.query.isNotBlank()) {
+            val message = when (dictionaryViewModel.requestedLanguage.value) {
+                DictionarySearchViewModel.SearchLanguage.CHINESE -> "No results for Chinese search available."
+                DictionarySearchViewModel.SearchLanguage.ENGLISH -> "No results for English search available."
+                else -> ""
+            }
+            Toast.makeText(MainApplication.homeActivity, message, Toast.LENGTH_SHORT).show()
+        }
+        else {
+            dictionaryViewModel.toggleDisplayedLanguage()
+        }
+    }
+
+    private fun formatResultCount(value: Int): String {
+        return when (value) {
+            in 0 until MainApplication.MAX_SEARCH_RESULTS -> value.toString()
+            else -> (MainApplication.MAX_SEARCH_RESULTS-1).toString() + "+"
         }
     }
 

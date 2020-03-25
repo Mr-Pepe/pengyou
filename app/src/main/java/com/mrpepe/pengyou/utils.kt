@@ -418,7 +418,7 @@ class HeadwordFormatter {
 
                 val noToneColor =
                     when (MainApplication.homeActivity.isNightMode()) {
-                        true -> MainApplication.getContext().getColor(R.color.general_color_dark_theme)
+                        true -> MainApplication.getContext().getColor(R.color.darkThemeGeneralTextColor)
                         else -> MainApplication.getContext().getColor(R.color.lightThemeGeneralTextColor)
                     }
 
@@ -460,14 +460,14 @@ class HeadwordFormatter {
 
 fun getControlEnabledColor(): Int {
     return when (MainApplication.homeActivity.isNightMode()) {
-        true -> MainApplication.getContext().getColor(R.color.control_color_enabled_dark_theme)
+        true -> MainApplication.getContext().getColor(R.color.darkThemeControlColorEnabled)
         false -> MainApplication.getContext().getColor(R.color.lightThemeControlColorEnabled)
     }
 }
 
 fun getControlDisabledColor(): Int {
     return when (MainApplication.homeActivity.isNightMode()) {
-        true -> MainApplication.getContext().getColor(R.color.control_color_disabled_dark_theme)
+        true -> MainApplication.getContext().getColor(R.color.darkThemeControlColorDisabled)
         false -> MainApplication.getContext().getColor(R.color.lightThemeControlColorDisabled)
     }
 }

@@ -25,6 +25,7 @@ import com.mrpepe.pengyou.SearchHistory
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.wordView.WordViewFragmentDirections
 import com.mrpepe.pengyou.hideKeyboard
+import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.fragment_search_result_list.*
 import kotlinx.android.synthetic.main.fragment_search_result_list.view.*
 
@@ -106,6 +107,9 @@ class SearchResultFragment : Fragment() {
 
             // Show history
             true -> {
+                if (resultCountLinearLayout.parent == null) {
+                    searchResultListLinearLayout.addView(resultCountLinearLayout, 0)
+                }
                 when (dictionaryViewModel.searchHistoryIDs.size) {
                     0 -> {
                         resultCount.text = getString(R.string.no_history)
@@ -135,7 +139,7 @@ class SearchResultFragment : Fragment() {
 
             // Show search results
             false -> {
-                clearHistoryLink.text = ""
+                searchResultListLinearLayout.removeView(resultCountLinearLayout)
                 if (dictionaryViewModel.requestedLanguage.value == DictionarySearchViewModel.SearchLanguage.ENGLISH) {
 
                     when (dictionaryViewModel.englishSearchResults.value != null && dictionaryViewModel.englishSearchResults.value?.isNotEmpty()!!) {
@@ -177,12 +181,6 @@ class SearchResultFragment : Fragment() {
                         }
                     }
 
-                }
-
-                resultCount.text = when (adapter.searchResults.size) {
-                    0 -> getString(R.string.search_results) + 0.toString()
-                    in 1..MainApplication.MAX_SEARCH_RESULTS -> getString(R.string.search_results) + adapter.searchResults.size.toString()
-                    else -> getString(R.string.search_results) + (MainApplication.MAX_SEARCH_RESULTS-1).toString() + "+"
                 }
             }
         }
