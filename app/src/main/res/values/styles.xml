@@ -46,11 +46,9 @@
 
     <style name="ModeSwitchButton" parent="Widget.AppCompat.TextView">
         <item name="android:background">@android:color/transparent</item>
-        <item name="android:textAlignment">center</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:paddingBottom">@dimen/tiny_padding</item>
-        <item name="android:paddingTop">@dimen/tiny_padding</item>
-        <item name="android:textSize">14dp</item>
+        <item name="android:paddingBottom">@dimen/small_padding</item>
+        <item name="android:paddingTop">@dimen/small_padding</item>
+        <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/lightThemeColorOnPrimary</item>
     </style>
 
@@ -62,7 +60,7 @@
         <item name="android:queryBackground">@color/lightThemeColorOnPrimary</item>
         <item name="queryBackground">@color/lightThemeColorOnPrimary</item>
         <item name="titleTextColor">@color/lightThemeColorOnPrimary</item>
-        <item name="android:textSize">20dp</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
 </resources>

@@ -42,14 +42,16 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        dictionaryViewModel.displayedLanguage.value?.let { updateModeSwitch(it) }
+        dictionaryViewModel.displayedLanguage.value?.let { updateModeSwitch(it, null, null) }
+        dictionaryViewModel.englishSearchResults.value?.let { updateModeSwitch(null, it.size, null) }
+        dictionaryViewModel.chineseSearchResults.value?.let { updateModeSwitch(null, null, it.size) }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         dictionaryViewModel.displayedLanguage.observe(viewLifecycleOwner, Observer { language ->
-            updateModeSwitch(language)
+            updateModeSwitch(language, null, null)
         })
 
         val sectionsPagerAdapter = DictionarySearchPagerAdapter(childFragmentManager)
@@ -137,6 +139,20 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
 
         })
 
+        dictionaryViewModel.englishSearchResults.observe(viewLifecycleOwner, Observer { results ->
+            updateModeSwitch(
+                null,
+                results?.size,
+                null)
+        })
+
+        dictionaryViewModel.chineseSearchResults.observe(viewLifecycleOwner, Observer { results ->
+            updateModeSwitch(
+                null,
+                null,
+                results?.size)
+        })
+
 //        dictionarySearchToolbar.setOnMenuItemClickListener(object: Toolbar.OnMenuItemClickListener {
 //            override fun onMenuItemClick(item: MenuItem?): Boolean {
 //                return when (item?.itemId) {
@@ -164,21 +180,42 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
         dictionarySearchSearchBox?.requestFocus()
     }
 
-    private fun updateModeSwitch(language: DictionarySearchViewModel.SearchLanguage) {
-        val nightMode = MainApplication.homeActivity.isNightMode()
+    private fun updateModeSwitch(
+        language: DictionarySearchViewModel.SearchLanguage?,
+        nEnglishResults: Int?,
+        nChineseResults: Int?) {
 
-        val activeColor = if (nightMode) R.color.darkThemeColorOnPrimary else R.color.lightThemeColorOnPrimary
-        val inactiveColor = if (nightMode) R.color.darkThemeColorPrimary else R.color.lightThemeColorPrimary
+        language?.let {
+            val nightMode = MainApplication.homeActivity.isNightMode()
 
-        when (language) {
-            DictionarySearchViewModel.SearchLanguage.ENGLISH -> {
-                activity?.let { modeSwitchEnglish.setTextColor(it.getColor(activeColor)) }
-                activity?.let { modeSwitchChinese.setTextColor(it.getColor(inactiveColor)) }
+            val activeColor = if (nightMode) R.color.darkThemeColorOnPrimary else R.color.lightThemeColorOnPrimary
+            val inactiveColor = if (nightMode) R.color.darkThemeColorPrimaryDark else R.color.lightThemeColorPrimaryDark
+
+            when (it) {
+                DictionarySearchViewModel.SearchLanguage.ENGLISH -> {
+                    activity?.let { modeSwitchEnglish.setTextColor(it.getColor(activeColor)) }
+                    activity?.let { modeSwitchChinese.setTextColor(it.getColor(inactiveColor)) }
+                }
+                DictionarySearchViewModel.SearchLanguage.CHINESE -> {
+                    activity?.let { modeSwitchEnglish.setTextColor(it.getColor(inactiveColor)) }
+                    activity?.let { modeSwitchChinese.setTextColor(it.getColor(activeColor)) }
+                }
             }
-            DictionarySearchViewModel.SearchLanguage.CHINESE -> {
-                activity?.let { modeSwitchEnglish.setTextColor(it.getColor(inactiveColor)) }
-                activity?.let { modeSwitchChinese.setTextColor(it.getColor(activeColor)) }
-            }
+        }
+
+        nEnglishResults?.let {
+            modeSwitchEnglish.text = "ENGLISH  (${formatResultCount(it)})"
+        }
+
+        nChineseResults?.let {
+            modeSwitchChinese.text = "中文  (${formatResultCount(it)})"
+        }
+    }
+
+    private fun formatResultCount(value: Int): String {
+        return when (value) {
+            in 0 until MainApplication.MAX_SEARCH_RESULTS -> value.toString()
+            else -> (MainApplication.MAX_SEARCH_RESULTS-1).toString() + "+"
         }
     }
 

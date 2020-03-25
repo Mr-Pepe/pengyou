@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/dictionarySearchFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -20,11 +21,6 @@
             android:theme="@style/ToolbarStyle"
             app:popupTheme="@style/ToolbarStyle">
 
-
-            <!--            <androidx.constraintlayout.widget.ConstraintLayout-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="match_parent">-->
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -34,6 +30,8 @@
                     android:id="@+id/dictionarySearchSearchBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/small_padding"
+                    android:layout_marginBottom="@dimen/small_padding"
                     android:iconifiedByDefault="false"
                     android:paddingStart="-14dp"
                     android:paddingLeft="-16dp"
@@ -51,15 +49,17 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="@dimen/small_padding"
-                    android:layout_marginBottom="@dimen/small_padding"
+                    android:layout_marginBottom="@dimen/medium_padding"
                     android:background="@drawable/mode_switch_background"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingLeft="@dimen/large_padding">
 
                     <TextView
                         android:id="@+id/modeSwitchEnglish"
                         style="@style/ModeSwitchButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="ENGLISH (0)" />
 
                     <TextView
@@ -67,12 +67,12 @@
                         style="@style/ModeSwitchButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="CHINESE (0)" />
+                        android:minWidth="90dp"
+                        android:text="中文 (0)"
+                        tools:text="中文 (999+)" />
                 </LinearLayout>
 
             </LinearLayout>
-            <!--            </androidx.constraintlayout.widget.ConstraintLayout>-->
-
 
         </com.google.android.material.appbar.MaterialToolbar>
 
