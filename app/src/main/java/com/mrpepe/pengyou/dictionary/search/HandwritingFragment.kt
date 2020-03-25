@@ -186,7 +186,7 @@ class HandwritingFragment : Fragment() {
 
         search_button.setOnClickListener ( object: View.OnClickListener {
             override fun onClick(v: View?) {
-                dictionarySearchFragment.submitQuery()
+                dictionarySearchFragment.submitQueryFromDrawboard()
             }
         } )
 
