@@ -51,6 +51,7 @@
         <item name="android:editTextColor">@color/lightThemeColorOnPrimary</item>
         <item name="android:queryBackground">@color/lightThemeColorOnPrimary</item>
         <item name="queryBackground">@color/lightThemeColorOnPrimary</item>
+        <item name="titleTextColor">@color/lightThemeColorOnPrimary</item>
     </style>
 
 </resources>
