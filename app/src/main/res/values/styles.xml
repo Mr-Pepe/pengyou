@@ -50,6 +50,7 @@
         <item name="android:paddingTop">@dimen/small_padding</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/lightThemeColorOnPrimary</item>
+        <item name="android:clickable">true</item>
     </style>
 
     <style name="ToolbarStyle" parent="AppTheme">
