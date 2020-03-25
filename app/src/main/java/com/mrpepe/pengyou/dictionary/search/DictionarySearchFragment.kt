@@ -2,15 +2,11 @@ package com.mrpepe.pengyou.dictionary.search
 
 import android.content.Context
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import android.view.*
 import android.view.inputmethod.InputMethodManager
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.viewpager.widget.ViewPager
-import com.mrpepe.pengyou.CustomViewPager
 import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.DictionaryBaseFragment
@@ -18,11 +14,10 @@ import com.mrpepe.pengyou.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_dictionary_search.*
 
 class DictionarySearchFragment : DictionaryBaseFragment() {
-    private lateinit var modeSwitch: MenuItem
     private lateinit var dictionaryViewModel: DictionarySearchViewModel
     private var blockKeyboard = false
 
-    private var selectedInputMethodIndex = 0
+    private var isInHandwritingMode = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,23 +49,6 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
             updateModeSwitch(language, null, null)
         })
 
-        val sectionsPagerAdapter = DictionarySearchPagerAdapter(childFragmentManager)
-        val viewPager : CustomViewPager = dictionarySearchViewPager
-        viewPager.adapter = sectionsPagerAdapter
-        dictionarySearchInputMethodTabs.setupWithViewPager(viewPager)
-        // Deactivate horizontal paging
-        viewPager.togglePagingEnabled()
-
-        // Set icons for the tabs
-        for (iTab in 0 until dictionarySearchInputMethodTabs.tabCount) {
-            val tab = LayoutInflater.from(activity).inflate(R.layout.tab_item, null)
-            tab.findViewById<ImageView>(R.id.tab_icon).setImageResource(sectionsPagerAdapter.tabIcons[iTab])
-            dictionarySearchInputMethodTabs.getTabAt(iTab)?.customView = tab
-        }
-
-        selectedInputMethodIndex = dictionarySearchInputMethodTabs.selectedTabPosition
-        dictionarySearchLinearLayout.removeView(dictionarySearchInputMethodTabs)
-
         dictionarySearchSearchBox.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText != dictionaryViewModel.searchQuery) {
@@ -87,57 +65,9 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
             }
         })
 
-        dictionarySearchSearchBox.setOnQueryTextFocusChangeListener( object : View.OnFocusChangeListener {
-            override fun onFocusChange(v: View?, hasFocus: Boolean) {
-                when (hasFocus) {
-                    true -> if (dictionarySearchInputMethodTabs?.parent == null) {
-                        dictionarySearchInputMethodTabs?.let {
-                            dictionarySearchLinearLayout.addView(it, 1)
-                            it.getTabAt(selectedInputMethodIndex)?.select()
-                            if (selectedInputMethodIndex == 0) {
-                                showKeyboard()
-                            }
-                        }
-                    }
-                    false -> {
-                        selectedInputMethodIndex = dictionarySearchInputMethodTabs.selectedTabPosition
-                        dictionarySearchLinearLayout.removeView(dictionarySearchInputMethodTabs)
-                    }
-                }
-            }
-        })
-
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-            override fun onPageSelected(position: Int) {
-                if (position == 0) {
-                    // Keep keyboard hidden if desired or open it
-                    if (blockKeyboard) {
-                        blockKeyboard = false
-                    }
-                    else {
-                        if (!MainApplication.keyboardVisible) {
-                            showKeyboard()
-                        }
-                        dictionarySearchSearchBox.requestFocus()
-                    }
-                }
-                else if (position == 1) {
-                    dictionarySearchSearchBox.requestFocus()
-                    hideKeyboard()
-                }
-            }
-
-            override fun onPageScrollStateChanged(state: Int) {
-            }
-
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-            }
-
-        })
+        buttonHandwriting.setOnClickListener {
+            toggleHandwritingMode()
+        }
 
         dictionaryViewModel.englishSearchResults.observe(viewLifecycleOwner, Observer { results ->
             updateModeSwitch(
@@ -154,12 +84,22 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
         })
 
         modeSwitchEnglish.setOnClickListener {
+            if (isInHandwritingMode) {
+                blockKeyboard = true
+                toggleHandwritingMode()
+            }
+
             if (dictionaryViewModel.displayedLanguage.value != DictionarySearchViewModel.SearchLanguage.ENGLISH) {
                 requestToggleDisplayedLanguage()
             }
         }
 
         modeSwitchChinese.setOnClickListener {
+            if (isInHandwritingMode) {
+                blockKeyboard = true
+                toggleHandwritingMode()
+            }
+
             if (dictionaryViewModel.displayedLanguage.value != DictionarySearchViewModel.SearchLanguage.CHINESE) {
                 requestToggleDisplayedLanguage()
             }
@@ -197,9 +137,35 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
                     activity?.let { activity -> modeSwitchEnglish.setTextColor(activity.getColor(inactiveColor)) }
                     activity?.let { activity -> modeSwitchChinese.setTextColor(activity.getColor(activeColor)) }
                 }
+                else -> {
+                    activity?.let { activity -> modeSwitchEnglish.setTextColor(activity.getColor(inactiveColor)) }
+                    activity?.let { activity -> modeSwitchChinese.setTextColor(activity.getColor(inactiveColor)) }
+                }
             }
         }
 
+    }
+
+    private fun toggleHandwritingMode() {
+        if (isInHandwritingMode) {
+            childFragmentManager.beginTransaction().replace(R.id.dictionaryContainer, SearchResultFragment()).commit()
+            isInHandwritingMode = false
+
+            if (!blockKeyboard) {
+                showKeyboard()
+                blockKeyboard = false
+            }
+            else {
+                hideKeyboard()
+            }
+        }
+        else {
+            childFragmentManager.beginTransaction().replace(R.id.dictionaryContainer, HandwritingFragment()).commit()
+            isInHandwritingMode = true
+            updateModeSwitch(DictionarySearchViewModel.SearchLanguage.NONE, null, null)
+            dictionarySearchSearchBox.requestFocus()
+            hideKeyboard()
+        }
     }
 
     private fun requestToggleDisplayedLanguage() {
@@ -238,10 +204,8 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
         dictionarySearchSearchBox.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
     }
 
-    fun submitQuery() {
+    fun submitQueryFromDrawboard() {
         blockKeyboard = true
-        dictionarySearchViewPager.requestFocus()
-        dictionarySearchInputMethodTabs.setScrollPosition(0, 0.toFloat(), true)
-        dictionarySearchViewPager.setCurrentItem(0)
+        toggleHandwritingMode()
     }
 }

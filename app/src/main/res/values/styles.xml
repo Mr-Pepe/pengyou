@@ -44,6 +44,14 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <style name="HandwritingButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_marginLeft">@dimen/medium_padding</item>
+<!--        <item name="android:layout_marginRight">@dimen/medium_padding</item>-->
+        <item name="android:layout_width">@dimen/handwriting_button_size</item>
+        <item name="android:layout_height">@dimen/handwriting_button_size</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
     <style name="ModeSwitchButton" parent="Widget.AppCompat.TextView">
         <item name="android:background">@android:color/transparent</item>
         <item name="android:paddingBottom">@dimen/small_padding</item>
@@ -55,7 +63,6 @@
 
     <style name="ToolbarStyle" parent="AppTheme">
         <item name="colorAccent">@color/lightThemeColorOnPrimary</item>
-        <item name="android:background">@color/lightThemeColorPrimary</item>
         <item name="android:textColorHint">@color/lightThemeTextColorHintOnPrimary</item>
         <item name="android:editTextColor">@color/lightThemeColorOnPrimary</item>
         <item name="android:queryBackground">@color/lightThemeColorOnPrimary</item>

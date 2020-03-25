@@ -13,4 +13,7 @@
 
     <dimen name="stroke_order_button_size">40dp</dimen>
     <dimen name="stroke_order_button_size_half">20dp</dimen>
+
+    <dimen name="handwriting_button_size">40dp</dimen>
+
 </resources>

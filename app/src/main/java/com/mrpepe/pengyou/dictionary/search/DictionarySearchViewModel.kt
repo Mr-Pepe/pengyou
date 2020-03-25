@@ -115,7 +115,8 @@ class DictionarySearchViewModel() : ViewModel() {
 
     enum class SearchLanguage {
         ENGLISH,
-        CHINESE
+        CHINESE,
+        NONE
     }
 
     private fun mergeEnglishResults(): List<Entry> {
