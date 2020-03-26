@@ -54,9 +54,9 @@
             android:paddingStart="@dimen/tiny_padding"
             android:paddingEnd="@dimen/tiny_padding"
             android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/wordViewPinyin"
+            app:layout_constraintBottom_toBottomOf="@+id/wordViewHeadword"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/wordViewPinyin"
+            app:layout_constraintTop_toTopOf="@+id/wordViewHeadword"
             tools:text="HSK 6" />
 
         <com.google.android.material.tabs.TabLayout
