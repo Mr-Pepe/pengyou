@@ -39,7 +39,7 @@
                     android:paddingEnd="-16dp"
                     android:paddingRight="-16dp"
                     android:paddingBottom="0dp"
-                    android:queryBackground="@drawable/search_view_underline"
+                    android:queryBackground="@drawable/background_search_view"
                     android:queryHint="@string/search_view_query_hint"
                     android:searchIcon="@null"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -57,7 +57,7 @@
                         android:layout_marginTop="@dimen/small_padding"
                         android:layout_marginBottom="@dimen/medium_padding"
                         android:layout_weight="1"
-                        android:background="@drawable/mode_switch_background"
+                        android:background="@drawable/background_mode_switch"
                         android:orientation="horizontal"
                         android:paddingLeft="@dimen/large_padding">
 

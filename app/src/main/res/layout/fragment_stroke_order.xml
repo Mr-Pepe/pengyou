@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/small_padding"
             android:layout_marginBottom="@dimen/large_padding"
-            android:background="@drawable/stroke_buttons_background"
+            android:background="@drawable/background_stroke_buttons"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

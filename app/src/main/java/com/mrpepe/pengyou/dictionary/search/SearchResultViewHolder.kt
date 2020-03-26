@@ -47,7 +47,7 @@ class SearchResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
                 "         "
             }
             else -> {
-                hsk.setBackgroundResource(R.drawable.rounded_corner_line)
+                hsk.setBackgroundResource(R.drawable.background_hsk_tag)
                 "HSK " + entry.hsk.toString()
             }
         }
