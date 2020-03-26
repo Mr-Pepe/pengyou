@@ -41,8 +41,6 @@ class StrokeOrderDiagramBackground: View {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        val offset = 50F
-
         val start = height.toFloat() * 0.02F
         val stopY = height.toFloat() * 0.98F
         val stopX = width.toFloat() * 0.98F
