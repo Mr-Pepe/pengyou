@@ -8,8 +8,8 @@ function initCharacter() {
         data = JSON.parse(Android.getJSON())
         return data
       },
-      width: 1000,
-      height: 1000,
+      width: 980,
+      height: 980,
       showOutline: true,
       showCharacter: false,
       strokeColor: Android.getStrokeColor(),

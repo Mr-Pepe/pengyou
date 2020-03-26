@@ -10,14 +10,7 @@ import com.mrpepe.pengyou.R
 class WordViewPagerAdapter(fm: FragmentManager) :
     FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
-//    val tabIcons = arrayOf(
-//        R.drawable.ic_dictionary,
-//        R.drawable.ic_strokes,
-////        R.drawable.ic_decomposition,
-//        R.drawable.ic_brush_line
-//    )
-
-    val tabLabels = arrayOf(
+    private val tabLabels = arrayOf(
         MainApplication.getContext().getString(R.string.definition_tab),
         MainApplication.getContext().getString(R.string.stroke_tab),
         MainApplication.getContext().getString(R.string.word_tab)

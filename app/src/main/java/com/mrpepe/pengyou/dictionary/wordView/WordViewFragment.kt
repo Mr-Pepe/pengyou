@@ -56,12 +56,7 @@ class WordViewFragment : DictionaryBaseFragment(),
         viewPager.adapter = wordViewPagerAdapter
         wordViewTabs.setupWithViewPager(viewPager)
 
-        // Setup tab icons
-//        for (iTab in 0 until wordViewTabs.tabCount) {
-//            val tab = LayoutInflater.from(activity).inflate(R.layout.tab_item, null)
-//            tab.findViewById<ImageView>(R.id.tab_icon).setImageResource(sectionsPagerAdapter.tabIcons[iTab])
-//            wordViewTabs.getTabAt(iTab)?.customView = tab
-//        }
+        viewPager.offscreenPageLimit = 1
 
         wordViewToolbar.setNavigationOnClickListener {
             activity?.onBackPressed()

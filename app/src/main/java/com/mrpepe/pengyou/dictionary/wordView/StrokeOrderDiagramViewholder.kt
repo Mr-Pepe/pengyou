@@ -26,7 +26,7 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
 
     var strokeOrder = ""
     var webViewLoaded = false
-    lateinit var webView: WebView
+    var webView: WebView
 
     private var nStrokes = 0
     private var currentStroke = 0
@@ -55,11 +55,9 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
     private var character = ""
 
     private lateinit var viewTreeObserver: ViewTreeObserver
-    private val onPreDrawListener = object:  ViewTreeObserver.OnPreDrawListener {
-        override fun onPreDraw(): Boolean {
-            resizeAndLoad()
-            return true
-        }
+    private val onPreDrawListener = ViewTreeObserver.OnPreDrawListener {
+        resizeAndLoad()
+        true
     }
 
     private val BASE_URL = "file:///android_asset/stroke_order/stroke_order.html"
@@ -77,12 +75,21 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
     var buttonOutlineIsHide = false
 
     init {
-        itemView.post(object : Runnable {
-            override fun run() {
-                viewTreeObserver = itemView.viewTreeObserver as ViewTreeObserver
-                viewTreeObserver.addOnPreDrawListener(onPreDrawListener)
-            }
-        })
+        itemView.post {
+            viewTreeObserver = itemView.viewTreeObserver as ViewTreeObserver
+            viewTreeObserver.addOnPreDrawListener(onPreDrawListener)
+        }
+
+        webView = itemView.strokeOrderWebView
+        webView.settings.javaScriptEnabled = true
+        webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
+        webView.isVerticalScrollBarEnabled = false
+        webView.isHorizontalScrollBarEnabled = false
+        webView.setBackgroundColor(Color.TRANSPARENT)
+        webView.setInitialScale(10)
+        webView.settings.loadWithOverviewMode = true
+        webView.settings.useWideViewPort = true
+        webView.loadUrl(BASE_URL)
 
         isAnimating.value = false
         isQuizzing.value = false
@@ -107,7 +114,7 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
         currentStroke = 0
     }
 
-    fun resizeAndLoad() {
+    private fun resizeAndLoad() {
         if (viewTreeObserver.isAlive) {
             viewTreeObserver.removeOnPreDrawListener(onPreDrawListener)
         }
@@ -115,7 +122,6 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
         val strokeOrderDiagramConstraintLayout = itemView.strokeOrderDiagramConstraintLayout
         val strokeOrderDiagramContainer = itemView.strokeOrderDiagramContainer
         val noStrokesFoundTextView = itemView.noStrokesFoundTextView
-        webView = itemView.strokeOrderWebView
 
         diagramSize = (min(
                 strokeOrderDiagramConstraintLayout.measuredHeight,
@@ -141,16 +147,6 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
         else {
             strokeOrderDiagramContainer.visibility = View.VISIBLE
             noStrokesFoundTextView.visibility = View.INVISIBLE
-
-            webView.settings.javaScriptEnabled = true
-            webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
-            webView.settings.loadWithOverviewMode = true
-            webView.isVerticalScrollBarEnabled = false
-            webView.isHorizontalScrollBarEnabled = false
-            webView.setBackgroundColor(Color.TRANSPARENT)
-            webView.settings.useWideViewPort = true
-            webView.setInitialScale(10)
-            webView.loadUrl(BASE_URL)
 
             resetFinished.observe(viewLifecycleOwner, Observer {
                 currentStroke = 0
