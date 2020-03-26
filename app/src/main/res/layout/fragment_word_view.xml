@@ -62,14 +62,18 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/wordViewTabs"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_marginTop="@dimen/small_padding"
-            android:paddingTop="@dimen/medium_padding"
+            android:background="@drawable/background_wordview_tablayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/wordViewPinyin"
-            app:tabTextColor="?attr/colorControlNormal"
-            app:tabSelectedTextColor="?attr/colorControlNormal"/>
+            app:tabIndicator="@drawable/tab_indicator"
+            app:tabIndicatorFullWidth="false"
+            app:tabIndicatorGravity="bottom"
+            app:tabMode="fixed"
+            app:tabSelectedTextColor="?attr/colorControlNormal"
+            app:tabTextColor="?attr/colorControlNormal" />
 
         <com.mrpepe.pengyou.CustomViewPager
             android:id="@+id/wordViewViewPager"

@@ -51,9 +51,9 @@ class WordViewFragment : DictionaryBaseFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val sectionsPagerAdapter = WordViewPagerAdapter(childFragmentManager)
+        val wordViewPagerAdapter = WordViewPagerAdapter(childFragmentManager)
         viewPager = wordViewViewPager
-        viewPager.adapter = sectionsPagerAdapter
+        viewPager.adapter = wordViewPagerAdapter
         wordViewTabs.setupWithViewPager(viewPager)
 
         // Setup tab icons
