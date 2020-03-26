@@ -62,21 +62,21 @@
                         android:paddingLeft="@dimen/large_padding">
 
                         <TextView
+                            android:id="@+id/modeSwitchChinese"
+                            style="@style/ModeSwitchButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="中文  (0)" />
+
+                        <TextView
                             android:id="@+id/modeSwitchEnglish"
                             style="@style/ModeSwitchButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="ENGLISH (0)" />
-
-                        <TextView
-                            android:id="@+id/modeSwitchChinese"
-                            style="@style/ModeSwitchButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:minWidth="90dp"
-                            android:text="中文 (0)"
-                            tools:text="中文 (999+)" />
+                            android:minWidth="120dp"
+                            android:text="ENGLISH (0)"
+                            tools:text="ENGLISH (999+)" />
 
                     </LinearLayout>
 
