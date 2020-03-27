@@ -145,87 +145,87 @@ class StrokeOrderFragment : Fragment() {
     private fun updateButtonStates() {
         when (getCurrentDiagram()?.buttonPlayIsPlay ) {
             false -> {
-                buttonPlay.setImageResource(R.drawable.ic_pause)
-                buttonPlay.contentDescription = getString(R.string.button_play_pause)
+                buttonPlay?.setImageResource(R.drawable.ic_pause)
+                buttonPlay?.contentDescription = getString(R.string.button_play_pause)
             }
             true -> {
-                buttonPlay.setImageResource(R.drawable.ic_play)
-                buttonPlay.contentDescription = getString(R.string.button_play_play)
+                buttonPlay?.setImageResource(R.drawable.ic_play)
+                buttonPlay?.contentDescription = getString(R.string.button_play_play)
             }
         }
 
         when (getCurrentDiagram()?.buttonPlayEnabled) {
             false -> {
-                buttonPlay.isEnabled = false
-                buttonPlay.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonPlay?.isEnabled = false
+                buttonPlay?.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
             }
             true -> {
-                buttonPlay.isEnabled = true
-                buttonPlay.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonPlay?.isEnabled = true
+                buttonPlay?.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
             }
         }
 
         when (getCurrentDiagram()?.buttonNextEnabled) {
             false -> {
-                buttonNext.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
-                buttonNext.isEnabled = false
+                buttonNext?.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonNext?.isEnabled = false
             }
             true -> {
-                buttonNext.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
-                buttonNext.isEnabled = true
+                buttonNext?.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonNext?.isEnabled = true
             }
         }
 
         when (getCurrentDiagram()?.buttonQuizEnabled) {
             false -> {
-                buttonQuiz.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
-                buttonQuiz.isEnabled = false
+                buttonQuiz?.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonQuiz?.isEnabled = false
             }
             true -> {
-                buttonQuiz.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
-                buttonQuiz.isEnabled = true
+                buttonQuiz?.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonQuiz?.isEnabled = true
             }
         }
 
         when (getCurrentDiagram()?.buttonOutlineIsHide) {
             false -> {
-                buttonOutline.setImageResource(R.drawable.ic_hide)
-                buttonOutline.contentDescription = getString(R.string.button_outline_show)
+                buttonOutline?.setImageResource(R.drawable.ic_hide)
+                buttonOutline?.contentDescription = getString(R.string.button_outline_show)
             }
             true -> {
-                buttonOutline.setImageResource(R.drawable.ic_unhide)
-                buttonOutline.contentDescription = getString(R.string.button_outline_hide)
+                buttonOutline?.setImageResource(R.drawable.ic_unhide)
+                buttonOutline?.contentDescription = getString(R.string.button_outline_hide)
             }
         }
 
         when (getCurrentDiagram()?.buttonOutlineEnabled) {
             false -> {
-                buttonOutline.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
-                buttonOutline.isEnabled = false
+                buttonOutline?.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonOutline?.isEnabled = false
             }
             true -> {
-                buttonOutline.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
-                buttonOutline.isEnabled = true
+                buttonOutline?.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonOutline?.isEnabled = true
             }
         }
 
         when (getCurrentDiagram()?.buttonResetEnabled) {
             false -> {
-                buttonReset.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
-                buttonReset.isEnabled = false
+                buttonReset?.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonReset?.isEnabled = false
             }
             true -> {
-                buttonReset.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
-                buttonReset.isEnabled = true
+                buttonReset?.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonReset?.isEnabled = true
             }
         }
 
         when (getCurrentDiagram()?.quizActive) {
             false -> {
-                buttonQuiz.setImageResource(R.drawable.ic_pencil)
+                buttonQuiz?.setImageResource(R.drawable.ic_pencil)
             }
             true -> {
-                buttonQuiz.setImageResource(R.drawable.ic_cancel)
+                buttonQuiz?.setImageResource(R.drawable.ic_cancel)
             }
         }
     }
