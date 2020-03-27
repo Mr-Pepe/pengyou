@@ -8,7 +8,7 @@ import com.mrpepe.pengyou.dictionary.AppDatabase
 import com.mrpepe.pengyou.dictionary.Entry
 import kotlinx.coroutines.launch
 
-class DictionarySearchViewModel() : ViewModel() {
+class DictionarySearchViewModel : ViewModel() {
 
     private val repository : DictionarySearchRepository
     var searchHistoryIDs = listOf<String>()
@@ -31,17 +31,13 @@ class DictionarySearchViewModel() : ViewModel() {
     var newSearchLive = MutableLiveData<Boolean>()
     var newSearch = false
 
-    private var listener = object : SharedPreferences.OnSharedPreferenceChangeListener {
-        override fun onSharedPreferenceChanged(
-            sharedPreferences: SharedPreferences?,
-            key: String?
-        ) {
+    private var listener =
+        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
             if (key == "search_history") {
                 searchHistoryIDs = SearchHistory.getHistoryIds()
                 reloadSearchHistory()
             }
         }
-    }
 
     init {
         val entryDao = AppDatabase.getDatabase(MainApplication.getContext()).entryDao()
@@ -70,22 +66,16 @@ class DictionarySearchViewModel() : ViewModel() {
         newSearchLive.value = true
 
         if (searchQuery.isNotBlank()) {
-            viewModelScope.launch {
-                searchForChinese(searchQuery
-                            .replace("ü", "u:")
-                            .replace("v", "u:")
-                            .trimEnd().toLowerCase())
-            }
-            viewModelScope.launch {
-                searchForEnglish(searchQuery.trimEnd().toLowerCase())
-            }
+            searchForChinese(searchQuery)
+            searchForEnglish(searchQuery)
+
         } else {
             englishSearchResults.value = listOf()
             repository.clearChineseResults()
         }
     }
 
-    fun reloadSearchHistory() {
+    private fun reloadSearchHistory() {
         viewModelScope.launch {
             repository.getSearchHistory(searchHistoryIDs.reversed())
             searchHistoryEntries.postValue(repository.searchHistory)
@@ -107,13 +97,14 @@ class DictionarySearchViewModel() : ViewModel() {
         englishSearchResults.removeSource(oldEnglishResults3)
         englishSearchResults.addSource(repository.englishSearchResults1) {  }
         englishSearchResults.addSource(repository.englishSearchResults2) {  }
-        englishSearchResults.addSource(repository.englishSearchResults3) { _ -> englishSearchResults.value = mergeEnglishResults() }
+        englishSearchResults.addSource(repository.englishSearchResults3) { englishSearchResults.value = mergeEnglishResults() }
     }
 
     fun toggleDisplayedLanguage(){
         when (requestedLanguage.value) {
             SearchLanguage.CHINESE -> requestedLanguage.value = SearchLanguage.ENGLISH
             SearchLanguage.ENGLISH -> requestedLanguage.value = SearchLanguage.CHINESE
+            else -> {}
         }
     }
 
