@@ -14,11 +14,8 @@ class DictionarySearchViewModel : ViewModel() {
     var searchHistoryIDs = listOf<String>()
     var searchHistoryEntries = MutableLiveData<List<Entry>>()
 
-    private var oldEnglishResults1 : LiveData<List<Entry>>
-    private var oldEnglishResults2 : LiveData<List<Entry>>
-    private var oldEnglishResults3 : LiveData<List<Entry>>
-    val englishSearchResults = MediatorLiveData<List<Entry>>()
-    val chineseSearchResults = MediatorLiveData<List<Entry>>()
+    val englishSearchResults : LiveData<List<Entry>>
+    var chineseSearchResults : LiveData<List<Entry>>
 
     // Used for the SearchResultFragment to notify the DictionarySearchFragment to update the
     // result counts
@@ -42,12 +39,9 @@ class DictionarySearchViewModel : ViewModel() {
     init {
         val entryDao = AppDatabase.getDatabase(MainApplication.getContext()).entryDao()
         repository = DictionarySearchRepository(entryDao)
-        oldEnglishResults1 = repository.englishSearchResults1
-        oldEnglishResults2 = repository.englishSearchResults1
-        oldEnglishResults3 = repository.englishSearchResults1
 
-        englishSearchResults.addSource(repository.englishSearchResults1) { }
-        chineseSearchResults.addSource(repository.chineseSearchResults) { value -> chineseSearchResults.postValue(value)}
+        englishSearchResults = repository.englishSearchResults
+        chineseSearchResults = repository.chineseSearchResults
         requestedLanguage.value = SearchLanguage.CHINESE
         displayedLanguage.value = SearchLanguage.CHINESE
 
@@ -66,11 +60,11 @@ class DictionarySearchViewModel : ViewModel() {
         newSearchLive.value = true
 
         if (searchQuery.isNotBlank()) {
-            searchForChinese(searchQuery)
-            searchForEnglish(searchQuery)
+            viewModelScope.launch { repository.searchForChinese(searchQuery) }
+            viewModelScope.launch { repository.searchForEnglish(searchQuery) }
 
         } else {
-            englishSearchResults.value = listOf()
+            repository.clearEnglishResults()
             repository.clearChineseResults()
         }
     }
@@ -80,24 +74,6 @@ class DictionarySearchViewModel : ViewModel() {
             repository.getSearchHistory(searchHistoryIDs.reversed())
             searchHistoryEntries.postValue(repository.searchHistory)
         }
-    }
-
-    private fun searchForChinese(query: String) = viewModelScope.launch {
-        repository.searchForChinese(query)
-    }
-
-    private fun searchForEnglish(query: String) = viewModelScope.launch {
-        repository.searchForEnglish(query)
-
-        oldEnglishResults1 = repository.englishSearchResults1
-        oldEnglishResults2 = repository.englishSearchResults2
-        oldEnglishResults3 = repository.englishSearchResults3
-        englishSearchResults.removeSource(oldEnglishResults1)
-        englishSearchResults.removeSource(oldEnglishResults2)
-        englishSearchResults.removeSource(oldEnglishResults3)
-        englishSearchResults.addSource(repository.englishSearchResults1) {  }
-        englishSearchResults.addSource(repository.englishSearchResults2) {  }
-        englishSearchResults.addSource(repository.englishSearchResults3) { englishSearchResults.value = mergeEnglishResults() }
     }
 
     fun toggleDisplayedLanguage(){
@@ -113,16 +89,4 @@ class DictionarySearchViewModel : ViewModel() {
         CHINESE,
         NONE
     }
-
-    private fun mergeEnglishResults(): List<Entry> {
-        var output = setOf<Entry>()
-
-        repository.englishSearchResults1.value?.let { output = output.union(repository.englishSearchResults1.value!!) }
-        repository.englishSearchResults2.value?.let { output = output.union(repository.englishSearchResults2.value!!) }
-        repository.englishSearchResults3.value?.let { output = output.union(repository.englishSearchResults3.value!!) }
-
-        return output.toList()
-    }
 }
-
-
