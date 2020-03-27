@@ -22,7 +22,7 @@ class SearchResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
         itemView.setOnClickListener { clickListener(entry) }
     }
 
-    fun setValues(entry: Entry) {
+    private fun setValues(entry: Entry) {
         headword.text = HeadwordFormatter().format(entry, MainApplication.chineseMode)
         pinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, MainApplication.pinyinMode)
 

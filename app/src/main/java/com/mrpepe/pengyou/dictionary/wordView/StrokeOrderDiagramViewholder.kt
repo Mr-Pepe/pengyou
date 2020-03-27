@@ -26,7 +26,7 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
 
     var strokeOrder = ""
     var webViewLoaded = false
-    var webView: WebView
+    private var webView: WebView
 
     private var nStrokes = 0
     private var currentStroke = 0
@@ -60,8 +60,8 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
         true
     }
 
-    private val BASE_URL = "file:///android_asset/stroke_order/stroke_order.html"
-    private val JAVASCRIPT_OBJ = "Android"
+    private val baseUrl = "file:///android_asset/stroke_order/stroke_order.html"
+    private val javascriptObj = "Android"
 
     private var diagramSize = 0
 
@@ -82,14 +82,14 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
 
         webView = itemView.strokeOrderWebView
         webView.settings.javaScriptEnabled = true
-        webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
+        webView.addJavascriptInterface(JavaScriptInterface(), javascriptObj)
         webView.isVerticalScrollBarEnabled = false
         webView.isHorizontalScrollBarEnabled = false
         webView.setBackgroundColor(Color.TRANSPARENT)
         webView.setInitialScale(10)
         webView.settings.loadWithOverviewMode = true
         webView.settings.useWideViewPort = true
-        webView.loadUrl(BASE_URL)
+        webView.loadUrl(baseUrl)
 
         isAnimating.value = false
         isQuizzing.value = false
@@ -151,15 +151,19 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
             resetFinished.observe(viewLifecycleOwner, Observer {
                 currentStroke = 0
 
-                if (startAnimatingAfterReset) {
-                    startAnimatingAfterReset = false
-                    animateStroke()
-                } else if (isQuizzing.value!!) {
-                    MainScope().launch {
-                        webView.runJavaScript("startQuiz()")
+                when {
+                    startAnimatingAfterReset -> {
+                        startAnimatingAfterReset = false
+                        animateStroke()
                     }
-                } else {
-                    block = false
+                    isQuizzing.value!! -> {
+                        MainScope().launch {
+                            webView.runJavaScript("startQuiz()")
+                        }
+                    }
+                    else -> {
+                        block = false
+                    }
                 }
             })
 
@@ -221,11 +225,7 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
                         buttonPlayEnabled = true
                         buttonNextEnabled = true
                         quizActive = false
-                        webView.setOnTouchListener(object : View.OnTouchListener {
-                            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-                                return (event?.action == MotionEvent.ACTION_MOVE)
-                            }
-                        })
+                        webView.setOnTouchListener { _, event -> (event?.action == MotionEvent.ACTION_MOVE) }
                     }
                 }
                 fragment.updateButtonStatesFromDiagram(index)

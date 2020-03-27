@@ -5,11 +5,9 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.mrpepe.pengyou.*
@@ -64,48 +62,45 @@ class WordViewFragment : DictionaryBaseFragment(),
 
         wordViewToolbar.inflateMenu(R.menu.word_view_menu)
 
-        wordViewToolbar.setOnMenuItemClickListener(object: Toolbar.OnMenuItemClickListener {
-            override fun onMenuItemClick(item: MenuItem?): Boolean {
-                return when (item?.itemId) {
-                    R.id.copyToClipboard -> {
-                        var indicator = "(${getString(R.string.chinese_mode_simplified)})"
-                        val headword = when (MainApplication.chineseMode) {
-                            in listOf(ChineseMode.simplified, ChineseMode.simplifiedTraditional) -> {
-                                wordViewViewModel.entry.value?.simplified
-                            }
-                            in listOf(ChineseMode.traditional, ChineseMode.traditionalSimplified) -> {
-                                indicator = "(${getString(R.string.chinese_mode_traditional)})"
-                                wordViewViewModel.entry.value?.traditional
-                            }
-                            else -> ""
+        wordViewToolbar.setOnMenuItemClickListener { item ->
+            when (item?.itemId) {
+                R.id.copyToClipboard -> {
+                    var indicator = "(${getString(R.string.chinese_mode_simplified)})"
+                    val headword = when (MainApplication.chineseMode) {
+                        in listOf(ChineseMode.simplified, ChineseMode.simplifiedTraditional) -> {
+                            wordViewViewModel.entry.value?.simplified
                         }
-
-                        val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val clip = ClipData.newPlainText("Headword", headword)
-
-                        clipboard.setPrimaryClip(clip)
-
-                        if (MainApplication.chineseMode in listOf(ChineseMode.simplifiedTraditional, ChineseMode.traditionalSimplified)) {
-                            Toast.makeText(
-                                activity,
-                                "Copied $headword $indicator to clipboard",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                        in listOf(ChineseMode.traditional, ChineseMode.traditionalSimplified) -> {
+                            indicator = "(${getString(R.string.chinese_mode_traditional)})"
+                            wordViewViewModel.entry.value?.traditional
                         }
-                        else {
-                            Toast.makeText(
-                                activity,
-                                "Copied $headword to clipboard",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-
-                        true
+                        else -> ""
                     }
-                    else -> true
+
+                    val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText("Headword", headword)
+
+                    clipboard.setPrimaryClip(clip)
+
+                    if (MainApplication.chineseMode in listOf(ChineseMode.simplifiedTraditional, ChineseMode.traditionalSimplified)) {
+                        Toast.makeText(
+                            activity,
+                            "Copied $headword $indicator to clipboard",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            activity,
+                            "Copied $headword to clipboard",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
+                    true
                 }
+                else -> true
             }
-        })
+        }
 
         wordViewViewModel.entry.observe(viewLifecycleOwner, Observer { entry ->
             setHeadwordPinyinAndHsk(entry)
@@ -117,7 +112,7 @@ class WordViewFragment : DictionaryBaseFragment(),
         wordViewViewModel.entry.value?.let { setHeadwordPinyinAndHsk(it) }
     }
 
-    fun setHeadwordPinyinAndHsk(entry: Entry) {
+    private fun setHeadwordPinyinAndHsk(entry: Entry) {
         wordViewHeadword.text = HeadwordFormatter().format(entry, MainApplication.chineseMode)
         wordViewPinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, MainApplication.pinyinMode)
 
@@ -136,11 +131,6 @@ class WordViewFragment : DictionaryBaseFragment(),
 
     override fun toggleHorizontalPaging() {
         viewPager.togglePagingEnabled()
-    }
-
-    fun onSupportNavigateUp(): Boolean {
-//        onBackPressed()
-        return true
     }
 
     companion object {

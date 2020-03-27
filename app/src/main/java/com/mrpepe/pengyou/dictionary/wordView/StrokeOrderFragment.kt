@@ -28,7 +28,7 @@ class StrokeOrderFragment : Fragment() {
     private var indicatorCount = 0
     private var currenPosition = 0
 
-    private lateinit var toggleHorizontalPagingListener: StrokeOrderFragment.ToggleHorizontalPagingListener
+    private lateinit var toggleHorizontalPagingListener: ToggleHorizontalPagingListener
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -117,7 +117,7 @@ class StrokeOrderFragment : Fragment() {
                 strokeOrderPageIndicatorView.visibility = View.INVISIBLE
             }
 
-            if (!filteredStrokeOrders.isEmpty()) {
+            if (filteredStrokeOrders.isNotEmpty()) {
                 adapter.setEntries(filteredStrokeOrders)
             }
         })

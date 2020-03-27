@@ -2,6 +2,7 @@ package com.mrpepe.pengyou
 
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.SystemClock
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -37,7 +38,7 @@ class DefinitionFormatter {
             definitions
         }
         else {
-            rawDefinitions.split('/').forEachIndexed { iRawDefinition, rawDefinition ->
+            rawDefinitions.split('/').forEach { rawDefinition ->
 
                 definitions.add(
                     formatDefinition(
@@ -59,8 +60,8 @@ class DefinitionFormatter {
 
         val definition = SpannableStringBuilder()
 
-        var chineseWord = StringBuilder()
-        var pinyin = StringBuilder()
+        val chineseWord = StringBuilder()
+        val pinyin = StringBuilder()
         var simplified: String
         var traditional = ""
 
@@ -82,19 +83,20 @@ class DefinitionFormatter {
                             simplified = chineseWord.toString()
                         }
 
-                        var word = SpannableString("")
+                        val word = when (chineseMode) {
+                            ChineseMode.simplified ->
+                                SpannableString(simplified)
 
-                        if (chineseMode == ChineseMode.simplified) {
-                            word = SpannableString(simplified)
-                        }
-                        else if (chineseMode == ChineseMode.simplifiedTraditional) {
-                            word = SpannableString("$simplified|$traditional")
-                        }
-                        else if (chineseMode == ChineseMode.traditional){
-                            word = SpannableString(traditional)
-                        }
-                        else if (chineseMode == ChineseMode.traditionalSimplified){
-                            word = SpannableString("$traditional|$simplified")
+                            ChineseMode.simplifiedTraditional -> {
+                                SpannableString("$simplified|$traditional")
+                            }
+                            ChineseMode.traditional -> {
+                                SpannableString(traditional)
+                            }
+                            ChineseMode.traditionalSimplified -> {
+                                SpannableString("$traditional|$simplified")
+                            }
+                            else -> SpannableString("")
                         }
 
                         // Try to find pinyin corresponding to this word
@@ -517,7 +519,7 @@ fun Context.hideKeyboard(view: View) {
 
 object SearchHistory {
 
-    val searchPreferences = MainApplication.getContext().getSharedPreferences(MainApplication.getContext().getString(R.string.search_history), Context.MODE_PRIVATE)
+    val searchPreferences: SharedPreferences = MainApplication.getContext().getSharedPreferences(MainApplication.getContext().getString(R.string.search_history), Context.MODE_PRIVATE)
 
     init {
         val searchHistoryIDs = searchPreferences.getString("search_history", "")!!.split(',').toMutableList()

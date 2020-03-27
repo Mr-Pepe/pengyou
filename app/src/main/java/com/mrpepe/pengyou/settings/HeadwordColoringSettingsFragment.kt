@@ -22,24 +22,22 @@ class HeadwordColoringSettingsFragment: SettingsBaseFragment() {
         setPreferencesFromResource(R.xml.headword_coloring_settings, rootKey)
 
         val resetToDefaultButton = findPreference<Preference>("headword_colors_to_default")
-        resetToDefaultButton?.setOnPreferenceClickListener(object : Preference.OnPreferenceClickListener{
-            override fun onPreferenceClick(preference: Preference?): Boolean {
-                MainScope().launch {
-                    with(PreferenceManager.getDefaultSharedPreferences(MainApplication.getContext()).edit()) {
-                        putInt("first_tone_color", MainApplication.getContext().getColor(R.color.tone1DefaultColor))
-                        putInt("second_tone_color", MainApplication.getContext().getColor(R.color.tone2DefaultColor))
-                        putInt("third_tone_color", MainApplication.getContext().getColor(R.color.tone3DefaultColor))
-                        putInt("fourth_tone_color", MainApplication.getContext().getColor(R.color.tone4DefaultColor))
-                        putInt("fifth_tone_color", MainApplication.getContext().getColor(R.color.tone5DefaultColor))
-                        commit()
-                    }
-
-                    setPreferencesFromResource(R.xml.headword_coloring_settings, rootKey)
+        resetToDefaultButton?.setOnPreferenceClickListener {
+            MainScope().launch {
+                with(PreferenceManager.getDefaultSharedPreferences(MainApplication.getContext()).edit()) {
+                    putInt("first_tone_color", MainApplication.getContext().getColor(R.color.tone1DefaultColor))
+                    putInt("second_tone_color", MainApplication.getContext().getColor(R.color.tone2DefaultColor))
+                    putInt("third_tone_color", MainApplication.getContext().getColor(R.color.tone3DefaultColor))
+                    putInt("fourth_tone_color", MainApplication.getContext().getColor(R.color.tone4DefaultColor))
+                    putInt("fifth_tone_color", MainApplication.getContext().getColor(R.color.tone5DefaultColor))
+                    commit()
                 }
 
-                return true
+                setPreferencesFromResource(R.xml.headword_coloring_settings, rootKey)
             }
-        })
+
+            true
+        }
     }
 
     override fun onDisplayPreferenceDialog(preference: Preference?) {

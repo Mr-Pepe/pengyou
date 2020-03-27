@@ -6,12 +6,7 @@ import androidx.room.*
 import com.mrpepe.pengyou.MainApplication
 import java.io.Serializable
 
-@Database(entities= arrayOf(Entry::class,
-                            Permutation::class,
-                            DbDecomposition::class,
-                            StrokeOrder::class,
-                            TraditionalToSimplifiedCharacters::class,
-                            TraditionalToSimplifiedPhrases::class), version = 1)
+@Database(entities= [Entry::class, Permutation::class, DbDecomposition::class, StrokeOrder::class, TraditionalToSimplifiedCharacters::class, TraditionalToSimplifiedPhrases::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun entryDao() : EntryDAO
 

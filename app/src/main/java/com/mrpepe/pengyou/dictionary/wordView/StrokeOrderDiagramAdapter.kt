@@ -6,14 +6,12 @@ import androidx.cardview.widget.CardView
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
-import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.StrokeOrder
-import com.mrpepe.pengyou.dictionary.search.SearchResultViewHolder
 
-class StrokeOrderDiagramAdapter(val viewLifecycleOwner: LifecycleOwner, val fragment: StrokeOrderFragment):
+class StrokeOrderDiagramAdapter(private val viewLifecycleOwner: LifecycleOwner, val fragment: StrokeOrderFragment):
     RecyclerView.Adapter<StrokeOrderDiagramViewholder>() {
 
-    var strokeOrders = emptyList<StrokeOrder>()
+    private var strokeOrders = emptyList<StrokeOrder>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StrokeOrderDiagramViewholder {
         return StrokeOrderDiagramViewholder(

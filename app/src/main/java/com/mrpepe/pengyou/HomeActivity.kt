@@ -3,7 +3,6 @@ package com.mrpepe.pengyou
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.graphics.Color
 import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
@@ -21,31 +20,26 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel
 import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.fragment_dictionary_search.*
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
 
 class HomeActivity : BaseActivity(),
     PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
 
     private lateinit var dictionarySearchViewModel: DictionarySearchViewModel
 
-    private var listener = object: SharedPreferences.OnSharedPreferenceChangeListener {
-                override fun onSharedPreferenceChanged(
-                    sharedPreferences: SharedPreferences?,
-                    key: String?
-                ) {
-                    if (key == "pinyin_notation") {
-                        MainApplication.pinyinMode = sharedPreferences?.getString(key, PinyinMode.marks) ?: PinyinMode.marks
-                    }
-                    else if (key == "chinese_mode") {
-                        MainApplication.chineseMode = sharedPreferences?.getString(key, ChineseMode.simplified) ?: ChineseMode.simplified
-                    }
-                    else if (key == "theme") {
-                        setTheme()
-                    }
+    private var listener =
+        SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+            when (key) {
+                "pinyin_notation" -> {
+                    MainApplication.pinyinMode = sharedPreferences?.getString(key, PinyinMode.marks) ?: PinyinMode.marks
+                }
+                "chinese_mode" -> {
+                    MainApplication.chineseMode = sharedPreferences?.getString(key, ChineseMode.simplified) ?: ChineseMode.simplified
+                }
+                "theme" -> {
+                    setTheme()
                 }
             }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -70,7 +64,7 @@ class HomeActivity : BaseActivity(),
             val dest: String = try {
                 resources.getResourceName(destination.id)
             } catch (e: Resources.NotFoundException) {
-                Integer.toString(destination.id)
+                destination.id.toString()
             }
 
 //            Toast.makeText(this@HomeActivity, "Navigated to $dest", Toast.LENGTH_SHORT).show()
@@ -93,11 +87,11 @@ class HomeActivity : BaseActivity(),
     }
 
     fun isNightMode(): Boolean {
-        return (getResources().configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
+        return (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) ==
                     Configuration.UI_MODE_NIGHT_YES
     }
 
-    fun setTheme() {
+    private fun setTheme() {
         val mode = PreferenceManager.getDefaultSharedPreferences(MainApplication.getContext())?.getString("theme", "") ?: ""
 
         when (mode) {

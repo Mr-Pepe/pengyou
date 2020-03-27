@@ -9,8 +9,8 @@ import com.mrpepe.pengyou.dictionary.EntryDAO
 import com.mrpepe.pengyou.dictionary.StrokeOrder
 import kotlinx.coroutines.launch
 
-class WordViewViewModel() : ViewModel() {
-    var isInitialized = false
+class WordViewViewModel : ViewModel() {
+    private var isInitialized = false
     private lateinit var repository : WordViewRepository
     private var entryDao : EntryDAO = AppDatabase.getDatabase(MainApplication.getContext()).entryDao()
 

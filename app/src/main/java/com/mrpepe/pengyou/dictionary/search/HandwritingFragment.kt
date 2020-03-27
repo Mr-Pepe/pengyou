@@ -29,10 +29,10 @@ class HandwritingFragment : Fragment() {
     private lateinit var dictionaryViewModel: DictionarySearchViewModel
     private lateinit var webView : WebView
     private lateinit var proposedCharacterList: RecyclerView
-    lateinit var adapter : ProposedCharacterAdapter
+    private lateinit var adapter : ProposedCharacterAdapter
 
-    private val BASE_URL = "https://appassets.androidplatform.net/assets/handwriting_input/hanzi_lookup.html"
-    private val JAVASCRIPT_OBJ = "Android"
+    private val baseUrl = "https://appassets.androidplatform.net/assets/handwriting_input/hanzi_lookup.html"
+    private val javascriptObj = "Android"
 
     private var isLoaded = MutableLiveData<Boolean>()
 
@@ -87,7 +87,7 @@ class HandwritingFragment : Fragment() {
         webView.settings.javaScriptEnabled = true
         webView.settings.allowFileAccessFromFileURLs = true
         webView.settings.allowUniversalAccessFromFileURLs = true
-        webView.addJavascriptInterface(JavaScriptInterface(), JAVASCRIPT_OBJ)
+        webView.addJavascriptInterface(JavaScriptInterface(), javascriptObj)
 
         val assetLoader = WebViewAssetLoader.Builder()
             .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(MainApplication.getContext()))
@@ -106,7 +106,7 @@ class HandwritingFragment : Fragment() {
             }
         }
 
-        webView.loadUrl(BASE_URL)
+        webView.loadUrl(baseUrl)
 
         adapter = ProposedCharacterAdapter { character: String ->
             characterClicked(character)
@@ -130,7 +130,7 @@ class HandwritingFragment : Fragment() {
                     Parser.default().parse(StringBuilder(it)) as JsonArray<JsonObject>
 
                 json.forEach { character ->
-                    characters.add(character.get("hanzi").toString())
+                    characters.add(character["hanzi"].toString())
                 }
 
                 adapter.setProposedCharacters(characters)
@@ -175,20 +175,14 @@ class HandwritingFragment : Fragment() {
             searchRequest.value = true
         })
 
-        clear_board_button.setOnClickListener(object: View.OnClickListener {
-            override fun onClick(v: View?) {
-                if (draw_board.isClear) {
-                    dictionarySearchFragment.deleteLastCharacterOfQuery()
-                }
-                draw_board.clearCanvas()
+        clear_board_button.setOnClickListener {
+            if (draw_board.isClear) {
+                dictionarySearchFragment.deleteLastCharacterOfQuery()
             }
-        })
+            draw_board.clearCanvas()
+        }
 
-        search_button.setOnClickListener ( object: View.OnClickListener {
-            override fun onClick(v: View?) {
-                dictionarySearchFragment.submitQueryFromDrawboard()
-            }
-        } )
+        search_button.setOnClickListener { dictionarySearchFragment.submitQueryFromDrawboard() }
 
         searchRequest.observe(viewLifecycleOwner, Observer {
              if (canSearch && strokes.isNotEmpty()) {
@@ -199,7 +193,7 @@ class HandwritingFragment : Fragment() {
 
     override fun onDestroy() {
         if (::webView.isInitialized) {
-            webView.removeJavascriptInterface(JAVASCRIPT_OBJ)
+            webView.removeJavascriptInterface(javascriptObj)
         }
         super.onDestroy()
     }

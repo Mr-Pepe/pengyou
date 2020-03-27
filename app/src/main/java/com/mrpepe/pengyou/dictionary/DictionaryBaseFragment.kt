@@ -7,6 +7,7 @@ import com.mrpepe.pengyou.R
 open class DictionaryBaseFragment : Fragment() {
     override fun onResume() {
         super.onResume()
-        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationMenu)?.menu?.findItem(R.id.dictionarySearchFragment)?.setChecked(true)
+        activity?.findViewById<BottomNavigationView>(R.id.bottomNavigationMenu)?.menu?.findItem(R.id.dictionarySearchFragment)?.isChecked =
+            true
     }
 }

@@ -3,8 +3,6 @@ package com.mrpepe.pengyou
 import android.app.Activity
 import android.app.Application
 import android.content.Context
-import android.content.SharedPreferences
-import androidx.preference.PreferenceManager
 
 class MainApplication : Application() {
 

@@ -10,7 +10,7 @@ import com.mrpepe.pengyou.dictionary.Entry
 class SearchResultAdapter(private val clickListener: (Entry) -> Unit) :
     RecyclerView.Adapter<SearchResultViewHolder>() {
 
-    var searchResults = emptyList<Entry>()
+    private var searchResults = emptyList<Entry>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchResultViewHolder {
         return SearchResultViewHolder(

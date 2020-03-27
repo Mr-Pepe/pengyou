@@ -72,8 +72,8 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
         dictionaryViewModel.updateResultCounts.observe(viewLifecycleOwner, Observer {
             updateModeSwitch(
                 null,
-                dictionaryViewModel.englishSearchResults?.value?.size,
-                dictionaryViewModel.chineseSearchResults?.value?.size)
+                dictionaryViewModel.englishSearchResults.value?.size,
+                dictionaryViewModel.chineseSearchResults.value?.size)
         })
 
         modeSwitchEnglish.setOnClickListener {
@@ -115,7 +115,7 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
             modeSwitchChinese.text = "中文  (${formatResultCount(it)})"
         }
 
-        language?.let {language ->
+        language?.let {
             val nightMode = MainApplication.homeActivity.isNightMode()
 
             val activeColor = if (nightMode) R.color.darkThemeColorOnPrimary else R.color.lightThemeColorOnPrimary
@@ -183,7 +183,7 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
         }
     }
 
-    fun showKeyboard() {
+    private fun showKeyboard() {
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }

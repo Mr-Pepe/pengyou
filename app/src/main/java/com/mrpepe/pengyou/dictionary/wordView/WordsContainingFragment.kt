@@ -1,6 +1,5 @@
 package com.mrpepe.pengyou.dictionary.wordView
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.LayoutInflater
@@ -14,9 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
-import com.mrpepe.pengyou.SearchHistory
 import com.mrpepe.pengyou.dictionary.Entry
-import com.mrpepe.pengyou.dictionary.search.DictionarySearchFragmentDirections
 import com.mrpepe.pengyou.dictionary.search.SearchResultAdapter
 import kotlinx.android.synthetic.main.fragment_search_result_list.view.*
 

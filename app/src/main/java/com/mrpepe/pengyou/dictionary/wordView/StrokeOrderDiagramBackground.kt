@@ -9,11 +9,10 @@ import android.util.TypedValue
 import android.view.View
 import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.R
-import kotlinx.android.synthetic.main.fragment_word_view.view.*
 
 class StrokeOrderDiagramBackground: View {
 
-    var paint = Paint()
+    private var paint = Paint()
 
     constructor(context: Context) : super(context){
         init()

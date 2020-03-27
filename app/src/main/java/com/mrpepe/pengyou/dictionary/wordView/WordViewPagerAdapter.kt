@@ -1,6 +1,5 @@
 package com.mrpepe.pengyou.dictionary.wordView
 
-import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
@@ -20,7 +19,6 @@ class WordViewPagerAdapter(fm: FragmentManager) :
         return when (position) {
             0 -> WordDefinitionFragment()
             1 -> StrokeOrderFragment()
-//            2 -> DecompositionFragment()
             2 -> WordsContainingFragment()
             else -> WordDefinitionFragment()
         }

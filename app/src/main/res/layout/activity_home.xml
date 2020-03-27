@@ -21,7 +21,8 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             app:defaultNavHost="true"
-            app:navGraph="@navigation/navigation" />
+            app:navGraph="@navigation/navigation"
+            tools:layout="@layout/fragment_dictionary_search" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationMenu"
