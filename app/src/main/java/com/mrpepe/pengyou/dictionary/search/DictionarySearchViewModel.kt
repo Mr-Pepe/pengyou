@@ -20,6 +20,10 @@ class DictionarySearchViewModel() : ViewModel() {
     val englishSearchResults = MediatorLiveData<List<Entry>>()
     val chineseSearchResults = MediatorLiveData<List<Entry>>()
 
+    // Used for the SearchResultFragment to notify the DictionarySearchFragment to update the
+    // result counts
+    val updateResultCounts = MutableLiveData<Boolean>()
+
     var requestedLanguage = MutableLiveData<SearchLanguage>()
     var displayedLanguage = MutableLiveData<SearchLanguage>()
 

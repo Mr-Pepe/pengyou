@@ -105,11 +105,14 @@ class SearchResultFragment : Fragment() {
     private fun updateSearchResults(calledFromDelayedHandler: Boolean) {
         when (dictionaryViewModel.searchQuery.isBlank()) {
 
-            // Show history
-            true -> {
+            true -> { // Show history
+
+                dictionaryViewModel.updateResultCounts. value = true
+
                 if (resultCountLinearLayout.parent == null) {
                     searchResultListLinearLayout.addView(resultCountLinearLayout, 0)
                 }
+
                 when (dictionaryViewModel.searchHistoryIDs.size) {
                     0 -> {
                         resultCount.text = getString(R.string.no_history)
@@ -120,6 +123,7 @@ class SearchResultFragment : Fragment() {
                         clearHistoryLink.movementMethod = LinkMovementMethod.getInstance()
 
                         val clearHistoryText = getString(R.string.clear_history).toSpannable()
+
                         clearHistoryText.setSpan(object: ClickableSpan() {
                             override fun onClick(widget: View) {
                                 SearchHistory.clear()
@@ -129,17 +133,20 @@ class SearchResultFragment : Fragment() {
                                 ds.isUnderlineText = false
                             }
                         }, 0, clearHistoryText.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
                         clearHistoryLink.text = SpannableStringBuilder().append(clearHistoryText)
                     }
                 }
+
                 adapter.setEntries(dictionaryViewModel.searchHistoryEntries.value ?: listOf())
                 dictionaryViewModel.displayedLanguage.value = dictionaryViewModel.requestedLanguage.value
                 searchResultList.scrollToPosition(0)
             }
 
-            // Show search results
-            false -> {
+            false -> { // Show search results
+
                 searchResultListLinearLayout.removeView(resultCountLinearLayout)
+
                 if (dictionaryViewModel.requestedLanguage.value == DictionarySearchViewModel.SearchLanguage.ENGLISH) {
 
                     when (dictionaryViewModel.englishSearchResults.value != null && dictionaryViewModel.englishSearchResults.value?.isNotEmpty()!!) {
@@ -155,6 +162,8 @@ class SearchResultFragment : Fragment() {
                                 }
                             }
                             else {
+                                // Wait up to half a second for the results of the requested
+                                // language to avoid flickering of the search results
                                 delayedUpdateHandler.postDelayed({ updateSearchResults(true) }, 500)
                             }
                         }
@@ -176,6 +185,8 @@ class SearchResultFragment : Fragment() {
                                 }
                             }
                             else {
+                                // Wait up to half a second for the results of the requested
+                                // language to avoid flickering of the search results
                                 delayedUpdateHandler.postDelayed({ updateSearchResults(true) }, 500)
                             }
                         }
@@ -188,15 +199,19 @@ class SearchResultFragment : Fragment() {
 
     private fun setEnglish() {
         adapter.setEntries(dictionaryViewModel.englishSearchResults.value?.sortedWith(
-            compareBy({it.priority})
+            compareBy { it.priority }
         ) ?: listOf())
+
         dictionaryViewModel.displayedLanguage.value = DictionarySearchViewModel.SearchLanguage.ENGLISH
+        dictionaryViewModel.updateResultCounts. value = true
     }
 
     private fun setChinese() {
         adapter.setEntries(dictionaryViewModel.chineseSearchResults.value?.sortedWith(
             compareBy({it.wordLength}, {it.hsk}, {it.pinyinLength}, {it.priority})
         ) ?: listOf())
+
         dictionaryViewModel.displayedLanguage.value = DictionarySearchViewModel.SearchLanguage.CHINESE
+        dictionaryViewModel.updateResultCounts. value = true
     }
 }

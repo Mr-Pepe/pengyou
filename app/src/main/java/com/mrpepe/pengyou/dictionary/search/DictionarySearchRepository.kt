@@ -78,9 +78,7 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
             queries.add(conversionsList[0])
         }
 
-        _chineseSearchResults.value = listOf()
-        chineseSearchResultSources.forEach { _chineseSearchResults.removeSource(it) }
-        chineseSearchResultSources.clear()
+        clearChineseResults()
 
         queries.forEach {query ->
             val chineseSearchResult = entryDao.searchInDictByChinese(query, query + 'z')
@@ -101,7 +99,9 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
     }
 
     fun clearChineseResults() {
-        _chineseSearchResults.postValue(listOf())
+        _chineseSearchResults.value = listOf()
+        chineseSearchResultSources.forEach { _chineseSearchResults.removeSource(it) }
+        chineseSearchResultSources.clear()
     }
 
     fun searchForEnglish(query: String) {

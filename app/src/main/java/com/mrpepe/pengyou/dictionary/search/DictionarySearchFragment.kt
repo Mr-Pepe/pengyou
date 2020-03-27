@@ -69,18 +69,11 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
             toggleHandwritingMode()
         }
 
-        dictionaryViewModel.englishSearchResults.observe(viewLifecycleOwner, Observer { results ->
+        dictionaryViewModel.updateResultCounts.observe(viewLifecycleOwner, Observer {
             updateModeSwitch(
                 null,
-                results?.size,
-                null)
-        })
-
-        dictionaryViewModel.chineseSearchResults.observe(viewLifecycleOwner, Observer { results ->
-            updateModeSwitch(
-                null,
-                null,
-                results?.size)
+                dictionaryViewModel.englishSearchResults?.value?.size,
+                dictionaryViewModel.chineseSearchResults?.value?.size)
         })
 
         modeSwitchEnglish.setOnClickListener {
