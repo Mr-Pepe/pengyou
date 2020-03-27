@@ -60,6 +60,9 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
             }
 
             override fun onQueryTextSubmit(query: String?): Boolean {
+                if (isInHandwritingMode) {
+                    submitQueryFromDrawboard()
+                }
                 dictionarySearchSearchBox.clearFocus()
                 return true
             }
@@ -189,8 +192,8 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
     }
 
     fun addCharacterToQuery(newChar: String) {
-        val previousQuery = dictionarySearchSearchBox.query
-        dictionarySearchSearchBox.setQuery("$previousQuery$newChar", false)
+        val previousQuery = dictionarySearchSearchBox?.query
+        dictionarySearchSearchBox?.setQuery("$previousQuery$newChar", false)
     }
 
     fun deleteLastCharacterOfQuery() {

@@ -143,7 +143,7 @@ class SearchResultFragment : Fragment() {
 
             false -> { // Show search results
 
-                searchResultListLinearLayout.removeView(resultCountLinearLayout)
+                searchResultListLinearLayout?.removeView(resultCountLinearLayout)
 
                 if (dictionaryViewModel.requestedLanguage.value == DictionarySearchViewModel.SearchLanguage.ENGLISH) {
 
