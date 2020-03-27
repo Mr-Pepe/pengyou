@@ -38,7 +38,7 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
     override fun onResume() {
         super.onResume()
         dictionaryViewModel.displayedLanguage.value?.let { updateModeSwitch(it, null, null) }
-        dictionaryViewModel.preciseEnglishResults.value?.let { updateModeSwitch(null, it.size, null) }
+        dictionaryViewModel.englishResults.value?.let { updateModeSwitch(null, it.size, null) }
         dictionaryViewModel.chineseSearchResults.value?.let { updateModeSwitch(null, null, it.size) }
     }
 
@@ -72,11 +72,20 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
             toggleHandwritingMode()
         }
 
-        dictionaryViewModel.updateResultCounts.observe(viewLifecycleOwner, Observer {
+        dictionaryViewModel.englishResults.observe(viewLifecycleOwner, Observer {
             updateModeSwitch(
                 null,
-                dictionaryViewModel.preciseEnglishResults.value?.size,
-                dictionaryViewModel.chineseSearchResults.value?.size)
+                dictionaryViewModel.englishResults.value?.size,
+                null
+            )
+        })
+
+        dictionaryViewModel.englishResults.observe(viewLifecycleOwner, Observer {
+            updateModeSwitch(
+                null,
+                null,
+                dictionaryViewModel.chineseSearchResults.value?.size
+            )
         })
 
         modeSwitchEnglish.setOnClickListener {

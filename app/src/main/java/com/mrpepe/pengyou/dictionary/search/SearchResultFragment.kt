@@ -36,11 +36,6 @@ class SearchResultFragment : Fragment() {
     private var lastClickTime: Long = 0
     private var delayedUpdateHandler = Handler()
 
-    // Merge precise and general English results
-    private var mergedEnglishResults = listOf<Entry>()
-    // Extracted result to only care once about nullability
-    private var chineseResults = listOf<Entry>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -74,20 +69,11 @@ class SearchResultFragment : Fragment() {
             updateSearchResults(false)
         })
 
-        dictionaryViewModel.preciseEnglishResults.observe(viewLifecycleOwner, Observer {
-            mergeEnglishResults()
-            updateSearchResults(false)
-        })
-
-        dictionaryViewModel.generalEnglishResults.observe(viewLifecycleOwner, Observer {
-            mergeEnglishResults()
+        dictionaryViewModel.englishResults.observe(viewLifecycleOwner, Observer {
             updateSearchResults(false)
         })
 
         dictionaryViewModel.chineseSearchResults.observe(viewLifecycleOwner, Observer {
-            chineseResults = dictionaryViewModel.chineseSearchResults.value?.sortedWith(
-                                    compareBy({it.wordLength}, {it.hsk}, {it.pinyinLength}, {it.priority})
-                                ) ?: listOf()
             updateSearchResults(false)
         })
 
@@ -161,13 +147,13 @@ class SearchResultFragment : Fragment() {
 
                 if (dictionaryViewModel.requestedLanguage.value == DictionarySearchViewModel.SearchLanguage.ENGLISH) {
 
-                    when (mergedEnglishResults.isNotEmpty()) {
+                    when (dictionaryViewModel.englishResults.value!!.isNotEmpty()) {
                         true -> {
                             setEnglish()
                         }
                         false -> {
                             if (calledFromDelayedHandler) {
-                                if (chineseResults.isNotEmpty() || dictionaryViewModel.displayedLanguage.value == DictionarySearchViewModel.SearchLanguage.CHINESE) {
+                                if (dictionaryViewModel.chineseSearchResults.value!!.isNotEmpty() || dictionaryViewModel.displayedLanguage.value == DictionarySearchViewModel.SearchLanguage.CHINESE) {
                                     setChinese()
                                 } else {
                                     setEnglish()
@@ -184,13 +170,13 @@ class SearchResultFragment : Fragment() {
                 }
                 else if (dictionaryViewModel.requestedLanguage.value == DictionarySearchViewModel.SearchLanguage.CHINESE) {
 
-                    when (chineseResults.isNotEmpty()) {
+                    when (dictionaryViewModel.chineseSearchResults.value!!.isNotEmpty()) {
                         true -> {
                             setChinese()
                         }
                         false -> {
                             if (calledFromDelayedHandler) {
-                                if (mergedEnglishResults.isNotEmpty() || dictionaryViewModel.displayedLanguage.value == DictionarySearchViewModel.SearchLanguage.ENGLISH) {
+                                if (dictionaryViewModel.englishResults.value!!.isNotEmpty() || dictionaryViewModel.displayedLanguage.value == DictionarySearchViewModel.SearchLanguage.ENGLISH) {
                                     setEnglish()
                                 } else {
                                     setChinese()
@@ -209,24 +195,16 @@ class SearchResultFragment : Fragment() {
     }
 
     private fun setEnglish() {
-        adapter.setEntries(mergedEnglishResults)
+        adapter.setEntries(dictionaryViewModel.englishResults.value!!)
 
         dictionaryViewModel.displayedLanguage.value = DictionarySearchViewModel.SearchLanguage.ENGLISH
         dictionaryViewModel.updateResultCounts. value = true
     }
 
     private fun setChinese() {
-        adapter.setEntries(chineseResults)
+        adapter.setEntries(dictionaryViewModel.chineseSearchResults.value!!)
 
         dictionaryViewModel.displayedLanguage.value = DictionarySearchViewModel.SearchLanguage.CHINESE
         dictionaryViewModel.updateResultCounts. value = true
-    }
-
-    private fun mergeEnglishResults() {
-        mergedEnglishResults =
-            (dictionaryViewModel.preciseEnglishResults.value ?: listOf())
-                .union(dictionaryViewModel.generalEnglishResults.value
-                ?.sortedWith( compareBy({ it.hsk }, { it.wordLength })) ?: listOf())
-                .toList()
     }
 }

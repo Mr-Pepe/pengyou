@@ -13,7 +13,7 @@ class MainApplication : Application() {
     companion object {
         // Global definitions
         const val MAX_HISTORY_ENTRIES = 1000
-        const val MAX_SEARCH_RESULTS = 1000
+        const val MAX_SEARCH_RESULTS = 201
 
         var pinyinMode = ""
         var chineseMode = ""

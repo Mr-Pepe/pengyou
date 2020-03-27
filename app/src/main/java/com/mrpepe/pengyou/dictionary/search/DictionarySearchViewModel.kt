@@ -14,9 +14,13 @@ class DictionarySearchViewModel : ViewModel() {
     var searchHistoryIDs = listOf<String>()
     var searchHistoryEntries = MutableLiveData<List<Entry>>()
 
-    val preciseEnglishResults : LiveData<List<Entry>>
-    var generalEnglishResults : LiveData<List<Entry>>
-    var chineseSearchResults : LiveData<List<Entry>>
+    private val mergedEnglishResults = MediatorLiveData<List<Entry>>()
+    val englishResults : LiveData<List<Entry>> = mergedEnglishResults
+    private val preciseEnglishResults : LiveData<List<Entry>>
+    private var generalEnglishResults : LiveData<List<Entry>>
+
+    private val _chineseSearchResults = MediatorLiveData<List<Entry>>()
+    val chineseSearchResults : LiveData<List<Entry>> = _chineseSearchResults
 
     // Used for the SearchResultFragment to notify the DictionarySearchFragment to update the
     // result counts
@@ -43,7 +47,27 @@ class DictionarySearchViewModel : ViewModel() {
 
         preciseEnglishResults = repository.preciseEnglishSearchResults
         generalEnglishResults = repository.generalEnglishResults
-        chineseSearchResults = repository.chineseSearchResults
+        mergedEnglishResults.addSource(preciseEnglishResults) { entries ->
+            mergedEnglishResults.value = (entries ?: listOf()).union(mergedEnglishResults.value ?: listOf())?.toList()
+
+            mergedEnglishResults.postValue(mergedEnglishResults.value)
+        }
+
+        _chineseSearchResults.addSource(repository.chineseSearchResults) {entries ->
+            _chineseSearchResults.value =
+                (entries ?: listOf())
+                    .sortedWith(
+                        compareBy({
+                            it.wordLength},
+                            {it.hsk},
+                            {it.pinyinLength},
+                            {it.priority}
+                        )
+                    )
+
+            _chineseSearchResults.postValue(_chineseSearchResults.value)
+        }
+
         requestedLanguage.value = SearchLanguage.CHINESE
         displayedLanguage.value = SearchLanguage.CHINESE
 
@@ -64,8 +88,19 @@ class DictionarySearchViewModel : ViewModel() {
         if (searchQuery.isNotBlank()) {
             viewModelScope.launch { repository.searchForChinese(searchQuery) }
             viewModelScope.launch {
+
                 repository.searchForEnglish(searchQuery)
+
+                mergedEnglishResults.removeSource(generalEnglishResults)
                 generalEnglishResults = repository.generalEnglishResults
+
+                mergedEnglishResults.addSource(generalEnglishResults) { entries ->
+                    mergedEnglishResults.value = (preciseEnglishResults.value ?: listOf())
+                        .union(entries.sortedWith( compareBy({ it.hsk }, { it.wordLength })))
+                        .toList()
+
+                    mergedEnglishResults.postValue(mergedEnglishResults.value)
+                }
             }
 
         } else {
