@@ -2,6 +2,7 @@ package com.mrpepe.pengyou.dictionary.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
 import java.util.*
@@ -12,9 +13,10 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
     var chineseSearchResults: LiveData<List<Entry>> = _chineseSearchResults
     private val chineseSearchResultSources = mutableListOf<LiveData<List<Entry>>>()
 
-    private val _englishSearchResults = MediatorLiveData<List<Entry>>()
-    var englishSearchResults: LiveData<List<Entry>> = _englishSearchResults
-    private val englishSearchResultSources = mutableListOf<LiveData<List<Entry>>>()
+    private val _preciseEnglishSearchResults = MediatorLiveData<List<Entry>>()
+    var preciseEnglishSearchResults: LiveData<List<Entry>> = _preciseEnglishSearchResults
+    private val preciseEnglishSearchResultSources = mutableListOf<LiveData<List<Entry>>>()
+    var generalEnglishResults : LiveData<List<Entry>>
 
     var searchHistory = mutableListOf<Entry>()
 
@@ -24,8 +26,10 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
         _chineseSearchResults.addSource(chineseSearchResult) { _chineseSearchResults.postValue(chineseSearchResults.value?.plus(it))}
 
         val englishSearchResult = entryDao.searchInDictByEnglish1("123456")
-        englishSearchResultSources.add(chineseSearchResult)
-        _englishSearchResults.addSource(englishSearchResult) { _englishSearchResults.postValue(englishSearchResults.value?.plus(it))}
+        preciseEnglishSearchResultSources.add(chineseSearchResult)
+        _preciseEnglishSearchResults.addSource(englishSearchResult) { _preciseEnglishSearchResults.postValue(preciseEnglishSearchResults.value?.plus(it))}
+
+        generalEnglishResults = entryDao.searchInDictByEnglish1("1234567890")
     }
 
     suspend fun searchForChinese(rawQuery: String) {
@@ -58,12 +62,13 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
         }
     }
 
-    private fun addResultToEnglishResults(result: LiveData<List<Entry>>) {
-        englishSearchResultSources.add(result)
+    private fun addResultToPreciseEnglishResults(result: LiveData<List<Entry>>) {
+        preciseEnglishSearchResultSources.add(result)
 
-        _englishSearchResults.addSource(result) {entries ->
-            _englishSearchResults.value = englishSearchResults.value?.union(entries)?.toList()
-            _englishSearchResults.postValue(_englishSearchResults.value)
+        _preciseEnglishSearchResults.addSource(result) { entries ->
+            _preciseEnglishSearchResults.value = preciseEnglishSearchResults.value?.union(entries.sortedWith( compareBy({ it.hsk }, {it.priority})))?.toList()
+
+            _preciseEnglishSearchResults.postValue(_preciseEnglishSearchResults.value)
         }
     }
 
@@ -74,9 +79,11 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
     }
 
     fun clearEnglishResults() {
-        _englishSearchResults.value = listOf()
-        englishSearchResultSources.forEach { _englishSearchResults.removeSource(it) }
-        englishSearchResultSources.clear()
+        _preciseEnglishSearchResults.value = listOf()
+        preciseEnglishSearchResultSources.forEach { _preciseEnglishSearchResults.removeSource(it) }
+        preciseEnglishSearchResultSources.clear()
+
+        generalEnglishResults = entryDao.searchInDictByEnglish1("1234567890")
     }
 
     fun searchForEnglish(rawQuery: String) {
@@ -84,9 +91,17 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
 
         clearEnglishResults()
 
-        addResultToEnglishResults(entryDao.searchInDictByEnglish1(cleanedQuery))
-        addResultToEnglishResults(entryDao.searchInDictByEnglish3("_${cleanedQuery}_", "_${cleanedQuery}", "${cleanedQuery}_"))
-        addResultToEnglishResults(entryDao.searchInDictByEnglish1("%${cleanedQuery}%"))
+        addResultToPreciseEnglishResults(entryDao.searchInDictByEnglish1(cleanedQuery))
+        addResultToPreciseEnglishResults(entryDao.searchInDictByEnglish1("%/$cleanedQuery/%"))
+        addResultToPreciseEnglishResults(entryDao.searchInDictByEnglish1("$cleanedQuery %"))
+        addResultToPreciseEnglishResults(entryDao.searchInDictByEnglish1("%/$cleanedQuery %"))
+        addResultToPreciseEnglishResults(entryDao.searchInDictByEnglish1("% $cleanedQuery"))
+        addResultToPreciseEnglishResults(entryDao.searchInDictByEnglish1("% $cleanedQuery/%"))
+        addResultToPreciseEnglishResults(entryDao.searchInDictByEnglish1("% $cleanedQuery %"))
+        addResultToPreciseEnglishResults(entryDao.searchInDictByEnglish1("%$cleanedQuery %"))
+        addResultToPreciseEnglishResults(entryDao.searchInDictByEnglish1("% $cleanedQuery%"))
+
+        generalEnglishResults = entryDao.searchInDictByEnglish1("%${cleanedQuery}%")
     }
 
     suspend fun getSearchHistory(ids: List<String>) {

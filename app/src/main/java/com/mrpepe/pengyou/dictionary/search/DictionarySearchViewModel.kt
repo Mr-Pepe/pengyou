@@ -14,7 +14,8 @@ class DictionarySearchViewModel : ViewModel() {
     var searchHistoryIDs = listOf<String>()
     var searchHistoryEntries = MutableLiveData<List<Entry>>()
 
-    val englishSearchResults : LiveData<List<Entry>>
+    val preciseEnglishResults : LiveData<List<Entry>>
+    var generalEnglishResults : LiveData<List<Entry>>
     var chineseSearchResults : LiveData<List<Entry>>
 
     // Used for the SearchResultFragment to notify the DictionarySearchFragment to update the
@@ -40,7 +41,8 @@ class DictionarySearchViewModel : ViewModel() {
         val entryDao = AppDatabase.getDatabase(MainApplication.getContext()).entryDao()
         repository = DictionarySearchRepository(entryDao)
 
-        englishSearchResults = repository.englishSearchResults
+        preciseEnglishResults = repository.preciseEnglishSearchResults
+        generalEnglishResults = repository.generalEnglishResults
         chineseSearchResults = repository.chineseSearchResults
         requestedLanguage.value = SearchLanguage.CHINESE
         displayedLanguage.value = SearchLanguage.CHINESE
@@ -61,7 +63,10 @@ class DictionarySearchViewModel : ViewModel() {
 
         if (searchQuery.isNotBlank()) {
             viewModelScope.launch { repository.searchForChinese(searchQuery) }
-            viewModelScope.launch { repository.searchForEnglish(searchQuery) }
+            viewModelScope.launch {
+                repository.searchForEnglish(searchQuery)
+                generalEnglishResults = repository.generalEnglishResults
+            }
 
         } else {
             repository.clearEnglishResults()

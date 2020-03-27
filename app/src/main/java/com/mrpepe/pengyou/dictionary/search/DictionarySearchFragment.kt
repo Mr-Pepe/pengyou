@@ -38,7 +38,7 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
     override fun onResume() {
         super.onResume()
         dictionaryViewModel.displayedLanguage.value?.let { updateModeSwitch(it, null, null) }
-        dictionaryViewModel.englishSearchResults.value?.let { updateModeSwitch(null, it.size, null) }
+        dictionaryViewModel.preciseEnglishResults.value?.let { updateModeSwitch(null, it.size, null) }
         dictionaryViewModel.chineseSearchResults.value?.let { updateModeSwitch(null, null, it.size) }
     }
 
@@ -75,7 +75,7 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
         dictionaryViewModel.updateResultCounts.observe(viewLifecycleOwner, Observer {
             updateModeSwitch(
                 null,
-                dictionaryViewModel.englishSearchResults.value?.size,
+                dictionaryViewModel.preciseEnglishResults.value?.size,
                 dictionaryViewModel.chineseSearchResults.value?.size)
         })
 
