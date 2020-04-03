@@ -106,19 +106,36 @@ class SearchResultFragment : Fragment() {
     }
 
     private fun updateSearchResults(language : DictionarySearchViewModel.SearchLanguage) {
-        searchResultListLinearLayout?.removeView(resultCountLinearLayout)
+        var results = listOf<Entry>()
 
         if (language == ENGLISH) {
-            adapter.setEntries(dictionaryViewModel.englishResults.value ?: listOf())
+            results = dictionaryViewModel.englishResults.value ?: listOf()
         }
         else if (language == CHINESE) {
-            adapter.setEntries(dictionaryViewModel.chineseSearchResults.value ?: listOf())
+            results = dictionaryViewModel.chineseSearchResults.value ?: listOf()
         }
+
+        if (results.isNotEmpty()) {
+            searchResultListLinearLayout?.removeView(resultCountLinearLayout)
+        }
+        else {
+            if (resultCountLinearLayout.parent == null) {
+                searchResultListLinearLayout.addView(resultCountLinearLayout, 0)
+                resultCountLinearLayout.removeView(clearHistoryLink)
+            }
+            resultCount.text = getString(R.string.no_results_found)
+        }
+
+        adapter.setEntries(results)
     }
 
     private fun showHistory() {
         if (resultCountLinearLayout.parent == null) {
             searchResultListLinearLayout.addView(resultCountLinearLayout, 0)
+
+            if (clearHistoryLink.parent == null) {
+                resultCountLinearLayout.addView(clearHistoryLink,1)
+            }
         }
 
         when (dictionaryViewModel.searchHistoryIDs.size) {
