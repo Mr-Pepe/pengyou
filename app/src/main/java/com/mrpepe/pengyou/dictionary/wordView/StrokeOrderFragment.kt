@@ -26,7 +26,7 @@ class StrokeOrderFragment : Fragment() {
     private lateinit var strokeOrderPageIndicatorView: CircleIndicator2
 
     private var indicatorCount = 0
-    private var currenPosition = 0
+    private var currentPosition = 0
 
     private lateinit var toggleHorizontalPagingListener: ToggleHorizontalPagingListener
 
@@ -59,6 +59,8 @@ class StrokeOrderFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        indicatorCount = 0
 
         strokeOrderDiagramList = view.strokeOrderDiagramList
         strokeOrderPageIndicatorView = view.strokeOrderPageIndicatorView
@@ -111,7 +113,7 @@ class StrokeOrderFragment : Fragment() {
                 }
             }
 
-            strokeOrderPageIndicatorView.createIndicators(indicatorCount, 0)
+            strokeOrderPageIndicatorView.createIndicators(indicatorCount, currentPosition)
 
             if (indicatorCount <= 1) {
                 strokeOrderPageIndicatorView.visibility = View.INVISIBLE
@@ -126,12 +128,12 @@ class StrokeOrderFragment : Fragment() {
     private fun getCurrentDiagram(): StrokeOrderDiagramViewholder? {
         val position = layoutManager.findFirstCompletelyVisibleItemPosition()
         if (position != RecyclerView.NO_POSITION) {
-            currenPosition = position
+            currentPosition = position
 
-            strokeOrderPageIndicatorView.animatePageSelected(currenPosition)
+            strokeOrderPageIndicatorView.animatePageSelected(currentPosition)
         }
-        return when (strokeOrderDiagramList.findViewHolderForAdapterPosition(currenPosition) != null) {
-            true -> strokeOrderDiagramList.findViewHolderForAdapterPosition(currenPosition) as StrokeOrderDiagramViewholder
+        return when (strokeOrderDiagramList.findViewHolderForAdapterPosition(currentPosition) != null) {
+            true -> strokeOrderDiagramList.findViewHolderForAdapterPosition(currentPosition) as StrokeOrderDiagramViewholder
             false -> null
         }
     }

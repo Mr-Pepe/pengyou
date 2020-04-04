@@ -13,7 +13,7 @@ class AppearanceSettingsFragment: SettingsBaseFragment() {
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        addPreferencesFromResource(R.xml.theme_settings)
-        addPreferencesFromResource(R.xml.appearance_settings)
+        addPreferencesFromResource(R.xml.settings_theme)
+        addPreferencesFromResource(R.xml.settings_appearance)
     }
 }

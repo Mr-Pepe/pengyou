@@ -8,6 +8,7 @@
     <string name="no_definition_found">"No definition found, but this entry might be used in other words."</string>
     <string name="search_history">com.mrpepe.pengyou.search_history</string>
     <string name="no_results_found">No results found</string>
+    <string name="none">None</string>
 
     <!-- Word view tabs   -->
     <string name="definition_tab">DEFINITION</string>
@@ -60,5 +61,9 @@
             <string name="fourth_tone">Fourth tone</string>
             <string name="fifth_tone">Fifth tone</string>
             <string name="colorpicker_default">Reset to default</string>
+        <string name="stroke_order_diagram_background">Stroke order diagram background</string>
+            <string name="stroke_order_diagram_background_outline">Bounding Box</string>
+            <string name="stroke_order_diagram_background_diagonals">Diagonals</string>
+            <string name="stroke_order_diagram_background_cross">Cross</string>
 
 </resources>

@@ -19,7 +19,7 @@ class HeadwordColoringSettingsFragment: SettingsBaseFragment() {
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.headword_coloring_settings, rootKey)
+        setPreferencesFromResource(R.xml.settings_headword_coloring, rootKey)
 
         val resetToDefaultButton = findPreference<Preference>("headword_colors_to_default")
         resetToDefaultButton?.setOnPreferenceClickListener {
@@ -33,7 +33,7 @@ class HeadwordColoringSettingsFragment: SettingsBaseFragment() {
                     commit()
                 }
 
-                setPreferencesFromResource(R.xml.headword_coloring_settings, rootKey)
+                setPreferencesFromResource(R.xml.settings_headword_coloring, rootKey)
             }
 
             true
