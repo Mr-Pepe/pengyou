@@ -31,7 +31,7 @@ class DictionarySearchViewModel : ViewModel() {
     var newSearch = false
 
     private val delayedHandler = Handler()
-    private val switchDelay : Long = 500
+    private val switchDelay : Long = 300
 
     private var chineseSearchJob : Job? = null
     private var englishSearchJob : Job? = null

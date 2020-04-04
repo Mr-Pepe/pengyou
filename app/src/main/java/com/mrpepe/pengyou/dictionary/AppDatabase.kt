@@ -6,7 +6,8 @@ import androidx.room.*
 import com.mrpepe.pengyou.MainApplication
 import java.io.Serializable
 
-@Database(entities= [Entry::class, Permutation::class, DbDecomposition::class, StrokeOrder::class, TraditionalToSimplifiedCharacters::class, TraditionalToSimplifiedPhrases::class], version = 1)
+@Database(entities= [Entry::class, EntryFts::class, Permutation::class, DbDecomposition::class,
+    StrokeOrder::class, TraditionalToSimplifiedCharacters::class, TraditionalToSimplifiedPhrases::class], version = 1)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun entryDao() : EntryDAO
 
@@ -46,6 +47,12 @@ data class Entry (
     @ColumnInfo(name = "pinyin_length") val pinyinLength: Int,
     @ColumnInfo(name = "definitions") val definitions: String
 ) : Serializable
+
+@Fts4(contentEntity = Entry::class)
+@Entity(tableName = "entriesFts")
+data class EntryFts(
+    val definitions : String
+)
 
 @Entity(tableName = "permutations", indices = [Index(value = ["permutation"], name = "search_index")])
 data class Permutation(
@@ -119,24 +126,6 @@ interface EntryDAO {
             "LIMIT " + MainApplication.MAX_SEARCH_RESULTS)
     fun searchInDictByTraditional(lowerString: String, upperString: String) : LiveData<List<Entry>>
 
-    @Query("SELECT * " +
-            "FROM entries " +
-            "WHERE definitions LIKE :query " +
-            "LIMIT " + MainApplication.MAX_SEARCH_RESULTS)
-    fun searchInDictByEnglish1(query: String) : LiveData<List<Entry>>
-
-    @Query("SELECT * " +
-            "FROM entries " +
-            "WHERE definitions LIKE :query1 OR definitions LIKE :query2 OR definitions LIKE :query3 " +
-            "LIMIT " + MainApplication.MAX_SEARCH_RESULTS)
-    fun searchInDictByEnglish3(query1: String, query2: String, query3: String) : LiveData<List<Entry>>
-
-    @Query("SELECT * " +
-            "FROM entries " +
-            "WHERE definitions LIKE :query1 OR definitions LIKE :query2 OR definitions LIKE :query3 OR definitions LIKE :query4 " +
-            "LIMIT " + MainApplication.MAX_SEARCH_RESULTS)
-    fun searchInDictByEnglish4(query1: String, query2: String, query3: String, query4: String) : LiveData<List<Entry>>
-
     @Query("SELECT * FROM decompositions WHERE character = :query")
     suspend fun getDecomposition(query: String): List<DbDecomposition>
 
@@ -173,4 +162,11 @@ interface EntryDAO {
                                                      upperSimplified: String,
                                                      lowerTraditional: String,
                                                      upperTraditional: String) : List<Entry>
+
+    @Query("SELECT * " +
+                   "FROM entries " +
+                        "JOIN entriesFts " +
+                            "ON entries.id == entriesFts.docId " +
+                   "WHERE entriesFts.definitions MATCH :query")
+    fun searchInDictByEnglish(query: String): LiveData<List<Entry>>
 }

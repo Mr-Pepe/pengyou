@@ -25,7 +25,7 @@ class DictionarySearchRepository(private val entryDao : EntryDAO) {
             _chineseSearchResults.postValue(chineseSearchResults.value?.plus(it))
         }
 
-        val englishSearchResult = entryDao.searchInDictByEnglish1("123456")
+        val englishSearchResult = entryDao.searchInDictByEnglish("123456")
         englishSearchResultSources.add(chineseSearchResult)
         _englishSearchResults.addSource(englishSearchResult) {
             _englishSearchResults.postValue(englishSearchResults.value?.plus(it))
@@ -89,15 +89,7 @@ class DictionarySearchRepository(private val entryDao : EntryDAO) {
         val cleanedQuery = rawQuery.trimEnd().toLowerCase(Locale.ROOT)
 
         clearEnglishResults()
-
-        addResultToEnglishResults(entryDao.searchInDictByEnglish3(cleanedQuery,
-                                                                  "%/$cleanedQuery/%",
-                                                                  "% $cleanedQuery %"))
-        addResultToEnglishResults(entryDao.searchInDictByEnglish4("$cleanedQuery %",
-                                                                  "% $cleanedQuery",
-                                                                  "%/$cleanedQuery %",
-                                                                  "%$cleanedQuery/%"))
-        addResultToEnglishResults(entryDao.searchInDictByEnglish1("%$cleanedQuery%"))
+        addResultToEnglishResults(entryDao.searchInDictByEnglish("*$cleanedQuery*"))
     }
 
     suspend fun getSearchHistory(ids : List<String>) {
