@@ -475,6 +475,13 @@ fun getControlDisabledColor(): Int {
     }
 }
 
+fun getAccentColor(): Int {
+    return when (MainApplication.homeActivity.isNightMode()) {
+        true -> MainApplication.getContext().getColor(R.color.darkThemeColorAccent)
+        false -> MainApplication.getContext().getColor(R.color.lightThemeColorAccent)
+    }
+}
+
 fun String.countSurrogatePairs() = withIndex().count {
     hasSurrogatePairAt(it.index)
 }

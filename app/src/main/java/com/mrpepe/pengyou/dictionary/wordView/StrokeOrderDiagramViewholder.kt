@@ -183,7 +183,7 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
                     MainScope().launch {
                         webView.runJavaScript("showCharacter()")
                     }
-
+                    currentStroke = nStrokes
                 } else {
                     block = false
                     currentStroke++
@@ -269,7 +269,6 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
         @JavascriptInterface
         fun strokeComplete() {
             Timer().schedule(timerTask { completedStroke.postValue(true) }, 10)
-
         }
 
         @JavascriptInterface
@@ -285,6 +284,17 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
         @JavascriptInterface
         fun showCharacterFinished() {
             Timer().schedule(timerTask { showCharacterFinished.postValue(true) }, 100)
+        }
+
+        @JavascriptInterface
+        fun quizFinished() {
+
+            Timer().schedule(timerTask {
+                showCharacterRequest = true
+                completedStroke.postValue(true)
+                isQuizzing.postValue(false)
+                fragment.togglePaging()
+            }, 10)
         }
     }
 

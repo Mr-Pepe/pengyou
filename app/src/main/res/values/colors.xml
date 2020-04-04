@@ -15,6 +15,7 @@
     <color name="darkThemeColorPrimary">#FF0057</color>
     <color name="darkThemeColorOnPrimary">#8BC34A</color>
     <color name="darkThemeColorPrimaryDark">#03A9F4</color>
+    <color name="darkThemeColorAccent">@color/lightThemeColorPrimary</color>
     <color name="darkThemeGeneralTextColor">@android:color/primary_text_dark</color>
     <color name="darkThemeControlColorEnabled">#535353</color>
     <color name="darkThemeControlColorDisabled">#535353</color>
