@@ -51,10 +51,8 @@
                 android:id="@+id/searchResultHsk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/background_hsk_tag"
-                android:paddingStart="@dimen/tiny_padding"
-                android:paddingEnd="@dimen/tiny_padding"
                 android:layout_marginTop="@dimen/small_padding"
+                android:background="@drawable/background_hsk_tag"
                 android:textAlignment="viewEnd"
                 android:textSize="14sp"
                 tools:text="HSK 6" />

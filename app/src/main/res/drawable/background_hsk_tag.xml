@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android" >
-   <stroke
-          android:width="2dp"
-          android:color="?android:attr/textColor" />
-
-   <padding
-           android:left="1dp"
-           android:right="1dp" />
-
-   <corners android:radius="2dp" />
-</shape>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item android:gravity="bottom">
+        <shape>
+            <size android:height="1dp" />
+            <solid android:color="?android:attr/textColor" />
+        </shape>
+    </item>
+</layer-list>
