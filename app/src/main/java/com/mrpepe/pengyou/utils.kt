@@ -1,6 +1,8 @@
 package com.mrpepe.pengyou
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.SystemClock
@@ -580,5 +582,40 @@ object SearchHistory {
                 commit()
             }
         }
+    }
+}
+
+fun copyHeadwordToClipboard(activity: Activity, entry: Entry) {
+    var indicator = "(${activity.getString(R.string.chinese_mode_simplified)})"
+    val headword = when (MainApplication.chineseMode) {
+        in listOf(ChineseMode.simplified, ChineseMode.simplifiedTraditional) -> {
+            entry.simplified
+        }
+        in listOf(ChineseMode.traditional, ChineseMode.traditionalSimplified) -> {
+            indicator = "(${activity.getString(R.string.chinese_mode_traditional)})"
+            entry.traditional
+        }
+        else -> ""
+    }
+
+    val clipboard = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip = ClipData.newPlainText("Headword", headword)
+
+    clipboard.setPrimaryClip(clip)
+
+    if (MainApplication.chineseMode in listOf(ChineseMode.simplifiedTraditional,
+                                              ChineseMode.traditionalSimplified)) {
+        Toast.makeText(
+            activity,
+            "Copied $headword $indicator to clipboard",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+    else {
+        Toast.makeText(
+            activity,
+            "Copied $headword to clipboard",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }

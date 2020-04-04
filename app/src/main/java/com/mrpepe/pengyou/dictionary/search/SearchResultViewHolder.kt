@@ -15,11 +15,12 @@ class SearchResultViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private var definitions: TextView = itemView.findViewById(R.id.searchResultDefinitions)
     private var hsk: TextView = itemView.findViewById(R.id.searchResultHsk)
 
-    fun bind(entry: Entry, clickListener: (Entry) -> Unit) {
+    fun bind(entry: Entry, clickListener: (Entry) -> Unit, longClickListener: (Entry) -> Boolean) {
 
         setValues(entry)
 
         itemView.setOnClickListener { clickListener(entry) }
+        itemView.setOnLongClickListener { longClickListener(entry) }
     }
 
     private fun setValues(entry: Entry) {

@@ -65,35 +65,10 @@ class WordViewFragment : DictionaryBaseFragment(),
         wordViewToolbar.setOnMenuItemClickListener { item ->
             when (item?.itemId) {
                 R.id.copyToClipboard -> {
-                    var indicator = "(${getString(R.string.chinese_mode_simplified)})"
-                    val headword = when (MainApplication.chineseMode) {
-                        in listOf(ChineseMode.simplified, ChineseMode.simplifiedTraditional) -> {
-                            wordViewViewModel.entry.value?.simplified
+                    wordViewViewModel.entry.value?.let { entry ->
+                        activity?.let { activity ->
+                            copyHeadwordToClipboard(activity, entry)
                         }
-                        in listOf(ChineseMode.traditional, ChineseMode.traditionalSimplified) -> {
-                            indicator = "(${getString(R.string.chinese_mode_traditional)})"
-                            wordViewViewModel.entry.value?.traditional
-                        }
-                        else -> ""
-                    }
-
-                    val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip = ClipData.newPlainText("Headword", headword)
-
-                    clipboard.setPrimaryClip(clip)
-
-                    if (MainApplication.chineseMode in listOf(ChineseMode.simplifiedTraditional, ChineseMode.traditionalSimplified)) {
-                        Toast.makeText(
-                            activity,
-                            "Copied $headword $indicator to clipboard",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        Toast.makeText(
-                            activity,
-                            "Copied $headword to clipboard",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
 
                     true

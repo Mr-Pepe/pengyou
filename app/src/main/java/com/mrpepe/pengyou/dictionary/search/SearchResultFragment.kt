@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.SearchHistory
+import com.mrpepe.pengyou.copyHeadwordToClipboard
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel.SearchLanguage.CHINESE
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel.SearchLanguage.ENGLISH
@@ -60,9 +61,8 @@ class SearchResultFragment : Fragment() {
         resultCount = view.resultCount
 
         adapter =
-                SearchResultAdapter { entry : Entry ->
-                    entryClicked(entry)
-                }
+                SearchResultAdapter({ entry : Entry -> entryClicked(entry) },
+                                    { entry : Entry -> entryLongClicked(entry) })
 
         searchResultList.layoutManager = LinearLayoutManager(activity)
         searchResultList.adapter = adapter
@@ -105,6 +105,14 @@ class SearchResultFragment : Fragment() {
         findNavController().navigate(WordViewFragmentDirections.globalOpenWordViewAction(entry))
     }
 
+    private fun entryLongClicked(entry : Entry): Boolean {
+        activity?.let { activity ->
+            copyHeadwordToClipboard(activity, entry)
+        }
+
+        return true
+    }
+
     private fun updateSearchResults(language : DictionarySearchViewModel.SearchLanguage) {
         var results = listOf<Entry>()
 
@@ -134,7 +142,7 @@ class SearchResultFragment : Fragment() {
             searchResultListLinearLayout.addView(resultCountLinearLayout, 0)
 
             if (clearHistoryLink.parent == null) {
-                resultCountLinearLayout.addView(clearHistoryLink,1)
+                resultCountLinearLayout.addView(clearHistoryLink, 1)
             }
         }
 
