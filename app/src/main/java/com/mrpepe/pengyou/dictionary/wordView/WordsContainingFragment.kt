@@ -45,7 +45,7 @@ class WordsContainingFragment : Fragment() {
 
         resultCount.setPadding(
             resources.getDimension(R.dimen.medium_padding).toInt(),
-            resources.getDimension(R.dimen.large_padding).toInt(),
+            resources.getDimension(R.dimen.medium_padding).toInt(),
             resources.getDimension(R.dimen.small_padding).toInt(),
             resources.getDimension(R.dimen.small_padding).toInt())
 
@@ -68,7 +68,7 @@ class WordsContainingFragment : Fragment() {
                 compareBy({it.hsk}, {it.wordLength}, {it.priority})
             ) ?: listOf())
             resultCount.text = when(wordsContaining.size) {
-                0 -> (model.entry.value?.simplified ?: "") + getString(R.string.no_appearance_in_other_words)
+                0 -> getString(R.string.no_appearance_in_other_words)
                 else -> getString(R.string.appears_in_other_words) + wordsContaining.size.toString()
             }
         })
