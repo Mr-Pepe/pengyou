@@ -16,6 +16,10 @@ class HeadwordColoringSettingsFragment: SettingsBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.settingsToolbar.title = getString(R.string.headword_coloring)
+
+        view.settingsToolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
