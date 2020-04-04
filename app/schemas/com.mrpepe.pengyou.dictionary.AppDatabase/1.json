@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "d8c1668f7932eec3e74d8ca43303584d",
+    "identityHash": "a796fc88ac5438d45e50c3ee9d2cfc56",
     "entities": [
       {
         "tableName": "entries",
@@ -67,6 +67,41 @@
           "columnNames": [
             "id"
           ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "ftsVersion": "FTS4",
+        "ftsOptions": {
+          "tokenizer": "simple",
+          "tokenizerArgs": [],
+          "contentTable": "entries",
+          "languageIdColumnName": "",
+          "matchInfo": "FTS4",
+          "notIndexedColumns": [],
+          "prefixSizes": [],
+          "preferredOrder": "ASC"
+        },
+        "contentSyncTriggers": [
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_entriesFts_BEFORE_UPDATE BEFORE UPDATE ON `entries` BEGIN DELETE FROM `entriesFts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_entriesFts_BEFORE_DELETE BEFORE DELETE ON `entries` BEGIN DELETE FROM `entriesFts` WHERE `docid`=OLD.`rowid`; END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_entriesFts_AFTER_UPDATE AFTER UPDATE ON `entries` BEGIN INSERT INTO `entriesFts`(`docid`, `definitions`) VALUES (NEW.`rowid`, NEW.`definitions`); END",
+          "CREATE TRIGGER IF NOT EXISTS room_fts_content_sync_entriesFts_AFTER_INSERT AFTER INSERT ON `entries` BEGIN INSERT INTO `entriesFts`(`docid`, `definitions`) VALUES (NEW.`rowid`, NEW.`definitions`); END"
+        ],
+        "tableName": "entriesFts",
+        "createSql": "CREATE VIRTUAL TABLE IF NOT EXISTS `${TABLE_NAME}` USING FTS4(`definitions` TEXT NOT NULL, content=`entries`)",
+        "fields": [
+          {
+            "fieldPath": "definitions",
+            "columnName": "definitions",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [],
           "autoGenerate": false
         },
         "indices": [],
@@ -251,7 +286,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd8c1668f7932eec3e74d8ca43303584d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a796fc88ac5438d45e50c3ee9d2cfc56')"
     ]
   }
 }

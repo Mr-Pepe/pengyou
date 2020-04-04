@@ -6,25 +6,33 @@ import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.EntryDAO
 import java.util.*
 
-class DictionarySearchRepository(private val entryDao: EntryDAO) {
-    var englishSearchResults1 : LiveData<List<Entry>>
-    var englishSearchResults2 : LiveData<List<Entry>>
-    var englishSearchResults3 : LiveData<List<Entry>>
+class DictionarySearchRepository(private val entryDao : EntryDAO) {
+
     private val _chineseSearchResults = MediatorLiveData<List<Entry>>()
-    var chineseSearchResults: LiveData<List<Entry>> = _chineseSearchResults
+    var chineseSearchResults : LiveData<List<Entry>> = _chineseSearchResults
     private val chineseSearchResultSources = mutableListOf<LiveData<List<Entry>>>()
+
+    private val _englishSearchResults = MediatorLiveData<List<Entry>>()
+    var englishSearchResults : LiveData<List<Entry>> = _englishSearchResults
+    private val englishSearchResultSources = mutableListOf<LiveData<List<Entry>>>()
+
     var searchHistory = mutableListOf<Entry>()
 
     init {
-        englishSearchResults1 = entryDao.searchInDictByChinese("123456", "123456z")
-        englishSearchResults2 = entryDao.searchInDictByChinese("123456", "123456z")
-        englishSearchResults3 = entryDao.searchInDictByChinese("123456", "123456z")
         val chineseSearchResult = entryDao.searchInDictByChinese("123456", "123456z")
         chineseSearchResultSources.add(chineseSearchResult)
-        _chineseSearchResults.addSource(chineseSearchResult) { _chineseSearchResults.postValue(chineseSearchResults.value?.plus(it))}
+        _chineseSearchResults.addSource(chineseSearchResult) {
+            _chineseSearchResults.postValue(chineseSearchResults.value?.plus(it))
+        }
+
+        val englishSearchResult = entryDao.searchInDictByEnglish("123456")
+        englishSearchResultSources.add(chineseSearchResult)
+        _englishSearchResults.addSource(englishSearchResult) {
+            _englishSearchResults.postValue(englishSearchResults.value?.plus(it))
+        }
     }
 
-    suspend fun searchForChinese(rawQuery: String) {
+    suspend fun searchForChinese(rawQuery : String) {
 
         val cleanedQuery = rawQuery
             .replace("ü", "u:")
@@ -37,40 +45,54 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
         clearChineseResults()
 
         // Search for the queries converted to simplified characters
-        queries.forEach {query ->
-            val chineseSearchResult = entryDao.searchInDictByChinese(query, query + 'z')
-            chineseSearchResultSources.add(chineseSearchResult)
-                _chineseSearchResults.addSource(chineseSearchResult) {entries ->
-                    _chineseSearchResults.value = chineseSearchResults.value?.union(entries)?.toList()
-                    _chineseSearchResults.postValue(_chineseSearchResults.value)
-            }
+        queries.forEach { query ->
+            addResultToChineseResults(entryDao.searchInDictByChinese(query, query + 'z'))
         }
 
         // Just in case also search for a match in the traditional headword
-        val chineseSearchResult = entryDao.searchInDictByTraditional(cleanedQuery, cleanedQuery + 'z')
-            chineseSearchResultSources.add(chineseSearchResult)
-                _chineseSearchResults.addSource(chineseSearchResult) {entries ->
-                    _chineseSearchResults.value = chineseSearchResults.value?.union(entries)?.toList()
-                    _chineseSearchResults.postValue(_chineseSearchResults.value)
-            }
+        addResultToChineseResults(entryDao.searchInDictByTraditional(cleanedQuery,
+                                                                     cleanedQuery + 'z'))
+    }
 
+    private fun addResultToChineseResults(result : LiveData<List<Entry>>) {
+        chineseSearchResultSources.add(result)
+
+        _chineseSearchResults.addSource(result) { entries ->
+            val updatedEntries = (chineseSearchResults.value ?: listOf()).union(entries).toList()
+            _chineseSearchResults.value = updatedEntries
+        }
+    }
+
+    private fun addResultToEnglishResults(result : LiveData<List<Entry>>) {
+        englishSearchResultSources.add(result)
+
+        _englishSearchResults.addSource(result) { entries ->
+            val updatedEntries =
+                    (englishSearchResults.value ?: listOf()).union(entries).toList()
+            _englishSearchResults.value = updatedEntries
+        }
     }
 
     fun clearChineseResults() {
-        _chineseSearchResults.value = listOf()
         chineseSearchResultSources.forEach { _chineseSearchResults.removeSource(it) }
         chineseSearchResultSources.clear()
+        _chineseSearchResults.value = listOf()
     }
 
-    fun searchForEnglish(rawQuery: String) {
+    fun clearEnglishResults() {
+        englishSearchResultSources.forEach { _englishSearchResults.removeSource(it) }
+        englishSearchResultSources.clear()
+        _englishSearchResults.value = listOf()
+    }
+
+    fun searchForEnglish(rawQuery : String) {
         val cleanedQuery = rawQuery.trimEnd().toLowerCase(Locale.ROOT)
 
-        englishSearchResults1 = entryDao.searchInDictByEnglish1(cleanedQuery)
-        englishSearchResults2 = entryDao.searchInDictByEnglish3("_${cleanedQuery}_", "_${cleanedQuery}", "${cleanedQuery}_")
-        englishSearchResults3 = entryDao.searchInDictByEnglish1("%${cleanedQuery}%")
+        clearEnglishResults()
+        addResultToEnglishResults(entryDao.searchInDictByEnglish("*$cleanedQuery*"))
     }
 
-    suspend fun getSearchHistory(ids: List<String>) {
+    suspend fun getSearchHistory(ids : List<String>) {
         searchHistory.clear()
 
         if (ids.isNotEmpty()) {
@@ -84,7 +106,7 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
         }
     }
 
-    private suspend fun getSimplifiedQueries(rawQuery: String): MutableList<String> {
+    private suspend fun getSimplifiedQueries(rawQuery : String) : MutableList<String> {
         // Check if characters in the query can be converted to simplified characters
         val queries = getTraditionalToSimplifiedCharacters(rawQuery)
 
@@ -98,7 +120,7 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
         return queries
     }
 
-    private suspend fun getTraditionalToSimplifiedCharacters(rawQuery: String): MutableList<String> {
+    private suspend fun getTraditionalToSimplifiedCharacters(rawQuery : String) : MutableList<String> {
         var queries = mutableListOf("")
 
         var iCharacter = 0
@@ -108,7 +130,7 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
         while (iCharacter < rawQuery.length) {
             if (rawQuery.hasSurrogatePairAt(iCharacter)) {
                 character += rawQuery[iCharacter]
-                character += rawQuery[iCharacter+1]
+                character += rawQuery[iCharacter + 1]
                 iCharacter += 2
             }
             else {
@@ -147,7 +169,7 @@ class DictionarySearchRepository(private val entryDao: EntryDAO) {
         return queries
     }
 
-    private suspend fun getTraditionalToSimplifiedPhrases(rawQuery: String): List<String> {
+    private suspend fun getTraditionalToSimplifiedPhrases(rawQuery : String) : List<String> {
         return entryDao.getTraditionalToSimplifiedPhrases(rawQuery)
     }
 }

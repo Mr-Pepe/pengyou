@@ -2,24 +2,33 @@ package com.mrpepe.pengyou.dictionary.search
 
 import android.content.Context
 import android.os.Bundle
-import android.view.*
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.DictionaryBaseFragment
+import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel.SearchLanguage.CHINESE
+import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel.SearchLanguage.ENGLISH
 import com.mrpepe.pengyou.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_dictionary_search.*
 
 class DictionarySearchFragment : DictionaryBaseFragment() {
-    private lateinit var dictionaryViewModel: DictionarySearchViewModel
+    private lateinit var dictionaryViewModel : DictionarySearchViewModel
     private var blockKeyboard = false
 
     private var isInHandwritingMode = false
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    private var nEnglishResults = 0
+    private var nChineseResults = 0
+
+    private var displayedLanguage = CHINESE
+
+    override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
 
         activity?.let {
@@ -28,38 +37,44 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        inflater : LayoutInflater, container : ViewGroup?,
+        savedInstanceState : Bundle?
+    ) : View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_dictionary_search, container, false)
     }
 
     override fun onResume() {
-        super.onResume()
-        dictionaryViewModel.displayedLanguage.value?.let { updateModeSwitch(it, null, null) }
-        dictionaryViewModel.englishSearchResults.value?.let { updateModeSwitch(null, it.size, null) }
-        dictionaryViewModel.chineseSearchResults.value?.let { updateModeSwitch(null, null, it.size) }
+        super.onResume() //TODO
+//        dictionaryViewModel.displayedLanguage.value?.let { updateSearchResults(it, null, null) }
+//        dictionaryViewModel.englishResults.value?.let { updateSearchResults(null, it.size, null) }
+//        dictionaryViewModel.chineseSearchResults.value?.let {
+//            updateSearchResults(
+//                null,
+//                null,
+//                it.size
+//            )
+//        }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         dictionaryViewModel.displayedLanguage.observe(viewLifecycleOwner, Observer { language ->
-            updateModeSwitch(language, null, null)
+            updateModeSwitchColor(language)
+            displayedLanguage = language
+            updateResultCounts(true)
         })
 
-        dictionarySearchSearchBox.setOnQueryTextListener(object  : android.widget.SearchView.OnQueryTextListener{
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText != dictionaryViewModel.searchQuery) {
-                    dictionaryViewModel.searchQuery = newText!!
-                    dictionaryViewModel.search()
-                }
+        dictionarySearchSearchBox.setOnQueryTextListener(object :
+                                                             android.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText : String?) : Boolean {
+                dictionaryViewModel.search(newText!!)
 
                 return true
             }
 
-            override fun onQueryTextSubmit(query: String?): Boolean {
+            override fun onQueryTextSubmit(query : String?) : Boolean {
                 if (isInHandwritingMode) {
                     submitQueryFromDrawboard()
                 }
@@ -72,11 +87,14 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
             toggleHandwritingMode()
         }
 
-        dictionaryViewModel.updateResultCounts.observe(viewLifecycleOwner, Observer {
-            updateModeSwitch(
-                null,
-                dictionaryViewModel.englishSearchResults.value?.size,
-                dictionaryViewModel.chineseSearchResults.value?.size)
+        dictionaryViewModel.chineseSearchResults.observe(viewLifecycleOwner, Observer {
+            nChineseResults = it.size
+            updateResultCounts(false)
+        })
+
+        dictionaryViewModel.englishResults.observe(viewLifecycleOwner, Observer {
+            nEnglishResults = it.size
+            updateResultCounts(false)
         })
 
         modeSwitchEnglish.setOnClickListener {
@@ -85,9 +103,7 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
                 toggleHandwritingMode()
             }
 
-            if (dictionaryViewModel.displayedLanguage.value != DictionarySearchViewModel.SearchLanguage.ENGLISH) {
-                requestToggleDisplayedLanguage()
-            }
+            dictionaryViewModel.requestLanguage(ENGLISH)
         }
 
         modeSwitchChinese.setOnClickListener {
@@ -96,55 +112,59 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
                 toggleHandwritingMode()
             }
 
-            if (dictionaryViewModel.displayedLanguage.value != DictionarySearchViewModel.SearchLanguage.CHINESE) {
-                requestToggleDisplayedLanguage()
-            }
+            dictionaryViewModel.requestLanguage(CHINESE)
         }
 
         dictionarySearchSearchBox?.requestFocus()
-
     }
 
-    private fun updateModeSwitch(
-        language: DictionarySearchViewModel.SearchLanguage?,
-        nEnglishResults: Int?,
-        nChineseResults: Int?) {
-
-        nEnglishResults?.let {
-            modeSwitchEnglish.text = "ENGLISH  (${formatResultCount(it)})"
-        }
-
-        nChineseResults?.let {
-            modeSwitchChinese.text = "中文  (${formatResultCount(it)})"
-        }
-
+    private fun updateModeSwitchColor(language : DictionarySearchViewModel.SearchLanguage?) {
         language?.let {
-            val nightMode = MainApplication.homeActivity.isNightMode()
+            activity?.let { activity ->
+                val nightMode = MainApplication.homeActivity.isNightMode()
 
-            val activeColor = if (nightMode) R.color.darkThemeColorOnPrimary else R.color.lightThemeColorOnPrimary
-            val inactiveColor = if (nightMode) R.color.darkThemeColorPrimaryDark else R.color.lightThemeColorPrimaryDark
+                val activeColor =
+                        activity.getColor(if (nightMode) R.color.darkThemeColorOnPrimary
+                                          else R.color.lightThemeColorOnPrimary)
+                val inactiveColor =
+                        activity.getColor(if (nightMode) R.color.darkThemeColorPrimaryDark
+                                          else R.color.lightThemeColorPrimaryDark)
 
-            when (language) {
-                DictionarySearchViewModel.SearchLanguage.ENGLISH -> {
-                    activity?.let { activity -> modeSwitchEnglish.setTextColor(activity.getColor(activeColor)) }
-                    activity?.let { activity -> modeSwitchChinese.setTextColor(activity.getColor(inactiveColor)) }
+                if (!isInHandwritingMode) {
+                    when (language) {
+                        ENGLISH -> {
+                            modeSwitchEnglish.setTextColor(activeColor)
+                            modeSwitchChinese.setTextColor(inactiveColor)
+                        }
+
+                        CHINESE -> {
+                            modeSwitchEnglish.setTextColor(inactiveColor)
+                            modeSwitchChinese.setTextColor(activeColor)
+                        }
+                    }
                 }
-                DictionarySearchViewModel.SearchLanguage.CHINESE -> {
-                    activity?.let { activity -> modeSwitchEnglish.setTextColor(activity.getColor(inactiveColor)) }
-                    activity?.let { activity -> modeSwitchChinese.setTextColor(activity.getColor(activeColor)) }
-                }
-                else -> {
-                    activity?.let { activity -> modeSwitchEnglish.setTextColor(activity.getColor(inactiveColor)) }
-                    activity?.let { activity -> modeSwitchChinese.setTextColor(activity.getColor(inactiveColor)) }
+                else {
+                    modeSwitchEnglish.setTextColor(inactiveColor)
+                    modeSwitchChinese.setTextColor(inactiveColor)
                 }
             }
         }
+    }
 
+    private fun updateResultCounts(force : Boolean) {
+        if (force || displayedLanguage != ENGLISH) {
+            modeSwitchEnglish.text = "ENGLISH  (${formatResultCount(nEnglishResults)})"
+        }
+
+        if (force || displayedLanguage != CHINESE) {
+            modeSwitchChinese.text = "中文  (${formatResultCount(nChineseResults)})"
+        }
     }
 
     private fun toggleHandwritingMode() {
         if (isInHandwritingMode) {
-            childFragmentManager.beginTransaction().replace(R.id.dictionaryContainer, SearchResultFragment()).commit()
+            childFragmentManager.beginTransaction()
+                .replace(R.id.dictionaryContainer, SearchResultFragment()).commit()
             isInHandwritingMode = false
 
             if (!blockKeyboard) {
@@ -156,33 +176,19 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
             }
         }
         else {
-            childFragmentManager.beginTransaction().replace(R.id.dictionaryContainer, HandwritingFragment()).commit()
+            childFragmentManager.beginTransaction()
+                .replace(R.id.dictionaryContainer, HandwritingFragment()).commit()
             isInHandwritingMode = true
-            updateModeSwitch(DictionarySearchViewModel.SearchLanguage.NONE, null, null)
             dictionarySearchSearchBox.requestFocus()
             hideKeyboard()
         }
+        updateModeSwitchColor(displayedLanguage)
     }
 
-    private fun requestToggleDisplayedLanguage() {
-        if (dictionaryViewModel.displayedLanguage.value != dictionaryViewModel.requestedLanguage.value &&
-                dictionarySearchSearchBox.query.isNotBlank()) {
-            val message = when (dictionaryViewModel.requestedLanguage.value) {
-                DictionarySearchViewModel.SearchLanguage.CHINESE -> "No results for Chinese search available."
-                DictionarySearchViewModel.SearchLanguage.ENGLISH -> "No results for English search available."
-                else -> ""
-            }
-            Toast.makeText(MainApplication.homeActivity, message, Toast.LENGTH_SHORT).show()
-        }
-        else {
-            dictionaryViewModel.toggleDisplayedLanguage()
-        }
-    }
-
-    private fun formatResultCount(value: Int): String {
+    private fun formatResultCount(value : Int) : String {
         return when (value) {
             in 0 until MainApplication.MAX_SEARCH_RESULTS -> value.toString()
-            else -> (MainApplication.MAX_SEARCH_RESULTS-1).toString() + "+"
+            else                                          -> (MainApplication.MAX_SEARCH_RESULTS - 1).toString() + "+"
         }
     }
 
@@ -191,13 +197,18 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
 
-    fun addCharacterToQuery(newChar: String) {
+    fun addCharacterToQuery(newChar : String) {
         val previousQuery = dictionarySearchSearchBox?.query
         dictionarySearchSearchBox?.setQuery("$previousQuery$newChar", false)
     }
 
     fun deleteLastCharacterOfQuery() {
-        dictionarySearchSearchBox.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
+        dictionarySearchSearchBox.dispatchKeyEvent(
+            KeyEvent(
+                KeyEvent.ACTION_DOWN,
+                KeyEvent.KEYCODE_DEL
+            )
+        )
     }
 
     fun submitQueryFromDrawboard() {

@@ -118,7 +118,7 @@ class HomeActivity : BaseActivity(),
         bottomNav?.setOnNavigationItemSelectedListener { item ->
             when (item.title) {
                 getString(R.string.bottom_navigation_view_dictionary) -> {
-                    dictionarySearchViewModel.searchQuery = ""
+                    dictionarySearchViewModel.searchQuery.value = ""
                     findNavController(R.id.mainContainer).navigate(R.id.globalOpenDictionaryAction)
                 }
                 getString(R.string.bottom_navigation_view_settings) -> {

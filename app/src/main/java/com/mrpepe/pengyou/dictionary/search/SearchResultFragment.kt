@@ -1,7 +1,6 @@
 package com.mrpepe.pengyou.dictionary.search
 
 import android.os.Bundle
-import android.os.Handler
 import android.os.SystemClock
 import android.text.SpannableStringBuilder
 import android.text.Spanned
@@ -22,6 +21,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.SearchHistory
 import com.mrpepe.pengyou.dictionary.Entry
+import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel.SearchLanguage.CHINESE
+import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel.SearchLanguage.ENGLISH
 import com.mrpepe.pengyou.dictionary.wordView.WordViewFragmentDirections
 import com.mrpepe.pengyou.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_search_result_list.*
@@ -29,14 +30,15 @@ import kotlinx.android.synthetic.main.fragment_search_result_list.view.*
 
 class SearchResultFragment : Fragment() {
 
-    private lateinit var dictionaryViewModel: DictionarySearchViewModel
-    private lateinit var searchResultList: RecyclerView
-    private lateinit var resultCount: TextView
+    private lateinit var dictionaryViewModel : DictionarySearchViewModel
+    private lateinit var searchResultList : RecyclerView
+    private lateinit var resultCount : TextView
     private lateinit var adapter : SearchResultAdapter
-    private var lastClickTime: Long = 0
-    private var delayedUpdateHandler = Handler()
+    private var lastClickTime : Long = 0
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    private var historyMode = true
+
+    override fun onCreate(savedInstanceState : Bundle?) {
         super.onCreate(savedInstanceState)
 
         activity?.let {
@@ -45,40 +47,43 @@ class SearchResultFragment : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+        inflater : LayoutInflater, container : ViewGroup?,
+        savedInstanceState : Bundle?
+    ) : View? {
         return inflater.inflate(R.layout.fragment_search_result_list, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         searchResultList = view.searchResultList
         resultCount = view.resultCount
 
         adapter =
-            SearchResultAdapter{ entry: Entry ->
-                entryClicked(entry)
-            }
+                SearchResultAdapter { entry : Entry ->
+                    entryClicked(entry)
+                }
 
         searchResultList.layoutManager = LinearLayoutManager(activity)
         searchResultList.adapter = adapter
 
-        dictionaryViewModel.requestedLanguage.observe(viewLifecycleOwner, Observer {
-            updateSearchResults(false)
+        dictionaryViewModel.searchQuery.observe(viewLifecycleOwner, Observer {
+            historyMode = it.isBlank()
+            if (historyMode) {
+                showHistory()
+            }
         })
 
-        dictionaryViewModel.englishSearchResults.observe(viewLifecycleOwner, Observer {
-            updateSearchResults(false)
-        })
-
-        dictionaryViewModel.chineseSearchResults.observe(viewLifecycleOwner, Observer {
-            updateSearchResults(false)
+        dictionaryViewModel.displayedLanguage.observe(viewLifecycleOwner, Observer {
+            if (!historyMode) {
+                updateSearchResults(it)
+            }
         })
 
         dictionaryViewModel.searchHistoryEntries.observe(viewLifecycleOwner, Observer {
-            updateSearchResults(false)
+            if (historyMode) {
+                showHistory()
+            }
         })
 
         dictionaryViewModel.newSearchLive.observe(viewLifecycleOwner, Observer {
@@ -89,7 +94,7 @@ class SearchResultFragment : Fragment() {
         })
     }
 
-    private fun entryClicked(entry: Entry){
+    private fun entryClicked(entry : Entry) {
         if (SystemClock.elapsedRealtime() - lastClickTime < 500) {
             return
         }
@@ -100,116 +105,68 @@ class SearchResultFragment : Fragment() {
         findNavController().navigate(WordViewFragmentDirections.globalOpenWordViewAction(entry))
     }
 
-    private fun updateSearchResults(calledFromDelayedHandler: Boolean) {
-        when (dictionaryViewModel.searchQuery.isBlank()) {
+    private fun updateSearchResults(language : DictionarySearchViewModel.SearchLanguage) {
+        var results = listOf<Entry>()
 
-            true -> { // Show history
+        if (language == ENGLISH) {
+            results = dictionaryViewModel.englishResults.value ?: listOf()
+        }
+        else if (language == CHINESE) {
+            results = dictionaryViewModel.chineseSearchResults.value ?: listOf()
+        }
 
-                dictionaryViewModel.updateResultCounts. value = true
-
-                if (resultCountLinearLayout.parent == null) {
-                    searchResultListLinearLayout.addView(resultCountLinearLayout, 0)
-                }
-
-                when (dictionaryViewModel.searchHistoryIDs.size) {
-                    0 -> {
-                        resultCount.text = getString(R.string.no_history)
-                        clearHistoryLink.text = ""
-                    }
-                    else -> {
-                        resultCount.text = getString(R.string.history) + dictionaryViewModel.searchHistoryIDs.size.toString()
-                        clearHistoryLink.movementMethod = LinkMovementMethod.getInstance()
-
-                        val clearHistoryText = getString(R.string.clear_history).toSpannable()
-
-                        clearHistoryText.setSpan(object: ClickableSpan() {
-                            override fun onClick(widget: View) {
-                                SearchHistory.clear()
-                            }
-                            override fun updateDrawState(ds: TextPaint) {
-                                super.updateDrawState(ds)
-                                ds.isUnderlineText = false
-                            }
-                        }, 0, clearHistoryText.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-                        clearHistoryLink.text = SpannableStringBuilder().append(clearHistoryText)
-                    }
-                }
-
-                adapter.setEntries(dictionaryViewModel.searchHistoryEntries.value ?: listOf())
-                dictionaryViewModel.displayedLanguage.value = dictionaryViewModel.requestedLanguage.value
-                searchResultList.scrollToPosition(0)
+        if (results.isNotEmpty()) {
+            searchResultListLinearLayout?.removeView(resultCountLinearLayout)
+        }
+        else {
+            if (resultCountLinearLayout.parent == null) {
+                searchResultListLinearLayout.addView(resultCountLinearLayout, 0)
+                resultCountLinearLayout.removeView(clearHistoryLink)
             }
+            resultCount.text = getString(R.string.no_results_found)
+        }
 
-            false -> { // Show search results
+        adapter.setEntries(results)
+    }
 
-                searchResultListLinearLayout?.removeView(resultCountLinearLayout)
+    private fun showHistory() {
+        if (resultCountLinearLayout.parent == null) {
+            searchResultListLinearLayout.addView(resultCountLinearLayout, 0)
 
-                if (dictionaryViewModel.requestedLanguage.value == DictionarySearchViewModel.SearchLanguage.ENGLISH) {
-
-                    when (dictionaryViewModel.englishSearchResults.value != null && dictionaryViewModel.englishSearchResults.value?.isNotEmpty()!!) {
-                        true -> {
-                            setEnglish()
-                        }
-                        false -> {
-                            if (calledFromDelayedHandler) {
-                                if (dictionaryViewModel.chineseSearchResults.value != null && dictionaryViewModel.chineseSearchResults.value?.isNotEmpty()!! || dictionaryViewModel.displayedLanguage.value == DictionarySearchViewModel.SearchLanguage.CHINESE) {
-                                    setChinese()
-                                } else {
-                                    setEnglish()
-                                }
-                            }
-                            else {
-                                // Wait up to half a second for the results of the requested
-                                // language to avoid flickering of the search results
-                                delayedUpdateHandler.postDelayed({ updateSearchResults(true) }, 500)
-                            }
-                        }
-                    }
-
-                }
-                else if (dictionaryViewModel.requestedLanguage.value == DictionarySearchViewModel.SearchLanguage.CHINESE) {
-
-                    when (dictionaryViewModel.chineseSearchResults.value != null && dictionaryViewModel.chineseSearchResults.value?.isNotEmpty()!!) {
-                        true -> {
-                            setChinese()
-                        }
-                        false -> {
-                            if (calledFromDelayedHandler) {
-                                if (dictionaryViewModel.englishSearchResults.value != null && dictionaryViewModel.englishSearchResults.value?.isNotEmpty()!! || dictionaryViewModel.displayedLanguage.value == DictionarySearchViewModel.SearchLanguage.ENGLISH) {
-                                    setEnglish()
-                                } else {
-                                    setChinese()
-                                }
-                            }
-                            else {
-                                // Wait up to half a second for the results of the requested
-                                // language to avoid flickering of the search results
-                                delayedUpdateHandler.postDelayed({ updateSearchResults(true) }, 500)
-                            }
-                        }
-                    }
-
-                }
+            if (clearHistoryLink.parent == null) {
+                resultCountLinearLayout.addView(clearHistoryLink,1)
             }
         }
-    }
 
-    private fun setEnglish() {
-        adapter.setEntries(dictionaryViewModel.englishSearchResults.value?.sortedWith(
-            compareBy { it.priority }
-        ) ?: listOf())
+        when (dictionaryViewModel.searchHistoryIDs.size) {
+            0    -> {
+                resultCount.text = getString(R.string.no_history)
+                clearHistoryLink.text = ""
+            }
 
-        dictionaryViewModel.displayedLanguage.value = DictionarySearchViewModel.SearchLanguage.ENGLISH
-        dictionaryViewModel.updateResultCounts. value = true
-    }
+            else -> {
+                resultCount.text =
+                        getString(R.string.history) + dictionaryViewModel.searchHistoryIDs.size.toString()
+                clearHistoryLink.movementMethod = LinkMovementMethod.getInstance()
 
-    private fun setChinese() {
-        adapter.setEntries(dictionaryViewModel.chineseSearchResults.value?.sortedWith(
-            compareBy({it.wordLength}, {it.hsk}, {it.pinyinLength}, {it.priority})
-        ) ?: listOf())
+                val clearHistoryText = getString(R.string.clear_history).toSpannable()
 
-        dictionaryViewModel.displayedLanguage.value = DictionarySearchViewModel.SearchLanguage.CHINESE
-        dictionaryViewModel.updateResultCounts. value = true
+                clearHistoryText.setSpan(object : ClickableSpan() {
+                    override fun onClick(widget : View) {
+                        SearchHistory.clear()
+                    }
+
+                    override fun updateDrawState(ds : TextPaint) {
+                        super.updateDrawState(ds)
+                        ds.isUnderlineText = false
+                    }
+                }, 0, clearHistoryText.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+                clearHistoryLink.text = SpannableStringBuilder().append(clearHistoryText)
+            }
+        }
+
+        adapter.setEntries(dictionaryViewModel.searchHistoryEntries.value ?: listOf())
+        searchResultList.scrollToPosition(0)
     }
 }
