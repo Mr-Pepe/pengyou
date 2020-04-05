@@ -12,6 +12,7 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -386,6 +387,7 @@ class PinyinConverter {
 class HeadwordFormatter {
 
     fun format(entry: Entry, mode: String): SpannableStringBuilder {
+        val ratio = 0.8F
         val headwordText = SpannableStringBuilder()
         val simplified = HeadwordFormatter().paintHeadword(entry.simplified, entry.pinyin)
         val traditional = HeadwordFormatter().paintHeadword(entry.traditional, entry.pinyin)
@@ -394,10 +396,16 @@ class HeadwordFormatter {
             headwordText.append(simplified)
         else if (mode == ChineseMode.traditional || mode == ChineseMode.traditionalSimplified)
             headwordText.append(traditional)
-        if (mode == ChineseMode.simplifiedTraditional)
-            headwordText.append(" | ").append(traditional)
-        else if (mode == ChineseMode.traditionalSimplified)
-            headwordText.append(" | ").append(simplified)
+        if (mode == ChineseMode.simplifiedTraditional) {
+            val oldLength = headwordText.length
+            headwordText.append(" (").append(traditional).append(")")
+            headwordText.setSpan(RelativeSizeSpan(ratio), oldLength, headwordText.length, 0)
+        }
+        else if (mode == ChineseMode.traditionalSimplified) {
+            val oldLength = headwordText.length
+            headwordText.append(" (").append(simplified).append(")")
+            headwordText.setSpan(RelativeSizeSpan(ratio), oldLength, headwordText.length, 0)
+        }
 
         return headwordText
     }

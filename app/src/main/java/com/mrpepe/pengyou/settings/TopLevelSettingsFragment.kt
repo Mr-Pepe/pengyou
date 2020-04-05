@@ -14,6 +14,8 @@ class TopLevelSettingsFragment: SettingsBaseFragment() {
     override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        view.settingsToolbar.navigationIcon = null
+        view.settingsToolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
     }
 }
