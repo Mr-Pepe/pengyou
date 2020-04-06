@@ -66,4 +66,23 @@
             <string name="stroke_order_diagram_background_diagonals">Diagonals</string>
             <string name="stroke_order_diagram_background_cross">Cross</string>
 
+    <string name="about_app"><![CDATA[
+        Pengyou is an open-source app that helps you learn Chinese.
+        Open-source means that you can get involved to improve the app! Just head over to the
+        project\'s <a href="https://github.com/Mr-Pepe/pengyou">Github page</a> and start submitting
+        bug reports and feature requests or contribute code yourself. <br/><br/>
+
+        Pengyou heavily depends on open-source projects that make data like stroke orders
+        and the dictionary itself accessible to everybody. For a full list of used data sources
+        have a look <a href="https://github.com/Mr-Pepe/pengyou_data_generator">here</a>. <br/><br/>
+
+        The stroke order diagrams make use of the <a href="https://hanziwriter.org/">HanziWriter
+        </a> project. <br/><br/>
+
+        Evelyn did an awesome job designing the app icon and user interface. Check out <a
+        href="https://www.instagram.com/evelyncplum/">her Instagram page</a> to see more of her
+        work.
+
+    ]]></string>
+
 </resources>
