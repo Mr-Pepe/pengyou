@@ -396,15 +396,17 @@ class HeadwordFormatter {
             headwordText.append(simplified)
         else if (mode == ChineseMode.traditional || mode == ChineseMode.traditionalSimplified)
             headwordText.append(traditional)
-        if (mode == ChineseMode.simplifiedTraditional) {
-            val oldLength = headwordText.length
-            headwordText.append(" (").append(traditional).append(")")
-            headwordText.setSpan(RelativeSizeSpan(ratio), oldLength, headwordText.length, 0)
-        }
-        else if (mode == ChineseMode.traditionalSimplified) {
-            val oldLength = headwordText.length
-            headwordText.append(" (").append(simplified).append(")")
-            headwordText.setSpan(RelativeSizeSpan(ratio), oldLength, headwordText.length, 0)
+        if (entry.simplified != entry.traditional) {
+            if (mode == ChineseMode.simplifiedTraditional) {
+                val oldLength = headwordText.length
+                headwordText.append(" (").append(traditional).append(")")
+                headwordText.setSpan(RelativeSizeSpan(ratio), oldLength, headwordText.length, 0)
+            }
+            else if (mode == ChineseMode.traditionalSimplified) {
+                val oldLength = headwordText.length
+                headwordText.append(" (").append(simplified).append(")")
+                headwordText.setSpan(RelativeSizeSpan(ratio), oldLength, headwordText.length, 0)
+            }
         }
 
         return headwordText
