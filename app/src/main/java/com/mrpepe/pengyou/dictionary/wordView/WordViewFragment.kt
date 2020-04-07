@@ -88,7 +88,16 @@ class WordViewFragment : DictionaryBaseFragment(),
     }
 
     private fun setHeadwordPinyinAndHsk(entry: Entry) {
-        wordViewHeadword.text = HeadwordFormatter().format(entry, MainApplication.chineseMode)
+        wordViewHeadword.text = HeadwordFormatter().format(entry, MainApplication.chineseMode, false)
+
+        // Put alternative headword on new line so it's not broken up in the middle
+        if (wordViewHeadword.lineCount > 1 &&
+            (MainApplication.chineseMode == ChineseMode.traditionalSimplified ||
+             MainApplication.chineseMode == ChineseMode.simplifiedTraditional)) {
+
+            wordViewHeadword.text = HeadwordFormatter().format(entry, MainApplication.chineseMode, true)
+        }
+
         wordViewPinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, MainApplication.pinyinMode)
 
         when (entry.hsk) {

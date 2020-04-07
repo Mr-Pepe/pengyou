@@ -18,6 +18,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
@@ -386,7 +387,7 @@ class PinyinConverter {
 
 class HeadwordFormatter {
 
-    fun format(entry: Entry, mode: String): SpannableStringBuilder {
+    fun format(entry: Entry, mode: String, useLineBreak: Boolean): SpannableStringBuilder {
         val ratio = 0.8F
         val headwordText = SpannableStringBuilder()
         val simplified = HeadwordFormatter().paintHeadword(entry.simplified, entry.pinyin)
@@ -396,15 +397,25 @@ class HeadwordFormatter {
             headwordText.append(simplified)
         else if (mode == ChineseMode.traditional || mode == ChineseMode.traditionalSimplified)
             headwordText.append(traditional)
-        if (entry.simplified != entry.traditional) {
+        if (entry.simplified != entry.traditional &&
+            (mode == ChineseMode.simplifiedTraditional ||
+             mode == ChineseMode.traditionalSimplified)) {
+
+            val oldLength = headwordText.length
+
+            if (useLineBreak) {
+                headwordText.append("\n")
+            }
+            else {
+                headwordText.append(" ")
+            }
+
             if (mode == ChineseMode.simplifiedTraditional) {
-                val oldLength = headwordText.length
-                headwordText.append(" (").append(traditional).append(")")
+                headwordText.append("(").append(traditional).append(")")
                 headwordText.setSpan(RelativeSizeSpan(ratio), oldLength, headwordText.length, 0)
             }
             else if (mode == ChineseMode.traditionalSimplified) {
-                val oldLength = headwordText.length
-                headwordText.append(" (").append(simplified).append(")")
+                headwordText.append("(").append(simplified).append(")")
                 headwordText.setSpan(RelativeSizeSpan(ratio), oldLength, headwordText.length, 0)
             }
         }
@@ -627,5 +638,25 @@ fun copyHeadwordToClipboard(activity: Activity, entry: Entry) {
             "Copied $headword to clipboard",
             Toast.LENGTH_SHORT
         ).show()
+    }
+}
+
+class LayoutedTextView(context : Context, attributeSet : AttributeSet): androidx.appcompat.widget.AppCompatTextView
+    (context, attributeSet) {
+
+    private var onLayoutListener: OnLayoutListener? = null
+
+    interface OnLayoutListener {
+        fun onLayouted(view: TextView)
+    }
+
+    fun setOnLayoutListener(listener: OnLayoutListener) {
+        onLayoutListener = listener
+    }
+
+    override fun onLayout(changed : Boolean, left : Int, top : Int, right : Int, bottom : Int) {
+        super.onLayout(changed, left, top, right, bottom)
+
+        onLayoutListener?.onLayouted(this)
     }
 }
