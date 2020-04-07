@@ -40,7 +40,6 @@
                     android:paddingRight="-16dp"
                     android:paddingBottom="0dp"
                     android:queryBackground="@drawable/background_search_view"
-                    android:queryHint="@string/search_view_query_hint"
                     android:searchIcon="@null"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
