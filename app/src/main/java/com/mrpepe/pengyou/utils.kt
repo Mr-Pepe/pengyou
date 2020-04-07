@@ -93,13 +93,24 @@ class DefinitionFormatter {
                                 SpannableString(simplified)
 
                             ChineseMode.simplifiedTraditional -> {
-                                SpannableString("$simplified|$traditional")
+                                if (simplified == traditional) {
+                                    SpannableString(simplified)
+                                }
+                                else {
+                                    SpannableString("$simplified|$traditional")
+                                }
+
                             }
                             ChineseMode.traditional -> {
                                 SpannableString(traditional)
                             }
                             ChineseMode.traditionalSimplified -> {
-                                SpannableString("$traditional|$simplified")
+                                if (simplified == traditional) {
+                                    SpannableString(traditional)
+                                }
+                                else {
+                                    SpannableString("$traditional|$simplified")
+                                }
                             }
                             else -> SpannableString("")
                         }
