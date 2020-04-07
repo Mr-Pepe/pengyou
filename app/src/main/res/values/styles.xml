@@ -2,17 +2,17 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
-        <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/lightThemeColorPrimary</item>
         <item name="colorOnPrimary">@color/lightThemeColorOnPrimary</item>
         <item name="colorPrimaryDark">@color/lightThemeColorPrimaryDark</item>
         <item name="colorAccent">@color/lightThemeColorAccent</item>
-<!--        <item name="android:colorBackground">@color/background</item>-->
         <item name="android:textColor">@color/lightThemeGeneralTextColor</item>
+        <!-- Used by the control buttons in stroke order diagrams       -->
         <item name="android:colorEdgeEffect">@color/lightThemeButtonBackground</item>
 
         <item name="colorControlNormal">@color/lightThemeControlColorEnabled</item>
         <item name="colorControlDisabled">@color/lightThemeControlColorDisabled</item>
+        <item name="bottomNavNotCheckedColor">?attr/colorControlNormal</item>
 
 
         <item name="preferenceTheme">@style/AppPreferenceTheme</item>
@@ -27,10 +27,6 @@
     <style name="AppPreferenceFragmentCompatStyle" parent="@style/PreferenceFragment">
         <item name="android:layout">@layout/fragment_base_settings</item>
     </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="AppTheme.Launcher">
         <item name="android:windowBackground">@drawable/launch_screen</item>
@@ -66,7 +62,6 @@
 
     <style name="ToolbarStyle" parent="AppTheme">
         <item name="colorAccent">@color/lightThemeColorOnPrimary</item>
-        <item name="android:textColorHint">@color/lightThemeTextColorHintOnPrimary</item>
         <item name="android:editTextColor">@color/lightThemeColorOnPrimary</item>
         <item name="android:queryBackground">@color/lightThemeColorOnPrimary</item>
         <item name="queryBackground">@color/lightThemeColorOnPrimary</item>

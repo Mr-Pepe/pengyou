@@ -3,22 +3,20 @@
     <color name="lightThemeColorPrimary">#D94E18</color>
     <color name="lightThemeColorOnPrimary">@android:color/white</color>
     <color name="lightThemeColorPrimaryDark">#BB4314</color>
-<!--    <color name="colorSecondary">#4CAF50</color>-->
     <color name="lightThemeColorAccent">@color/lightThemeColorPrimary</color>
-<!--    <color name="colorIndicator">#FF5722</color>-->
     <color name="lightThemeGeneralTextColor">#323232</color>
-    <color name="lightThemeTextColorHintOnPrimary">#DBDBDB</color>
     <color name="lightThemeButtonBackground">#EDEDED</color>
     <color name="lightThemeControlColorEnabled">#535353</color>
     <color name="lightThemeControlColorDisabled">#A5A5A5</color>
 
-    <color name="darkThemeColorPrimary">#FF0057</color>
-    <color name="darkThemeColorOnPrimary">#8BC34A</color>
-    <color name="darkThemeColorPrimaryDark">#03A9F4</color>
-    <color name="darkThemeColorAccent">@color/lightThemeColorPrimary</color>
-    <color name="darkThemeGeneralTextColor">@android:color/primary_text_dark</color>
-    <color name="darkThemeControlColorEnabled">#535353</color>
-    <color name="darkThemeControlColorDisabled">#535353</color>
+    <color name="darkThemeColorPrimary">#2B2B2B</color>
+    <color name="darkThemeColorOnPrimary">#CCCCCC</color>
+    <color name="darkThemeColorPrimaryDark">#171717</color>
+    <color name="darkThemeColorAccent">#FFFFFF</color>
+    <color name="darkThemeGeneralTextColor">@color/darkThemeColorOnPrimary</color>
+    <color name="darkThemeButtonBackground">@color/darkThemeColorPrimary</color>
+    <color name="darkThemeControlColorEnabled">@color/darkThemeColorOnPrimary</color>
+    <color name="darkThemeControlColorDisabled">#6E6E6E</color>
 
 
     <color name="tone1DefaultColor">#268bd2</color>

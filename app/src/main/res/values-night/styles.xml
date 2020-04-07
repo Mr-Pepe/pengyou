@@ -1,3 +1,73 @@
 <resources>
 
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
+        <item name="colorPrimary">@color/darkThemeColorPrimary</item>
+        <item name="colorOnPrimary">@color/darkThemeColorOnPrimary</item>
+        <item name="colorPrimaryDark">@color/darkThemeColorPrimaryDark</item>
+        <item name="colorAccent">@color/darkThemeColorAccent</item>
+        <item name="android:textColor">@color/darkThemeGeneralTextColor</item>
+        <!-- Used by the control buttons in stroke order diagrams       -->
+        <item name="android:colorEdgeEffect">@color/darkThemeButtonBackground</item>
+
+        <item name="colorControlNormal">@color/darkThemeControlColorEnabled</item>
+        <item name="colorControlDisabled">@color/darkThemeControlColorDisabled</item>
+        <item name="bottomNavNotCheckedColor">@color/darkThemeControlColorDisabled</item>
+
+
+        <item name="preferenceTheme">@style/AppPreferenceTheme</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppPreferenceTheme" parent="@style/PreferenceThemeOverlay">
+        <item name="preferenceFragmentCompatStyle">@style/AppPreferenceFragmentCompatStyle</item>
+    </style>
+
+    <style name="AppPreferenceFragmentCompatStyle" parent="@style/PreferenceFragment">
+        <item name="android:layout">@layout/fragment_base_settings</item>
+    </style>
+
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+    </style>
+
+    <style name="StrokeOrderButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_marginLeft">@dimen/medium_padding</item>
+        <item name="android:layout_marginRight">@dimen/medium_padding</item>
+        <item name="android:layout_width">@dimen/stroke_order_button_size</item>
+        <item name="android:layout_height">@dimen/stroke_order_button_size</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="HandwritingButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_marginLeft">@dimen/medium_padding</item>
+        <item name="android:layout_marginRight">@dimen/tiny_padding</item>
+        <item name="android:layout_width">@dimen/handwriting_button_size</item>
+        <item name="android:layout_height">@dimen/handwriting_button_size</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:layout_marginTop">@dimen/small_padding</item>
+        <item name="android:layout_marginBottom">@dimen/small_padding</item>
+        <item name="android:scaleType">fitXY</item>
+    </style>
+
+    <style name="ModeSwitchButton" parent="Widget.AppCompat.TextView">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/darkThemeColorOnPrimary</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="ToolbarStyle" parent="AppTheme">
+        <item name="colorAccent">@color/darkThemeColorOnPrimary</item>
+        <item name="android:editTextColor">@color/darkThemeColorOnPrimary</item>
+        <item name="android:queryBackground">@color/darkThemeColorOnPrimary</item>
+        <item name="queryBackground">@color/darkThemeColorOnPrimary</item>
+        <item name="titleTextColor">@color/darkThemeColorOnPrimary</item>
+        <item name="android:textSize">20sp</item>
+        <item name="colorControlNormal">@color/darkThemeColorOnPrimary</item>
+    </style>
+
 </resources>

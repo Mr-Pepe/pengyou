@@ -78,7 +78,8 @@
             app:tabIndicatorGravity="bottom"
             app:tabMode="fixed"
             app:tabSelectedTextColor="?attr/colorControlNormal"
-            app:tabTextColor="?attr/colorControlNormal" />
+            app:tabTextColor="?attr/colorControlNormal"
+            app:tabIndicatorColor="?attr/colorAccent"/>
 
         <com.mrpepe.pengyou.CustomViewPager
             android:id="@+id/wordViewViewPager"

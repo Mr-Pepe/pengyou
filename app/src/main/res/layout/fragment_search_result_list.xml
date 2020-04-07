@@ -24,7 +24,7 @@
             android:paddingTop="@dimen/small_padding"
             android:paddingEnd="@dimen/small_padding"
             android:paddingBottom="@dimen/small_padding"
-            android:textColor="?attr/colorPrimary"
+            android:textColor="?android:textColor"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
