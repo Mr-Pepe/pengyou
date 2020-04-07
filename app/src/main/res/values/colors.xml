@@ -21,10 +21,10 @@
     <color name="darkThemeControlColorDisabled">#535353</color>
 
 
-    <color name="tone1DefaultColor">#FF0000</color>
-    <color name="tone2DefaultColor">#03C700</color>
-    <color name="tone3DefaultColor">#1B3FD1</color>
-    <color name="tone4DefaultColor">#FFC107</color>
+    <color name="tone1DefaultColor">#268bd2</color>
+    <color name="tone2DefaultColor">#CBB600</color>
+    <color name="tone3DefaultColor">#47A34B</color>
+    <color name="tone4DefaultColor">#dc322f</color>
     <color name="tone5DefaultColor">#757774</color>
 
 
