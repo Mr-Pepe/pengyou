@@ -12,7 +12,7 @@
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ToolbarStyle"
-        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:navigationIcon="@drawable/ic_back"
         app:title="@string/title_settings_fragment"
         app:titleTextColor="?attr/titleTextColor" />
 
