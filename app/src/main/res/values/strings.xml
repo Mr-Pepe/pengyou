@@ -37,6 +37,9 @@
     <string name="clear_history">CLEAR HISTORY</string>
     <string name="no_appearance_in_other_words">\u0020DOES NOT APPEAR IN OTHER WORDS</string>
     <string name="appears_in_other_words">WORDS CONTAINING:\u0020</string>
+    <string name="chinese_mode_switch_initial_value">中文 (0)</string>
+    <string name="english_mode_switch_initial_value">ENGLISH (0)</string>
+    <string name="handwriting_button_description">Switch to handwriting mode</string>
 
     <!--  Settings  -->
     <string name="appearance_settings_title">Appearance</string>

@@ -45,19 +45,20 @@
     </style>
 
     <style name="HandwritingButton" parent="Widget.AppCompat.ImageButton">
-        <item name="android:layout_marginLeft">@dimen/large_padding</item>
+        <item name="android:layout_marginLeft">@dimen/medium_padding</item>
         <item name="android:layout_marginRight">@dimen/tiny_padding</item>
         <item name="android:layout_width">@dimen/handwriting_button_size</item>
         <item name="android:layout_height">@dimen/handwriting_button_size</item>
         <item name="android:background">@android:color/transparent</item>
         <item name="android:layout_marginTop">@dimen/small_padding</item>
         <item name="android:layout_marginBottom">@dimen/small_padding</item>
+        <item name="android:scaleType">fitXY</item>
     </style>
 
     <style name="ModeSwitchButton" parent="Widget.AppCompat.TextView">
         <item name="android:background">@android:color/transparent</item>
-        <item name="android:paddingBottom">@dimen/tiny_padding</item>
-        <item name="android:paddingTop">@dimen/tiny_padding</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:paddingTop">3dp</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textColor">@color/lightThemeColorOnPrimary</item>
         <item name="android:clickable">true</item>
