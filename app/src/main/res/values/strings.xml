@@ -46,8 +46,8 @@
         <string name="chinese_mode">Chinese mode</string>
             <string name="chinese_mode_simplified">Simplified</string>
             <string name="chinese_mode_traditional">Traditional</string>
-            <string name="chinese_mode_simplified_traditional">Simplified | Traditional</string>
-            <string name="chinese_mode_traditional_simplified">Traditional | Simplified</string>
+            <string name="chinese_mode_simplified_traditional">Simplified (Traditional)</string>
+            <string name="chinese_mode_traditional_simplified">Traditional (Simplified)</string>
         <string name="theme">Theme</string>
             <string name="theme_light">Light</string>
             <string name="theme_dark">Dark</string>
