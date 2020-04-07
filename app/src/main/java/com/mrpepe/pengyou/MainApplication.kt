@@ -2,12 +2,30 @@ package com.mrpepe.pengyou
 
 import android.app.Activity
 import android.app.Application
+import android.content.ContentValues.TAG
 import android.content.Context
+import android.util.Log
+import android.webkit.WebView
+import androidx.appcompat.app.AppCompatDelegate
 
 class MainApplication : Application() {
 
     init {
         instance = this
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+
+        // This should be fixed with AppCompat 1.2.0 which is in beta01 at the moment
+        Log.d(TAG, "Manually instantiating WebView to avoid night mode issue.")
+        try {
+            WebView(applicationContext)
+        } catch (e : Exception) {
+            Log.e(TAG,
+                  "Got exception while trying to instantiate WebView to avoid night mode issue. Ignoring problem.",
+                  e)
+        }
     }
 
     companion object {
