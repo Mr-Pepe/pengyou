@@ -32,7 +32,7 @@ class StrokeOrderDiagramBackground: View {
         paint.isAntiAlias = true
         MainApplication.homeActivity.theme.resolveAttribute(R.attr.colorControlNormal, strokeColor, true)
         paint.color = when (MainApplication.homeActivity.isNightMode()) {
-            true -> 0x6E6E6E
+            true -> 0xFF6E6E6E.toInt()
             false -> Color.LTGRAY + 0x222222
         }
         paint.strokeWidth = 5F
