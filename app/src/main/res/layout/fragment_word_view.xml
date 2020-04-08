@@ -74,12 +74,13 @@
             android:layout_marginTop="@dimen/large_padding"
             android:background="@drawable/background_wordview_tablayout"
             app:tabIndicator="@drawable/tab_indicator"
+            app:tabIndicatorColor="?attr/colorAccent"
             app:tabIndicatorFullWidth="false"
             app:tabIndicatorGravity="bottom"
             app:tabMode="fixed"
             app:tabSelectedTextColor="?attr/colorControlNormal"
-            app:tabTextColor="?attr/colorControlNormal"
-            app:tabIndicatorColor="?attr/colorAccent"/>
+            app:tabTextAppearance="@style/TabTextAppearance"
+            app:tabTextColor="?attr/colorControlNormal" />
 
         <com.mrpepe.pengyou.CustomViewPager
             android:id="@+id/wordViewViewPager"
