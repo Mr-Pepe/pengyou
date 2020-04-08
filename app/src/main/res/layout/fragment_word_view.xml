@@ -60,8 +60,6 @@
                 android:layout_marginTop="@dimen/large_padding"
                 android:layout_marginEnd="@dimen/large_padding"
                 android:background="@drawable/background_hsk_tag"
-                android:paddingStart="@dimen/tiny_padding"
-                android:paddingEnd="@dimen/tiny_padding"
                 android:textSize="16sp"
                 tools:text="HSK 6" />
 
