@@ -8,12 +8,15 @@
         <item name="colorAccent">@color/lightThemeColorAccent</item>
         <item name="android:textColor">@color/lightThemeGeneralTextColor</item>
         <!-- Used by the control buttons in stroke order diagrams       -->
-        <item name="android:colorEdgeEffect">@color/lightThemeButtonBackground</item>
 
         <item name="colorControlNormal">@color/lightThemeControlColorEnabled</item>
-        <item name="colorControlDisabled">@color/lightThemeControlColorDisabled</item>
         <item name="bottomNavNotCheckedColor">?attr/colorControlNormal</item>
 
+        <item name="strokeOrderControlButtonsEnabledColor">@color/lightThemeStrokeOrderControlButtonsEnabled</item>
+        <item name="strokeOrderControlButtonsDisabledColor">@color/lightThemeStrokeOrderControlButtonsDisabled</item>
+        <item name="strokeOrderControlButtonsBackgroundColor">@color/lightThemeStrokeOrderControlButtonBackground</item>
+
+        <item name="searchResultSeperatorColor">@color/lightThemeSearchResultSeperator</item>
 
         <item name="preferenceTheme">@style/AppPreferenceTheme</item>
         <item name="windowActionBar">false</item>
@@ -35,6 +38,8 @@
     <style name="StrokeOrderButton" parent="Widget.AppCompat.ImageButton">
         <item name="android:layout_marginLeft">@dimen/medium_padding</item>
         <item name="android:layout_marginRight">@dimen/medium_padding</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:layout_marginBottom">1dp</item>
         <item name="android:layout_width">@dimen/stroke_order_button_size</item>
         <item name="android:layout_height">@dimen/stroke_order_button_size</item>
         <item name="android:background">@android:color/transparent</item>

@@ -14,6 +14,7 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.RelativeSizeSpan
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -495,18 +496,18 @@ class HeadwordFormatter {
 
 }
 
-fun getControlEnabledColor(): Int {
-    return when (MainApplication.homeActivity.isNightMode()) {
-        true -> MainApplication.getContext().getColor(R.color.darkThemeControlColorEnabled)
-        false -> MainApplication.getContext().getColor(R.color.lightThemeControlColorEnabled)
-    }
+fun getStrokeOrderControlEnabledColor(): Int {
+    val typedValue = TypedValue()
+    MainApplication.homeActivity.theme.resolveAttribute(R.attr.strokeOrderControlButtonsEnabledColor, typedValue, true)
+
+    return typedValue.data
 }
 
-fun getControlDisabledColor(): Int {
-    return when (MainApplication.homeActivity.isNightMode()) {
-        true -> MainApplication.getContext().getColor(R.color.darkThemeControlColorDisabled)
-        false -> MainApplication.getContext().getColor(R.color.lightThemeControlColorDisabled)
-    }
+fun getStrokeOrderControlDisabledColor(): Int {
+    val typedValue = TypedValue()
+    MainApplication.homeActivity.theme.resolveAttribute(R.attr.strokeOrderControlButtonsDisabledColor, typedValue, true)
+
+    return typedValue.data
 }
 
 fun getAccentColor(): Int {

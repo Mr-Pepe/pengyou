@@ -148,11 +148,11 @@ class StrokeOrderFragment : Fragment() {
         when (getCurrentDiagram()?.buttonPlayEnabled) {
             false -> {
                 buttonPlay?.isEnabled = false
-                buttonPlay?.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonPlay?.setColorFilter(getStrokeOrderControlDisabledColor(), PorterDuff.Mode.SRC_IN)
             }
             true -> {
                 buttonPlay?.isEnabled = true
-                buttonPlay?.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonPlay?.setColorFilter(getStrokeOrderControlEnabledColor(), PorterDuff.Mode.SRC_IN)
             }
         }
 
@@ -170,22 +170,22 @@ class StrokeOrderFragment : Fragment() {
 
         when (getCurrentDiagram()?.buttonNextEnabled) {
             false -> {
-                buttonNext?.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonNext?.setColorFilter(getStrokeOrderControlDisabledColor(), PorterDuff.Mode.SRC_IN)
                 buttonNext?.isEnabled = false
             }
             true -> {
-                buttonNext?.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonNext?.setColorFilter(getStrokeOrderControlEnabledColor(), PorterDuff.Mode.SRC_IN)
                 buttonNext?.isEnabled = true
             }
         }
 
         when (getCurrentDiagram()?.buttonQuizEnabled) {
             false -> {
-                buttonQuiz?.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonQuiz?.setColorFilter(getStrokeOrderControlDisabledColor(), PorterDuff.Mode.SRC_IN)
                 buttonQuiz?.isEnabled = false
             }
             true -> {
-                buttonQuiz?.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonQuiz?.setColorFilter(getStrokeOrderControlEnabledColor(), PorterDuff.Mode.SRC_IN)
                 buttonQuiz?.isEnabled = true
             }
         }
@@ -203,22 +203,22 @@ class StrokeOrderFragment : Fragment() {
 
         when (getCurrentDiagram()?.buttonOutlineEnabled) {
             false -> {
-                buttonOutline?.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonOutline?.setColorFilter(getStrokeOrderControlDisabledColor(), PorterDuff.Mode.SRC_IN)
                 buttonOutline?.isEnabled = false
             }
             true -> {
-                buttonOutline?.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonOutline?.setColorFilter(getStrokeOrderControlEnabledColor(), PorterDuff.Mode.SRC_IN)
                 buttonOutline?.isEnabled = true
             }
         }
 
         when (getCurrentDiagram()?.buttonResetEnabled) {
             false -> {
-                buttonReset?.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonReset?.setColorFilter(getStrokeOrderControlDisabledColor(), PorterDuff.Mode.SRC_IN)
                 buttonReset?.isEnabled = false
             }
             true -> {
-                buttonReset?.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonReset?.setColorFilter(getStrokeOrderControlEnabledColor(), PorterDuff.Mode.SRC_IN)
                 buttonReset?.isEnabled = true
             }
         }
