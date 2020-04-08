@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="lightThemeColorPrimary">#D94E18</color>
+    <color name="lightThemeColorPrimary">#B5333D</color>
     <color name="lightThemeColorOnPrimary">@android:color/white</color>
-    <color name="lightThemeColorPrimaryDark">#BB4314</color>
+    <color name="lightThemeColorPrimaryDark">#932A32</color>
     <color name="lightThemeColorAccent">@color/lightThemeColorPrimary</color>
     <color name="lightThemeGeneralTextColor">#323232</color>
     <color name="lightThemeButtonBackground">#EDEDED</color>
