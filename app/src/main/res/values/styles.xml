@@ -18,6 +18,8 @@
 
         <item name="searchResultSeperatorColor">@color/lightThemeSearchResultSeperator</item>
 
+        <item name="strokeOrderDiagramStrokeColor">?android:attr/textColor</item>
+
         <item name="preferenceTheme">@style/AppPreferenceTheme</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

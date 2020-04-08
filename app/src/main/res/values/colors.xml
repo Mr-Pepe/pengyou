@@ -17,8 +17,8 @@
     <color name="darkThemeColorAccent">#FFFFFF</color>
     <color name="darkThemeGeneralTextColor">@color/darkThemeColorOnPrimary</color>
     <color name="darkThemeStrokeOrderControlButtonBackground">@color/darkThemeColorPrimary</color>
-    <color name="darkThemeStrokeOrderControlButtonsEnabled">#EFEFEF</color>
-    <color name="darkThemeStrokeOrderControlButtonsDisabled">#EFEFEF</color>
+    <color name="darkThemeStrokeOrderControlButtonsEnabled">#A3A3A3</color>
+    <color name="darkThemeStrokeOrderControlButtonsDisabled">#565656</color>
     <color name="darkThemeControlColorEnabled">@color/darkThemeColorOnPrimary</color>
     <color name="darkThemeSearchResultSeperator">#6E6E6E</color>
 

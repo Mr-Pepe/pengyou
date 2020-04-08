@@ -10,6 +10,7 @@ import android.view.View
 import androidx.preference.PreferenceManager
 import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.R
+import com.mrpepe.pengyou.getStrokeOrderControlButtonsBackgroundColor
 
 class StrokeOrderDiagramBackground: View {
 
@@ -28,13 +29,8 @@ class StrokeOrderDiagramBackground: View {
     }
 
     fun init() {
-        val strokeColor = TypedValue()
         paint.isAntiAlias = true
-        MainApplication.homeActivity.theme.resolveAttribute(R.attr.colorControlNormal, strokeColor, true)
-        paint.color = when (MainApplication.homeActivity.isNightMode()) {
-            true -> 0xFF6E6E6E.toInt()
-            false -> Color.LTGRAY + 0x222222
-        }
+        paint.color = getStrokeOrderControlButtonsBackgroundColor()
         paint.strokeWidth = 5F
     }
 

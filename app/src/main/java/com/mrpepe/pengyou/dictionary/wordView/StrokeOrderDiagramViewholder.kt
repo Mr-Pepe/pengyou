@@ -249,21 +249,12 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
 
         @JavascriptInterface
         fun getStrokeColor(): String {
-            val typedValue = TypedValue()
-            MainApplication.homeActivity.theme.resolveAttribute(R.attr.colorOnBackground, typedValue, true)
-
-            return String.format("#%06X", (0xFFFFFF and typedValue.data))
+            return String.format("#%06X", (0xFFFFFF and getStrokeOrderDiagramStrokeColor()))
         }
 
         @JavascriptInterface
         fun getOutlineColor(): String {
-            val typedValue = TypedValue()
-            MainApplication.homeActivity.theme.resolveAttribute(R.attr.colorOnBackground, typedValue, true)
-
-            return when(MainApplication.homeActivity.isNightMode()) {
-                true -> String.format("#%06X", 0x6E6E6E)
-                false -> String.format("#%06X", 0xFFFFFF and Color.LTGRAY)
-            }
+            return String.format("#%06X", (0xFFFFFF and getStrokeOrderControlEnabledColor()))
         }
 
         @JavascriptInterface

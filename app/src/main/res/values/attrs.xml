@@ -6,4 +6,6 @@
     <attr name="strokeOrderControlButtonsEnabledColor" format="reference"/>
     <attr name="strokeOrderControlButtonsDisabledColor" format="reference"/>
     <attr name="strokeOrderControlButtonsBackgroundColor" format="reference"/>
+
+    <attr name="strokeOrderDiagramStrokeColor" format="reference"/>
 </resources>

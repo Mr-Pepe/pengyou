@@ -510,11 +510,25 @@ fun getStrokeOrderControlDisabledColor(): Int {
     return typedValue.data
 }
 
+fun getStrokeOrderControlButtonsBackgroundColor(): Int {
+    val typedValue = TypedValue()
+    MainApplication.homeActivity.theme.resolveAttribute(R.attr.strokeOrderControlButtonsBackgroundColor, typedValue, true)
+
+    return typedValue.data
+}
+
+fun getStrokeOrderDiagramStrokeColor(): Int {
+    val typedValue = TypedValue()
+    MainApplication.homeActivity.theme.resolveAttribute(R.attr.strokeOrderDiagramStrokeColor, typedValue, true)
+
+    return typedValue.data
+}
+
 fun getAccentColor(): Int {
-    return when (MainApplication.homeActivity.isNightMode()) {
-        true -> MainApplication.getContext().getColor(R.color.darkThemeColorAccent)
-        false -> MainApplication.getContext().getColor(R.color.lightThemeColorAccent)
-    }
+    val typedValue = TypedValue()
+    MainApplication.homeActivity.theme.resolveAttribute(R.attr.colorAccent, typedValue, true)
+
+    return typedValue.data
 }
 
 fun String.countSurrogatePairs() = withIndex().count {
