@@ -4,6 +4,6 @@ The data for the app is handled in a [separate repository](https://github.com/Mr
 
 The stroke order diagrams make use of the [HanziWriter](https://hanziwriter.org/) project.
 
-Evelyn did an awesome job designing the app icon and user interface. Check out [her Instagram page](https://www.instagram.com/evelyncplum/) to see more of her work.
+Evelyn Li did an awesome job designing the app icon and user interface. Check out [her Instagram page](https://www.instagram.com/evelyncplum/) to see more of her work.
 
 Contributions welcome!
