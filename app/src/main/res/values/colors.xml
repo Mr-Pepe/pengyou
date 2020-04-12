@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="lightThemeColorPrimary">#B5333D</color>
+    <color name="lightThemeColorSecondary">#EDCB85</color>
     <color name="lightThemeColorOnPrimary">@android:color/white</color>
     <color name="lightThemeColorPrimaryDark">#932A32</color>
     <color name="lightThemeColorAccent">@color/lightThemeColorPrimary</color>

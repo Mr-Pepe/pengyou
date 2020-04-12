@@ -2,7 +2,14 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
     android:opacity="opaque">
 
-    <item android:drawable="@color/launcher_background"/>
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="@color/lightThemeColorPrimary"
+                android:endColor="@color/lightThemeColorSecondary"
+                android:angle="90"/>
+        </shape>
+    </item>
 
     <item>
         <bitmap android:src="@drawable/launcher"
