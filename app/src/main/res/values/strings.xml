@@ -8,6 +8,7 @@
     <string name="search_history">com.mrpepe.pengyou.search_history</string>
     <string name="no_results_found">No results found</string>
     <string name="none">None</string>
+    <string name="double_tap_to_clear">Double-tap to clear</string>
 
     <!-- Word view tabs   -->
     <string name="definition_tab">DEFINITION</string>
@@ -31,9 +32,8 @@
     <string name="copy_to_clipboard_button_title">Copy to Clipboard</string>
     <string name="no_strokes_found">No stroke order diagram found for:\u0020</string>
 
-    <string name="search_results">SEARCH RESULTS:\u0020</string>
     <string name="history">HISTORY:\u0020</string>
-    <string name="no_history">NO HISTORY AVAILABLE</string>
+    <string name="no_history">No history available</string>
     <string name="clear_history">CLEAR HISTORY</string>
     <string name="no_appearance_in_other_words">\u0020DOES NOT APPEAR IN OTHER WORDS</string>
     <string name="appears_in_other_words">WORDS CONTAINING:\u0020</string>

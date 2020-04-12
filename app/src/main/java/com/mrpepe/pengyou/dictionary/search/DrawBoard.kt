@@ -11,6 +11,8 @@ import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.R
+import com.mrpepe.pengyou.getThemeColor
+import kotlin.math.abs
 
 class DrawBoard (context: Context, attributeSet: AttributeSet): View(context, attributeSet) {
 
@@ -22,26 +24,25 @@ class DrawBoard (context: Context, attributeSet: AttributeSet): View(context, at
     private var mStartX = 0f
     private var mStartY = 0f
 
+    private var lastClickedTime : Long = 0
+
+    private var onDoubleClickListener: OnClickListener? = null
+
     var pathExposed = MutableLiveData<MutableList<MutableList<List<Float>>>>()
 
     private var path  = mutableListOf<MutableList<List<Float>>>()
 
     var isClear = true
 
-    private var strokeColor = TypedValue()
-
     init {
-        MainApplication.homeActivity.theme.resolveAttribute(R.attr.colorOnBackground, strokeColor, true)
-
         mPaint.apply {
-            color = strokeColor.data
+            color = getThemeColor(R.attr.colorOnBackground)
             style = Paint.Style.STROKE
             strokeJoin = Paint.Join.ROUND
             strokeCap = Paint.Cap.ROUND
             strokeWidth = 8f
             isAntiAlias = true
         }
-
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -55,7 +56,15 @@ class DrawBoard (context: Context, attributeSet: AttributeSet): View(context, at
                 actionDown(x, y)
             }
             MotionEvent.ACTION_MOVE -> actionMove(x, y)
-            MotionEvent.ACTION_UP -> actionUp()
+            MotionEvent.ACTION_UP -> {
+                if (System.currentTimeMillis() - lastClickedTime < 300) {
+                    onDoubleClickListener?.onClick(this)
+                }
+                else {
+                    actionUp()
+                    lastClickedTime = System.currentTimeMillis()
+                }
+            }
         }
 
         invalidate()
@@ -63,7 +72,6 @@ class DrawBoard (context: Context, attributeSet: AttributeSet): View(context, at
     }
 
     private fun actionDown(x: Float, y: Float) {
-
         path.add(mutableListOf())
 
         mPath.moveTo(x, y)
@@ -72,26 +80,23 @@ class DrawBoard (context: Context, attributeSet: AttributeSet): View(context, at
     }
 
     private fun actionMove(x: Float, y: Float) {
-        mPath.quadTo(mCurX, mCurY, (x + mCurX) / 2, (y + mCurY) / 2)
-        mCurX = x
-        mCurY = y
+        if (abs(mStartX - x) > 1 || abs(mStartY - y) > 1) {
+            mPath.quadTo(mCurX, mCurY, (x + mCurX) / 2, (y + mCurY) / 2)
+            mCurX = x
+            mCurY = y
 
-        path.last().add(listOf(x, y))
+            path.last().add(listOf(x, y))
+            lastClickedTime = 0
+        }
     }
 
     private fun actionUp() {
-        mPath.lineTo(mCurX, mCurY)
-
-        // draw a dot on click
-        if (mStartX == mCurX && mStartY == mCurY) {
-            mPath.lineTo(mCurX, mCurY + 2)
-            mPath.lineTo(mCurX + 1, mCurY + 2)
-            mPath.lineTo(mCurX + 1, mCurY)
+        if (abs(mStartX - mCurX) > 1 || abs(mStartY - mCurY) > 1) {
+            mPath.lineTo(mCurX, mCurY)
+            pathExposed.value = path
+            isClear = false
+            lastClickedTime = 0
         }
-
-        pathExposed.value = path
-
-        isClear = false
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -104,5 +109,13 @@ class DrawBoard (context: Context, attributeSet: AttributeSet): View(context, at
         invalidate()
         path = mutableListOf()
         isClear = true
+    }
+
+    interface OnDoubleCLick {
+        fun onDoubleClick()
+    }
+
+    fun setOnDoubleClickListener(listener: OnClickListener) {
+        onDoubleClickListener = listener
     }
 }

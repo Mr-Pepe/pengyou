@@ -92,6 +92,10 @@ class SearchResultFragment : Fragment() {
                 dictionaryViewModel.newSearch = false
             }
         })
+
+        clearHistoryLink.setOnClickListener {
+            SearchHistory.clear()
+        }
     }
 
     private fun entryClicked(entry : Entry) {
@@ -129,9 +133,10 @@ class SearchResultFragment : Fragment() {
         else {
             if (resultCountLinearLayout.parent == null) {
                 searchResultListLinearLayout.addView(resultCountLinearLayout, 0)
-                resultCountLinearLayout.removeView(clearHistoryLink)
             }
             resultCount.text = getString(R.string.no_results_found)
+            resultCount.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
+            clearHistoryLink.text = ""
         }
 
         adapter.setEntries(results)
@@ -140,37 +145,26 @@ class SearchResultFragment : Fragment() {
     private fun showHistory() {
         if (resultCountLinearLayout.parent == null) {
             searchResultListLinearLayout.addView(resultCountLinearLayout, 0)
+        }
 
-            if (clearHistoryLink.parent == null) {
-                resultCountLinearLayout.addView(clearHistoryLink, 1)
-            }
+        if (clearHistoryLink.parent == null) {
+            resultCountLinearLayout.addView(clearHistoryLink, 1)
         }
 
         when (dictionaryViewModel.searchHistoryIDs.size) {
             0    -> {
                 resultCount.text = getString(R.string.no_history)
+                resultCount.textAlignment = TextView.TEXT_ALIGNMENT_CENTER
                 clearHistoryLink.text = ""
             }
 
             else -> {
+                clearHistoryLink.text = getString(R.string.clear_history)
+
                 resultCount.text =
                         getString(R.string.history) + dictionaryViewModel.searchHistoryIDs.size.toString()
-                clearHistoryLink.movementMethod = LinkMovementMethod.getInstance()
+                resultCount.textAlignment = TextView.TEXT_ALIGNMENT_VIEW_START
 
-                val clearHistoryText = getString(R.string.clear_history).toSpannable()
-
-                clearHistoryText.setSpan(object : ClickableSpan() {
-                    override fun onClick(widget : View) {
-                        SearchHistory.clear()
-                    }
-
-                    override fun updateDrawState(ds : TextPaint) {
-                        super.updateDrawState(ds)
-                        ds.isUnderlineText = false
-                    }
-                }, 0, clearHistoryText.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-                clearHistoryLink.text = SpannableStringBuilder().append(clearHistoryText)
             }
         }
 

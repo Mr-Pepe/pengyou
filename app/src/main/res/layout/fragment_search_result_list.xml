@@ -36,6 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/medium_padding"
+            android:clickable="true"
             android:textColorLink="?android:textColor"
             android:textSize="12sp"
             tools:text="CLEAR HISTORY" />

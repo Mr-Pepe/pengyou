@@ -78,7 +78,12 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
         })
 
         buttonHandwriting.setOnClickListener {
-            toggleHandwritingMode()
+            if (!dictionaryViewModel.isInHandwritingMode) {
+                toggleHandwritingMode()
+            }
+            else {
+                submitQueryFromDrawboard()
+            }
         }
 
         dictionaryViewModel.chineseSearchResults.observe(viewLifecycleOwner, Observer {
