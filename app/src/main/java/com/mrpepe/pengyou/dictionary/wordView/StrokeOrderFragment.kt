@@ -148,11 +148,13 @@ class StrokeOrderFragment : Fragment() {
         when (getCurrentDiagram()?.buttonPlayEnabled) {
             false -> {
                 buttonPlay?.isEnabled = false
-                buttonPlay?.setColorFilter(getStrokeOrderControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonPlay?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsDisabledColor),
+                                           PorterDuff.Mode.SRC_IN)
             }
             true -> {
                 buttonPlay?.isEnabled = true
-                buttonPlay?.setColorFilter(getStrokeOrderControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonPlay?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsEnabledColor),
+                                           PorterDuff.Mode.SRC_IN)
             }
         }
 
@@ -160,7 +162,7 @@ class StrokeOrderFragment : Fragment() {
             false -> {
                 buttonPlay?.setImageResource(R.drawable.ic_pause)
                 buttonPlay?.contentDescription = getString(R.string.button_play_pause)
-                buttonPlay?.setColorFilter(getAccentColor(), PorterDuff.Mode.SRC_IN)
+                buttonPlay?.setColorFilter(getThemeColor(R.attr.colorAccent), PorterDuff.Mode.SRC_IN)
             }
             true -> {
                 buttonPlay?.setImageResource(R.drawable.ic_play)
@@ -170,22 +172,22 @@ class StrokeOrderFragment : Fragment() {
 
         when (getCurrentDiagram()?.buttonNextEnabled) {
             false -> {
-                buttonNext?.setColorFilter(getStrokeOrderControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonNext?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsDisabledColor), PorterDuff.Mode.SRC_IN)
                 buttonNext?.isEnabled = false
             }
             true -> {
-                buttonNext?.setColorFilter(getStrokeOrderControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonNext?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsEnabledColor), PorterDuff.Mode.SRC_IN)
                 buttonNext?.isEnabled = true
             }
         }
 
         when (getCurrentDiagram()?.buttonQuizEnabled) {
             false -> {
-                buttonQuiz?.setColorFilter(getStrokeOrderControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonQuiz?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsDisabledColor), PorterDuff.Mode.SRC_IN)
                 buttonQuiz?.isEnabled = false
             }
             true -> {
-                buttonQuiz?.setColorFilter(getStrokeOrderControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonQuiz?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsEnabledColor), PorterDuff.Mode.SRC_IN)
                 buttonQuiz?.isEnabled = true
             }
         }
@@ -203,22 +205,22 @@ class StrokeOrderFragment : Fragment() {
 
         when (getCurrentDiagram()?.buttonOutlineEnabled) {
             false -> {
-                buttonOutline?.setColorFilter(getStrokeOrderControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonOutline?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsDisabledColor), PorterDuff.Mode.SRC_IN)
                 buttonOutline?.isEnabled = false
             }
             true -> {
-                buttonOutline?.setColorFilter(getStrokeOrderControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonOutline?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsEnabledColor), PorterDuff.Mode.SRC_IN)
                 buttonOutline?.isEnabled = true
             }
         }
 
         when (getCurrentDiagram()?.buttonResetEnabled) {
             false -> {
-                buttonReset?.setColorFilter(getStrokeOrderControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonReset?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsDisabledColor), PorterDuff.Mode.SRC_IN)
                 buttonReset?.isEnabled = false
             }
             true -> {
-                buttonReset?.setColorFilter(getStrokeOrderControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonReset?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsEnabledColor), PorterDuff.Mode.SRC_IN)
                 buttonReset?.isEnabled = true
             }
         }
@@ -229,7 +231,7 @@ class StrokeOrderFragment : Fragment() {
             }
             true -> {
                 buttonQuiz?.setImageResource(R.drawable.ic_cancel)
-                buttonQuiz?.setColorFilter(getAccentColor(), PorterDuff.Mode.SRC_IN)
+                buttonQuiz?.setColorFilter(getThemeColor(R.attr.colorAccent), PorterDuff.Mode.SRC_IN)
             }
         }
     }

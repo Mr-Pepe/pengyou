@@ -1,6 +1,7 @@
 package com.mrpepe.pengyou.dictionary.search
 
 import android.content.Context
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -16,6 +17,7 @@ import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel.SearchLang
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel.SearchLanguage.ENGLISH
 import com.mrpepe.pengyou.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_dictionary_search.*
+import kotlinx.android.synthetic.main.fragment_stroke_order.*
 
 class DictionarySearchFragment : DictionaryBaseFragment() {
     private lateinit var dictionaryViewModel : DictionarySearchViewModel
@@ -174,6 +176,8 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
             else {
                 hideKeyboard()
             }
+
+//            buttonHandwriting.setColorFilter(getStrokeOrderControlEnabledColor(), PorterDuff.Mode.SRC_IN)
         }
         else {
             childFragmentManager.beginTransaction()

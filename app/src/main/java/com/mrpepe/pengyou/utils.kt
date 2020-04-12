@@ -496,37 +496,9 @@ class HeadwordFormatter {
 
 }
 
-fun getStrokeOrderControlEnabledColor(): Int {
+fun getThemeColor(attr: Int): Int {
     val typedValue = TypedValue()
-    MainApplication.homeActivity.theme.resolveAttribute(R.attr.strokeOrderControlButtonsEnabledColor, typedValue, true)
-
-    return typedValue.data
-}
-
-fun getStrokeOrderControlDisabledColor(): Int {
-    val typedValue = TypedValue()
-    MainApplication.homeActivity.theme.resolveAttribute(R.attr.strokeOrderControlButtonsDisabledColor, typedValue, true)
-
-    return typedValue.data
-}
-
-fun getStrokeOrderControlButtonsBackgroundColor(): Int {
-    val typedValue = TypedValue()
-    MainApplication.homeActivity.theme.resolveAttribute(R.attr.strokeOrderControlButtonsBackgroundColor, typedValue, true)
-
-    return typedValue.data
-}
-
-fun getStrokeOrderDiagramStrokeColor(): Int {
-    val typedValue = TypedValue()
-    MainApplication.homeActivity.theme.resolveAttribute(R.attr.strokeOrderDiagramStrokeColor, typedValue, true)
-
-    return typedValue.data
-}
-
-fun getAccentColor(): Int {
-    val typedValue = TypedValue()
-    MainApplication.homeActivity.theme.resolveAttribute(R.attr.colorAccent, typedValue, true)
+    MainApplication.homeActivity.theme.resolveAttribute(attr, typedValue, true)
 
     return typedValue.data
 }
