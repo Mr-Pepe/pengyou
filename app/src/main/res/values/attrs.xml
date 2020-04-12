@@ -8,4 +8,5 @@
     <attr name="strokeOrderControlButtonsBackgroundColor" format="reference"/>
 
     <attr name="strokeOrderDiagramStrokeColor" format="reference"/>
+    <attr name="handwritingButtonInactiveColor" format="reference"/>
 </resources>

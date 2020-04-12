@@ -23,6 +23,8 @@
         <item name="preferenceTheme">@style/AppPreferenceTheme</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
+        <item name="handwritingButtonInactiveColor">@color/modeSwitchBackground</item>
     </style>
 
     <style name="AppPreferenceTheme" parent="@style/PreferenceThemeOverlay">

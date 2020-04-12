@@ -36,6 +36,8 @@ class DictionarySearchViewModel : ViewModel() {
     private var chineseSearchJob : Job? = null
     private var englishSearchJob : Job? = null
 
+    var isInHandwritingMode = false
+
     private var listener =
             SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
                 if (key == "search_history") {

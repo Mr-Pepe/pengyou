@@ -10,20 +10,19 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.AsyncDifferConfig
 import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.DictionaryBaseFragment
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel.SearchLanguage.CHINESE
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel.SearchLanguage.ENGLISH
+import com.mrpepe.pengyou.getThemeColor
 import com.mrpepe.pengyou.hideKeyboard
 import kotlinx.android.synthetic.main.fragment_dictionary_search.*
-import kotlinx.android.synthetic.main.fragment_stroke_order.*
 
 class DictionarySearchFragment : DictionaryBaseFragment() {
     private lateinit var dictionaryViewModel : DictionarySearchViewModel
     private var blockKeyboard = false
-
-    private var isInHandwritingMode = false
 
     private var nEnglishResults = 0
     private var nChineseResults = 0
@@ -47,16 +46,9 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
     }
 
     override fun onResume() {
-        super.onResume() //TODO
-//        dictionaryViewModel.displayedLanguage.value?.let { updateSearchResults(it, null, null) }
-//        dictionaryViewModel.englishResults.value?.let { updateSearchResults(null, it.size, null) }
-//        dictionaryViewModel.chineseSearchResults.value?.let {
-//            updateSearchResults(
-//                null,
-//                null,
-//                it.size
-//            )
-//        }
+        super.onResume()
+        updateModeSwitchColor(displayedLanguage)
+        updateHandwritingButtonColor()
     }
 
     override fun onViewCreated(view : View, savedInstanceState : Bundle?) {
@@ -77,7 +69,7 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
             }
 
             override fun onQueryTextSubmit(query : String?) : Boolean {
-                if (isInHandwritingMode) {
+                if (dictionaryViewModel.isInHandwritingMode) {
                     submitQueryFromDrawboard()
                 }
                 dictionarySearchSearchBox.clearFocus()
@@ -100,7 +92,7 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
         })
 
         modeSwitchEnglish.setOnClickListener {
-            if (isInHandwritingMode) {
+            if (dictionaryViewModel.isInHandwritingMode) {
                 blockKeyboard = true
                 toggleHandwritingMode()
             }
@@ -109,7 +101,7 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
         }
 
         modeSwitchChinese.setOnClickListener {
-            if (isInHandwritingMode) {
+            if (dictionaryViewModel.isInHandwritingMode) {
                 blockKeyboard = true
                 toggleHandwritingMode()
             }
@@ -117,6 +109,7 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
             dictionaryViewModel.requestLanguage(CHINESE)
         }
 
+        updateHandwritingButtonColor()
         dictionarySearchSearchBox?.requestFocus()
     }
 
@@ -132,7 +125,7 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
                         activity.getColor(if (nightMode) R.color.darkThemeColorPrimaryDark
                                           else R.color.lightThemeColorPrimaryDark)
 
-                if (!isInHandwritingMode) {
+                if (!dictionaryViewModel.isInHandwritingMode) {
                     when (language) {
                         ENGLISH -> {
                             modeSwitchEnglish.setTextColor(activeColor)
@@ -164,10 +157,10 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
     }
 
     private fun toggleHandwritingMode() {
-        if (isInHandwritingMode) {
+        if (dictionaryViewModel.isInHandwritingMode) {
             childFragmentManager.beginTransaction()
                 .replace(R.id.dictionaryContainer, SearchResultFragment()).commit()
-            isInHandwritingMode = false
+            dictionaryViewModel.isInHandwritingMode = false
 
             if (!blockKeyboard) {
                 showKeyboard()
@@ -176,17 +169,23 @@ class DictionarySearchFragment : DictionaryBaseFragment() {
             else {
                 hideKeyboard()
             }
-
-//            buttonHandwriting.setColorFilter(getStrokeOrderControlEnabledColor(), PorterDuff.Mode.SRC_IN)
         }
         else {
             childFragmentManager.beginTransaction()
                 .replace(R.id.dictionaryContainer, HandwritingFragment()).commit()
-            isInHandwritingMode = true
+            dictionaryViewModel.isInHandwritingMode = true
             dictionarySearchSearchBox.requestFocus()
             hideKeyboard()
         }
         updateModeSwitchColor(displayedLanguage)
+        updateHandwritingButtonColor()
+    }
+
+    private fun updateHandwritingButtonColor() {
+        when (dictionaryViewModel.isInHandwritingMode) {
+            true -> buttonHandwriting.setColorFilter(getThemeColor(R.attr.colorOnPrimary), PorterDuff.Mode.SRC_IN)
+            false -> buttonHandwriting.setColorFilter(getThemeColor(R.attr.handwritingButtonInactiveColor), PorterDuff.Mode.SRC_IN)
+        }
     }
 
     private fun formatResultCount(value : Int) : String {
