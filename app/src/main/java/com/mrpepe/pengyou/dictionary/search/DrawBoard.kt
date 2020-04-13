@@ -111,10 +111,6 @@ class DrawBoard (context: Context, attributeSet: AttributeSet): View(context, at
         isClear = true
     }
 
-    interface OnDoubleCLick {
-        fun onDoubleClick()
-    }
-
     fun setOnDoubleClickListener(listener: OnClickListener) {
         onDoubleClickListener = listener
     }
