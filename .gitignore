@@ -18,3 +18,5 @@ app/src/main/assets/cedict.db
 app/src/main/assets/data.db
 
 .idea/
+
+app/release/
