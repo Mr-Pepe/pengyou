@@ -171,7 +171,8 @@ class HomeActivity : BaseActivity(),
                 aboutAppView.textView.text = HtmlCompat.fromHtml(getString(R.string.about_app),
                                                                  HtmlCompat.FROM_HTML_MODE_LEGACY)
                 aboutAppDialog.setTitle(getString(R.string.app_name))
-                aboutAppDialog.setPositiveButton("Got it!") { dialog, _ -> dialog.dismiss() }
+                aboutAppDialog.setPositiveButton(getString(R.string.about_app_positive_button)) { dialog, _ -> dialog
+                    .dismiss() }
                 aboutAppDialog.show()
             }
             else -> {}

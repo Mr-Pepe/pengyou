@@ -25,6 +25,13 @@
         <item name="windowNoTitle">true</item>
 
         <item name="handwritingButtonInactiveColor">@color/modeSwitchBackground</item>
+
+        <item name="alertDialogTheme">@style/AppTheme.Dialog</item>
+    </style>
+
+    <style name="AppTheme.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="colorPrimary">@color/lightThemeColorAccent</item>
+        <item name="colorAccent">@color/lightThemeColorAccent</item>
     </style>
 
     <style name="AppPreferenceTheme" parent="@style/PreferenceThemeOverlay">
