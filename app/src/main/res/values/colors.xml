@@ -24,11 +24,11 @@
     <color name="darkThemeSearchResultSeperator">#6E6E6E</color>
 
 
-    <color name="tone1DefaultColor">#268bd2</color>
-    <color name="tone2DefaultColor">#CBB600</color>
-    <color name="tone3DefaultColor">#47A34B</color>
-    <color name="tone4DefaultColor">#dc322f</color>
-    <color name="tone5DefaultColor">#757774</color>
+    <color name="tone1DefaultColor">#4F9DD4</color>
+    <color name="tone2DefaultColor">#FFCB2D</color>
+    <color name="tone3DefaultColor">#58A95C</color>
+    <color name="tone4DefaultColor">#C94644</color>
+    <color name="tone5DefaultColor">#999999</color>
 
 
     <color name="launcher_background">#ff4b4b4b</color>
