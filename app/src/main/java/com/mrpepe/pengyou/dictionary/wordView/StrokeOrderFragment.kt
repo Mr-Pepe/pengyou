@@ -18,15 +18,12 @@ import me.relex.circleindicator.CircleIndicator2
 
 
 class StrokeOrderFragment : Fragment() {
-    private lateinit var model: WordViewViewModel
+    private lateinit var wordViewViewModel: WordViewViewModel
 
     private lateinit var strokeOrderDiagramList: RecyclerView
     private lateinit var adapter: StrokeOrderDiagramAdapter
     private lateinit var layoutManager: StrokeOrderFragmentListLayoutManager
     private lateinit var strokeOrderPageIndicatorView: CircleIndicator2
-
-    private var indicatorCount = 0
-    private var currentPosition = 0
 
     private lateinit var toggleHorizontalPagingListener: ToggleHorizontalPagingListener
 
@@ -46,7 +43,7 @@ class StrokeOrderFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         parentFragment?.let {
-            model = ViewModelProvider(it).get(WordViewViewModel::class.java)
+            wordViewViewModel = ViewModelProvider(it).get(WordViewViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
     }
 
@@ -59,8 +56,6 @@ class StrokeOrderFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        indicatorCount = 0
 
         strokeOrderDiagramList = view.strokeOrderDiagramList
         strokeOrderPageIndicatorView = view.strokeOrderPageIndicatorView
@@ -102,20 +97,22 @@ class StrokeOrderFragment : Fragment() {
         }
 
 
-        model.strokeOrders.observe(viewLifecycleOwner, Observer {strokeOrders ->
+        wordViewViewModel.strokeOrders.observe(viewLifecycleOwner, Observer { strokeOrders ->
 
             val filteredStrokeOrders = mutableListOf<StrokeOrder>()
 
+            wordViewViewModel.indicatorCount = 0
+
             strokeOrders.forEachIndexed { iCharacter, strokeOrder ->
-                if (model.entry.value!!.simplified[iCharacter].toString() !in listOf("，")){
+                if (wordViewViewModel.entry.value!!.simplified[iCharacter].toString() !in listOf("，")){
                     filteredStrokeOrders.add(strokeOrder)
-                    indicatorCount++
+                    wordViewViewModel.indicatorCount++
                 }
             }
 
-            strokeOrderPageIndicatorView.createIndicators(indicatorCount, currentPosition)
+            strokeOrderPageIndicatorView.createIndicators(wordViewViewModel.indicatorCount, wordViewViewModel.currentPosition)
 
-            if (indicatorCount <= 1) {
+            if (wordViewViewModel.indicatorCount <= 1) {
                 strokeOrderPageIndicatorView.visibility = View.INVISIBLE
             }
 
@@ -128,12 +125,12 @@ class StrokeOrderFragment : Fragment() {
     private fun getCurrentDiagram(): StrokeOrderDiagramViewholder? {
         val position = layoutManager.findFirstCompletelyVisibleItemPosition()
         if (position != RecyclerView.NO_POSITION) {
-            currentPosition = position
+            wordViewViewModel.currentPosition = position
 
-            strokeOrderPageIndicatorView.animatePageSelected(currentPosition)
+            strokeOrderPageIndicatorView.animatePageSelected(wordViewViewModel.currentPosition)
         }
-        return when (strokeOrderDiagramList.findViewHolderForAdapterPosition(currentPosition) != null) {
-            true -> strokeOrderDiagramList.findViewHolderForAdapterPosition(currentPosition) as StrokeOrderDiagramViewholder
+        return when (strokeOrderDiagramList.findViewHolderForAdapterPosition(wordViewViewModel.currentPosition) != null) {
+            true -> strokeOrderDiagramList.findViewHolderForAdapterPosition(wordViewViewModel.currentPosition) as StrokeOrderDiagramViewholder
             false -> null
         }
     }

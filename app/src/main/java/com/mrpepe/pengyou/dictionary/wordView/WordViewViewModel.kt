@@ -19,6 +19,10 @@ class WordViewViewModel : ViewModel() {
     val entry = MediatorLiveData<Entry>()
     val wordsContaining = MediatorLiveData<List<Entry>>()
 
+    // From stroke order fragment
+    var indicatorCount = 0
+    var currentPosition = 0
+
     fun init(initEntry: Entry) {
         repository = WordViewRepository(entryDao, initEntry)
         entry.addSource(repository.entry) {value -> entry.value = value}
