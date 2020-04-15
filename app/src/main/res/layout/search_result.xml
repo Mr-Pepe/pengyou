@@ -79,7 +79,7 @@
                 android:minLines="1"
                 android:paddingBottom="2dp"
                 android:scrollbars="none"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 tools:text="DefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitions" />
 
         </TableRow>

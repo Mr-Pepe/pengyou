@@ -75,7 +75,7 @@
                             style="@style/ModeSwitchButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:minWidth="120dp"
+                            android:minWidth="112dp"
                             android:text="@string/english_mode_switch_initial_value"
                             tools:text="ENGLISH (999+)" />
 

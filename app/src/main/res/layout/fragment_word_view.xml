@@ -69,7 +69,7 @@
             android:id="@+id/wordViewTabs"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginTop="@dimen/large_padding"
+            android:layout_marginTop="15dp"
             android:background="@drawable/background_wordview_tablayout"
             app:tabIndicator="@drawable/tab_indicator"
             app:tabIndicatorColor="?attr/colorAccent"
