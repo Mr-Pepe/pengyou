@@ -18,7 +18,6 @@ class MainApplication : Application() {
         super.onCreate()
 
         // This should be fixed with AppCompat 1.2.0 which is in beta01 at the moment
-        Log.d(TAG, "Manually instantiating WebView to avoid night mode issue.")
         try {
             WebView(applicationContext)
         } catch (e : Exception) {

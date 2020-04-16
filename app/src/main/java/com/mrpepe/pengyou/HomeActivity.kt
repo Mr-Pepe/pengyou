@@ -72,9 +72,6 @@ class HomeActivity : BaseActivity(),
             } catch (e: Resources.NotFoundException) {
                 destination.id.toString()
             }
-
-//            Toast.makeText(this@HomeActivity, "Navigated to $dest", Toast.LENGTH_SHORT).show()
-            Log.d("HomeActivity", "Navigated to $dest")
         }
 
         MainApplication.pinyinMode =
