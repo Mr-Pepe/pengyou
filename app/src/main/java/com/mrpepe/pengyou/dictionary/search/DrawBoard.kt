@@ -5,11 +5,9 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Path
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import androidx.lifecycle.MutableLiveData
-import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.getThemeColor
 import kotlin.math.abs

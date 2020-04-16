@@ -1,14 +1,11 @@
 package com.mrpepe.pengyou
 
-import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Rect
 import android.os.Bundle
-import android.text.Html
 import android.text.method.LinkMovementMethod
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate

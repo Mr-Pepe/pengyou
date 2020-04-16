@@ -6,7 +6,6 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
 import android.webkit.WebView
-import androidx.appcompat.app.AppCompatDelegate
 
 class MainApplication : Application() {
 
