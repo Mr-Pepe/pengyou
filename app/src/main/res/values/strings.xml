@@ -76,9 +76,14 @@
         The stroke order diagrams make use of the <a href="https://hanziwriter.org/">HanziWriter
         </a> project. <br/><br/>
 
+        The handwriting recognitions makes use of the <a href="https://gugray.github.io/hanzi_lookup/">Hanzi lookup
+        </a> project. <br/><br/>
+
         Evelyn Li did an awesome job designing the app icon and user interface. Check out <a
         href="https://www.instagram.com/evelyncplum/">her Instagram page</a> to see more of her
-        work.
+        work. <br/><br/>
+
+        No user data gets collected.
     ]]></string>
     <string name="about_app_positive_button">Got it!</string>
 

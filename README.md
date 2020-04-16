@@ -4,6 +4,10 @@ The data for the app is handled in a [separate repository](https://github.com/Mr
 
 The stroke order diagrams make use of the [HanziWriter](https://hanziwriter.org/) project.
 
+The handwriting recognitions makes use of the [Hanzi lookup](https://gugray.github.io/hanzi_lookup/) project.
+
 Evelyn Li did an awesome job designing the app icon and user interface. Check out [her Instagram page](https://www.instagram.com/evelyncplum/) to see more of her work.
+
+No user data gets collected.
 
 Contributions welcome!
