@@ -65,17 +65,22 @@
 
         </LinearLayout>
 
-        <com.google.android.material.tabs.TabLayout
+        <com.mrpepe.pengyou.dictionary.wordView.CustomTabLayout
             android:id="@+id/wordViewTabs"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/background_wordview_tablayout"
+            android:paddingStart="@dimen/large_padding"
+            android:paddingEnd="@dimen/large_padding"
             app:tabIndicator="@drawable/tab_indicator"
             app:tabIndicatorColor="?attr/colorAccent"
             app:tabIndicatorFullWidth="false"
             app:tabIndicatorGravity="bottom"
-            app:tabMode="fixed"
+            app:tabMinWidth="0dp"
+            app:tabMode="scrollable"
+            app:tabPaddingEnd="0dp"
+            app:tabPaddingStart="0dp"
             app:tabSelectedTextColor="?attr/colorControlNormal"
             app:tabTextAppearance="@style/TabTextAppearance"
             app:tabTextColor="?attr/colorControlNormal" />
