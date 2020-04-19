@@ -84,9 +84,13 @@
         <item name="android:editTextColor">@color/darkThemeColorOnPrimary</item>
         <item name="android:queryBackground">@color/darkThemeColorOnPrimary</item>
         <item name="queryBackground">@color/darkThemeColorOnPrimary</item>
-        <item name="titleTextColor">@color/darkThemeColorOnPrimary</item>
-        <item name="android:textSize">20sp</item>
         <item name="colorControlNormal">@color/darkThemeColorOnPrimary</item>
+        <item name="titleTextColor">@color/darkThemeColorOnPrimary</item>
+    </style>
+
+    <style name="ToolbarTextAppearance" parent="android:TextAppearance">
+        <item name="android:fontFamily">@font/source_sans_pro_regular</item>
+        <item name="android:textSize">20sp</item>
     </style>
 
     <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
@@ -95,7 +99,7 @@
         <item name="android:letterSpacing">0.05</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">@font/source_sans_pro_bold</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">15.2sp</item>
     </style>
 
 </resources>

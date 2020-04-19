@@ -23,7 +23,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
-import androidx.preference.MultiSelectListPreference
 import androidx.preference.PreferenceManager
 import androidx.viewpager.widget.ViewPager
 import com.mrpepe.pengyou.dictionary.AppDatabase
@@ -32,7 +31,6 @@ import com.mrpepe.pengyou.dictionary.EntryDAO
 import com.mrpepe.pengyou.dictionary.wordView.WordViewFragmentDirections
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-
 
 class DefinitionFormatter {
 

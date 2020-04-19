@@ -14,7 +14,8 @@
         android:theme="@style/ToolbarStyle"
         app:navigationIcon="@drawable/ic_back"
         app:title="@string/title_settings_fragment"
-        app:titleTextColor="?attr/titleTextColor" />
+        app:titleTextColor="?attr/titleTextColor"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"/>
 
     <FrameLayout
         android:id="@android:id/list_container"

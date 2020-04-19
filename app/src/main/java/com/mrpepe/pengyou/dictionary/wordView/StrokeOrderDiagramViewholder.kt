@@ -1,7 +1,6 @@
 package com.mrpepe.pengyou.dictionary.wordView
 
 import android.graphics.Color
-import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
@@ -13,8 +12,11 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
-import com.mrpepe.pengyou.*
+import com.mrpepe.pengyou.MainApplication
+import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.StrokeOrder
+import com.mrpepe.pengyou.getThemeColor
+import com.mrpepe.pengyou.runJavaScript
 import kotlinx.android.synthetic.main.stroke_order_diagram.view.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -254,7 +256,7 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
 
         @JavascriptInterface
         fun getOutlineColor(): String {
-            return String.format("#%06X", (0xFFFFFF and getThemeColor(R.attr.strokeOrderControlButtonsEnabledColor)))
+            return String.format("#%06X", (0xFFFFFF and getThemeColor(R.attr.strokeOrderControlButtonsDisabledColor)))
         }
 
         @JavascriptInterface

@@ -22,7 +22,7 @@ class DictionarySearchViewModel : ViewModel() {
     private val _chineseSearchResults = MediatorLiveData<List<Entry>>()
     val chineseSearchResults : LiveData<List<Entry>> = _chineseSearchResults
 
-    var requestedLanguage = SearchLanguage.CHINESE
+    private var requestedLanguage = SearchLanguage.CHINESE
     var displayedLanguage = MutableLiveData<SearchLanguage>()
 
     var searchQuery = MutableLiveData("")

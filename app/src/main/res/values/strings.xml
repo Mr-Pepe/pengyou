@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">Pengyou</string>
-    <string name="title_home_activity">Home</string>
-    <string name="title_dictionary_activity">Dictionary</string>
     <string name="title_settings_fragment">Settings</string>
-    <string name="title_activity_word_view">WordViewActivity</string>
     <string name="no_definition_found">"No definition found, but this entry might be used in other words."</string>
     <string name="search_history">com.mrpepe.pengyou.search_history</string>
     <string name="no_results_found">No results found</string>
@@ -24,11 +21,9 @@
     <string name="button_play_pause">Pause animation</string>
     <string name="button_next">Next stroke</string>
     <string name="button_reset">RESET</string>
-    <string name="button_full">FULL</string>
     <string name="button_outline_show">Show outline</string>
     <string name="button_outline_hide">Hide outline</string>
     <string name="button_quiz">Quiz</string>
-    <string name="switch_language_button_title">Switch Language</string>
     <string name="copy_to_clipboard_button_title">Copy to Clipboard</string>
     <string name="no_strokes_found">No stroke order diagram found for:\u0020</string>
 
@@ -81,9 +76,13 @@
         The stroke order diagrams make use of the <a href="https://hanziwriter.org/">HanziWriter
         </a> project. <br/><br/>
 
+        The handwriting recognition makes use of the <a href="https://gugray.github.io/hanzi_lookup/">Hanzi lookup</a> project. <br/><br/>
+
         Evelyn Li did an awesome job designing the app icon and user interface. Check out <a
         href="https://www.instagram.com/evelyncplum/">her Instagram page</a> to see more of her
-        work.
+        work. <br/><br/>
+
+        No user data gets collected.
     ]]></string>
     <string name="about_app_positive_button">Got it!</string>
 
