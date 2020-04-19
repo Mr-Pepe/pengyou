@@ -6,85 +6,89 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/wordViewContainer"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/wordViewToolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:background="?attr/colorPrimary"
-            app:navigationIcon="?attr/homeAsUpIndicator"
-            android:theme="@style/ToolbarStyle"/>
+            android:minHeight="?attr/actionBarSize"
+            android:theme="@style/ToolbarStyle"
+            app:navigationIcon="@drawable/ic_back" />
 
-        <TextView
-            android:id="@+id/wordViewPinyin"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/wordViewContainer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/large_padding"
-            android:layout_marginTop="@dimen/tiny_padding"
-            android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/wordViewHeadword"
-            tools:text="Pinyin" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/wordViewHeadword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/large_padding"
-            android:layout_marginTop="@dimen/medium_padding"
-            android:textSize="30sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/wordViewToolbar"
-            tools:text="Headword" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingStart="@dimen/large_padding"
+                android:paddingTop="17dp"
+                android:paddingEnd="@dimen/large_padding"
+                android:paddingBottom="7dp">
 
-        <TextView
-            android:id="@+id/wordViewHsk"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/large_padding"
-            android:background="@drawable/background_hsk_tag"
-            android:paddingStart="@dimen/tiny_padding"
-            android:paddingEnd="@dimen/tiny_padding"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/wordViewHeadword"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/wordViewHeadword"
-            tools:text="HSK 6" />
+                <TextView
+                    android:id="@+id/wordViewHeadword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="30sp"
+                    tools:text="恰到好处|恰到好处" />
 
-        <com.google.android.material.tabs.TabLayout
+                <TextView
+                    android:id="@+id/wordViewPinyin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    tools:text="Pinyin" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/wordViewHsk"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="@dimen/large_padding"
+                android:background="@drawable/background_hsk_tag"
+                android:textSize="16sp"
+                tools:text="HSK 6" />
+
+        </LinearLayout>
+
+        <com.mrpepe.pengyou.dictionary.wordView.WordViewTabLayout
             android:id="@+id/wordViewTabs"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginTop="@dimen/large_padding"
+            android:layout_marginTop="0dp"
             android:background="@drawable/background_wordview_tablayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/wordViewPinyin"
+            android:paddingStart="@dimen/large_padding"
+            android:paddingEnd="@dimen/large_padding"
             app:tabIndicator="@drawable/tab_indicator"
+            app:tabIndicatorColor="?attr/colorAccent"
             app:tabIndicatorFullWidth="false"
             app:tabIndicatorGravity="bottom"
-            app:tabMode="fixed"
+            app:tabMinWidth="0dp"
+            app:tabMode="scrollable"
+            app:tabPaddingEnd="0dp"
+            app:tabPaddingStart="0dp"
             app:tabSelectedTextColor="?attr/colorControlNormal"
+            app:tabTextAppearance="@style/TabTextAppearance"
             app:tabTextColor="?attr/colorControlNormal" />
 
         <com.mrpepe.pengyou.CustomViewPager
             android:id="@+id/wordViewViewPager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/wordViewTabs" />
+            android:layout_weight="1" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

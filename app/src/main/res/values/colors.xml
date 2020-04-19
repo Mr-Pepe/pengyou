@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="lightThemeColorPrimary">#D94E18</color>
+    <color name="lightThemeColorPrimary">#B5333D</color>
+    <color name="lightThemeColorSecondary">#EDCB85</color>
     <color name="lightThemeColorOnPrimary">@android:color/white</color>
-    <color name="lightThemeColorPrimaryDark">#BB4314</color>
-<!--    <color name="colorSecondary">#4CAF50</color>-->
+    <color name="lightThemeColorPrimaryDark">#932A32</color>
     <color name="lightThemeColorAccent">@color/lightThemeColorPrimary</color>
-<!--    <color name="colorIndicator">#FF5722</color>-->
     <color name="lightThemeGeneralTextColor">#323232</color>
-    <color name="lightThemeTextColorHintOnPrimary">#DBDBDB</color>
-    <color name="lightThemeButtonBackground">#EDEDED</color>
+    <color name="lightThemeStrokeOrderControlButtonBackground">#F1F1F1</color>
+    <color name="lightThemeStrokeOrderControlButtonsEnabled">#A3A3A3</color>
+    <color name="lightThemeStrokeOrderControlButtonsDisabled">#DDDDDD</color>
     <color name="lightThemeControlColorEnabled">#535353</color>
-    <color name="lightThemeControlColorDisabled">#A5A5A5</color>
+    <color name="lightThemeSearchResultSeperator">#DDDDDD</color>
 
-    <color name="darkThemeColorPrimary">#FF0057</color>
-    <color name="darkThemeColorOnPrimary">#8BC34A</color>
-    <color name="darkThemeColorPrimaryDark">#03A9F4</color>
-    <color name="darkThemeGeneralTextColor">@android:color/primary_text_dark</color>
-    <color name="darkThemeControlColorEnabled">#535353</color>
-    <color name="darkThemeControlColorDisabled">#535353</color>
+    <color name="darkThemeColorPrimary">#2B2B2B</color>
+    <color name="darkThemeColorOnPrimary">#CCCCCC</color>
+    <color name="darkThemeColorPrimaryDark">#171717</color>
+    <color name="darkThemeColorAccent">#FFFFFF</color>
+    <color name="darkThemeGeneralTextColor">@color/darkThemeColorOnPrimary</color>
+    <color name="darkThemeStrokeOrderControlButtonBackground">@color/darkThemeColorPrimary</color>
+    <color name="darkThemeStrokeOrderControlButtonsEnabled">#A3A3A3</color>
+    <color name="darkThemeStrokeOrderControlButtonsDisabled">#565656</color>
+    <color name="darkThemeControlColorEnabled">@color/darkThemeColorOnPrimary</color>
+    <color name="darkThemeSearchResultSeperator">#6E6E6E</color>
 
-
-    <color name="tone1DefaultColor">#FF0000</color>
-    <color name="tone2DefaultColor">#03C700</color>
-    <color name="tone3DefaultColor">#1B3FD1</color>
-    <color name="tone4DefaultColor">#FFC107</color>
-    <color name="tone5DefaultColor">#757774</color>
-
-
-    <color name="launcher_background">#ff4b4b4b</color>
     <color name="modeSwitchBackground">#33FFFFFF</color>
-<!--    <color name="background">#FFFFFF</color>-->
+
+    <color name="tone1DefaultColor">#4F9DD4</color>
+    <color name="tone2DefaultColor">#FFCB2D</color>
+    <color name="tone3DefaultColor">#58A95C</color>
+    <color name="tone4DefaultColor">#C94644</color>
+    <color name="tone5DefaultColor">#999999</color>
 </resources>

@@ -1,3 +1,105 @@
 <resources>
 
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
+
+        <item name="android:fontFamily">@font/source_sans_pro</item>
+
+        <item name="colorPrimary">@color/darkThemeColorPrimary</item>
+        <item name="colorOnPrimary">@color/darkThemeColorOnPrimary</item>
+        <item name="colorPrimaryDark">@color/darkThemeColorPrimaryDark</item>
+        <item name="colorAccent">@color/darkThemeColorAccent</item>
+        <item name="android:textColor">@color/darkThemeGeneralTextColor</item>
+        <!-- Used by the control buttons in stroke order diagrams       -->
+
+        <item name="colorControlNormal">@color/darkThemeControlColorEnabled</item>
+        <item name="bottomNavNotCheckedColor">@color/darkThemeSearchResultSeperator</item>
+
+        <item name="strokeOrderControlButtonsEnabledColor">@color/darkThemeStrokeOrderControlButtonsEnabled</item>
+        <item name="strokeOrderControlButtonsDisabledColor">@color/darkThemeStrokeOrderControlButtonsDisabled</item>
+        <item name="strokeOrderControlButtonsBackgroundColor">@color/darkThemeStrokeOrderControlButtonBackground</item>
+
+        <item name="searchResultSeperatorColor">@color/darkThemeSearchResultSeperator</item>
+
+        <item name="strokeOrderDiagramStrokeColor">@color/darkThemeColorAccent</item>
+
+        <item name="preferenceTheme">@style/AppPreferenceTheme</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+
+        <item name="handwritingButtonInactiveColor">@color/modeSwitchBackground</item>
+
+        <item name="alertDialogTheme">@style/AppTheme.Dialog</item>
+    </style>
+
+    <style name="AppTheme.Dialog" parent="Theme.MaterialComponents.DayNight.Dialog">
+        <item name="colorPrimary">@color/darkThemeColorAccent</item>
+        <item name="colorAccent">@color/darkThemeColorAccent</item>
+    </style>
+
+    <style name="AppPreferenceTheme" parent="@style/PreferenceThemeOverlay">
+        <item name="preferenceFragmentCompatStyle">@style/AppPreferenceFragmentCompatStyle</item>
+    </style>
+
+    <style name="AppPreferenceFragmentCompatStyle" parent="@style/PreferenceFragment">
+        <item name="android:layout">@layout/fragment_base_settings</item>
+    </style>
+
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+    </style>
+
+    <style name="StrokeOrderButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_marginLeft">@dimen/medium_padding</item>
+        <item name="android:layout_marginRight">@dimen/medium_padding</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:layout_marginBottom">1dp</item>
+        <item name="android:layout_width">@dimen/stroke_order_button_size</item>
+        <item name="android:layout_height">@dimen/stroke_order_button_size</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="HandwritingButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:layout_marginLeft">@dimen/medium_padding</item>
+        <item name="android:layout_marginRight">@dimen/tiny_padding</item>
+        <item name="android:layout_width">@dimen/handwriting_button_size</item>
+        <item name="android:layout_height">@dimen/handwriting_button_size</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:layout_marginTop">@dimen/small_padding</item>
+        <item name="android:layout_marginBottom">@dimen/small_padding</item>
+        <item name="android:scaleType">fitXY</item>
+    </style>
+
+    <style name="ModeSwitchButton" parent="Widget.AppCompat.TextView">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/darkThemeColorOnPrimary</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="ToolbarStyle" parent="AppTheme">
+        <item name="colorAccent">@color/darkThemeColorOnPrimary</item>
+        <item name="android:editTextColor">@color/darkThemeColorOnPrimary</item>
+        <item name="android:queryBackground">@color/darkThemeColorOnPrimary</item>
+        <item name="queryBackground">@color/darkThemeColorOnPrimary</item>
+        <item name="colorControlNormal">@color/darkThemeColorOnPrimary</item>
+        <item name="titleTextColor">@color/darkThemeColorOnPrimary</item>
+    </style>
+
+    <style name="ToolbarTextAppearance" parent="android:TextAppearance">
+        <item name="android:fontFamily">@font/source_sans_pro_regular</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0.05</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/source_sans_pro_bold</item>
+        <item name="android:textSize">15.2sp</item>
+    </style>
+
 </resources>

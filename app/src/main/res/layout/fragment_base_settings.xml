@@ -6,14 +6,16 @@
     android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
-            android:id="@+id/settingsToolbar"
-            android:background="?attr/colorPrimary"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="@style/ToolbarStyle"
-            app:title="@string/title_settings_fragment"
-            app:titleTextColor="?attr/titleTextColor"/>
+        android:id="@+id/settingsToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/ToolbarStyle"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="@string/title_settings_fragment"
+        app:titleTextColor="?attr/titleTextColor"
+        app:titleTextAppearance="@style/ToolbarTextAppearance"/>
 
     <FrameLayout
         android:id="@android:id/list_container"

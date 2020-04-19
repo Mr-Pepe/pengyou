@@ -1,11 +1,13 @@
 package com.mrpepe.pengyou.dictionary.search
 
 import android.content.SharedPreferences
+import android.os.Handler
 import androidx.lifecycle.*
 import com.mrpepe.pengyou.MainApplication
 import com.mrpepe.pengyou.SearchHistory
 import com.mrpepe.pengyou.dictionary.AppDatabase
 import com.mrpepe.pengyou.dictionary.Entry
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class DictionarySearchViewModel : ViewModel() {
@@ -14,41 +16,107 @@ class DictionarySearchViewModel : ViewModel() {
     var searchHistoryIDs = listOf<String>()
     var searchHistoryEntries = MutableLiveData<List<Entry>>()
 
-    private var oldEnglishResults1 : LiveData<List<Entry>>
-    private var oldEnglishResults2 : LiveData<List<Entry>>
-    private var oldEnglishResults3 : LiveData<List<Entry>>
-    val englishSearchResults = MediatorLiveData<List<Entry>>()
-    val chineseSearchResults = MediatorLiveData<List<Entry>>()
+    private val _englishSearchResults = MediatorLiveData<List<Entry>>()
+    val englishResults : LiveData<List<Entry>> = _englishSearchResults
 
-    // Used for the SearchResultFragment to notify the DictionarySearchFragment to update the
-    // result counts
-    val updateResultCounts = MutableLiveData<Boolean>()
+    private val _chineseSearchResults = MediatorLiveData<List<Entry>>()
+    val chineseSearchResults : LiveData<List<Entry>> = _chineseSearchResults
 
-    var requestedLanguage = MutableLiveData<SearchLanguage>()
+    private var requestedLanguage = SearchLanguage.CHINESE
     var displayedLanguage = MutableLiveData<SearchLanguage>()
 
-    var searchQuery = ""
+    var searchQuery = MutableLiveData("")
+    private var blankQuery = true
     var newSearchLive = MutableLiveData<Boolean>()
     var newSearch = false
 
+    private val delayedHandler = Handler()
+    private val switchDelay : Long = 300
+
+    private var chineseSearchJob : Job? = null
+    private var englishSearchJob : Job? = null
+
+    var isInHandwritingMode = false
+
     private var listener =
-        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
-            if (key == "search_history") {
-                searchHistoryIDs = SearchHistory.getHistoryIds()
-                reloadSearchHistory()
+            SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+                if (key == "search_history") {
+                    searchHistoryIDs = SearchHistory.getHistoryIds()
+                    reloadSearchHistory()
+                }
             }
-        }
 
     init {
         val entryDao = AppDatabase.getDatabase(MainApplication.getContext()).entryDao()
         repository = DictionarySearchRepository(entryDao)
-        oldEnglishResults1 = repository.englishSearchResults1
-        oldEnglishResults2 = repository.englishSearchResults1
-        oldEnglishResults3 = repository.englishSearchResults1
 
-        englishSearchResults.addSource(repository.englishSearchResults1) { }
-        chineseSearchResults.addSource(repository.chineseSearchResults) { value -> chineseSearchResults.postValue(value)}
-        requestedLanguage.value = SearchLanguage.CHINESE
+        _englishSearchResults.addSource(repository.englishSearchResults) { entries ->
+            _englishSearchResults.value =
+                    (entries ?: listOf())
+                        .sortedWith(compareBy({ it.hsk }, { it.priority }))
+
+            if (requestedLanguage == SearchLanguage.ENGLISH) {
+                if (entries?.size ?: 0 > 0 || blankQuery) {
+                    displayedLanguage.postValue(SearchLanguage.ENGLISH)
+                }
+                else {
+                    delayedHandler.removeCallbacksAndMessages(null)
+                    delayedHandler.postDelayed(
+                        {
+                            if (englishResults.value?.size ?: 0 == 0) {
+                                if (chineseSearchResults.value?.size ?: 0 > 0) {
+                                    displayedLanguage.postValue(SearchLanguage.CHINESE)
+                                }
+                                else {
+                                    displayedLanguage.postValue(displayedLanguage.value)
+                                }
+                            }
+                            else {
+                                displayedLanguage.postValue(SearchLanguage.ENGLISH)
+                            }
+                        }, switchDelay)
+                }
+            }
+
+        }
+
+        _chineseSearchResults.addSource(repository.chineseSearchResults) { entries ->
+            _chineseSearchResults.value =
+                    (entries ?: listOf())
+                        .sortedWith(
+                            compareBy(
+                                { it.wordLength },
+                                { it.hsk },
+                                { it.pinyinLength },
+                                { it.priority }
+                            )
+                        )
+
+            if (requestedLanguage == SearchLanguage.CHINESE) {
+                if (entries?.size ?: 0 > 0 || blankQuery) {
+                    displayedLanguage.postValue(SearchLanguage.CHINESE)
+                }
+                else {
+                    delayedHandler.removeCallbacksAndMessages(null)
+                    delayedHandler.postDelayed(
+                        {
+                            if (chineseSearchResults.value?.size ?: 0 == 0) {
+                                if (englishResults.value?.size ?: 0 > 0) {
+                                    displayedLanguage.postValue(SearchLanguage.ENGLISH)
+                                }
+                                else {
+                                    displayedLanguage.postValue(displayedLanguage.value)
+                                }
+                            }
+                            else {
+                                displayedLanguage.postValue(SearchLanguage.CHINESE)
+                            }
+                        }, switchDelay)
+                }
+            }
+        }
+
+        requestedLanguage = SearchLanguage.CHINESE
         displayedLanguage.value = SearchLanguage.CHINESE
 
         SearchHistory.searchPreferences.registerOnSharedPreferenceChangeListener(listener)
@@ -61,17 +129,22 @@ class DictionarySearchViewModel : ViewModel() {
         }
     }
 
-    fun search() {
+    fun search(query : String) {
+        chineseSearchJob?.cancel()
+        englishSearchJob?.cancel()
+        searchQuery.postValue(query)
+        blankQuery = query.isBlank()
         newSearch = true
         newSearchLive.value = true
 
-        if (searchQuery.isNotBlank()) {
-            searchForChinese(searchQuery)
-            searchForEnglish(searchQuery)
-
-        } else {
-            englishSearchResults.value = listOf()
+        if (query.isNotBlank()) {
+            chineseSearchJob = viewModelScope.launch { repository.searchForChinese(query) }
+            englishSearchJob = viewModelScope.launch { repository.searchForEnglish(query) }
+        }
+        else {
+            repository.clearEnglishResults()
             repository.clearChineseResults()
+            displayedLanguage.postValue(requestedLanguage)
         }
     }
 
@@ -82,47 +155,14 @@ class DictionarySearchViewModel : ViewModel() {
         }
     }
 
-    private fun searchForChinese(query: String) = viewModelScope.launch {
-        repository.searchForChinese(query)
-    }
-
-    private fun searchForEnglish(query: String) = viewModelScope.launch {
-        repository.searchForEnglish(query)
-
-        oldEnglishResults1 = repository.englishSearchResults1
-        oldEnglishResults2 = repository.englishSearchResults2
-        oldEnglishResults3 = repository.englishSearchResults3
-        englishSearchResults.removeSource(oldEnglishResults1)
-        englishSearchResults.removeSource(oldEnglishResults2)
-        englishSearchResults.removeSource(oldEnglishResults3)
-        englishSearchResults.addSource(repository.englishSearchResults1) {  }
-        englishSearchResults.addSource(repository.englishSearchResults2) {  }
-        englishSearchResults.addSource(repository.englishSearchResults3) { englishSearchResults.value = mergeEnglishResults() }
-    }
-
-    fun toggleDisplayedLanguage(){
-        when (requestedLanguage.value) {
-            SearchLanguage.CHINESE -> requestedLanguage.value = SearchLanguage.ENGLISH
-            SearchLanguage.ENGLISH -> requestedLanguage.value = SearchLanguage.CHINESE
-            else -> {}
-        }
+    fun requestLanguage(language : SearchLanguage) {
+        delayedHandler.removeCallbacksAndMessages(null)
+        requestedLanguage = language
+        displayedLanguage.postValue(language)
     }
 
     enum class SearchLanguage {
         ENGLISH,
-        CHINESE,
-        NONE
-    }
-
-    private fun mergeEnglishResults(): List<Entry> {
-        var output = setOf<Entry>()
-
-        repository.englishSearchResults1.value?.let { output = output.union(repository.englishSearchResults1.value!!) }
-        repository.englishSearchResults2.value?.let { output = output.union(repository.englishSearchResults2.value!!) }
-        repository.englishSearchResults3.value?.let { output = output.union(repository.englishSearchResults3.value!!) }
-
-        return output.toList()
+        CHINESE
     }
 }
-
-

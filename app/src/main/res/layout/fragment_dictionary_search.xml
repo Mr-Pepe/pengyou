@@ -14,11 +14,11 @@
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/dictionarySearchToolbar"
-            android:background="?attr/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
             android:minHeight="?attr/actionBarSize"
-            android:paddingRight="16dp"
+            android:paddingEnd="30dp"
             android:theme="@style/ToolbarStyle"
             app:popupTheme="@style/ToolbarStyle">
 
@@ -31,6 +31,7 @@
                     android:id="@+id/dictionarySearchSearchBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
                     android:layout_marginTop="@dimen/small_padding"
                     android:layout_marginBottom="@dimen/small_padding"
                     android:iconifiedByDefault="false"
@@ -40,7 +41,6 @@
                     android:paddingRight="-16dp"
                     android:paddingBottom="0dp"
                     android:queryBackground="@drawable/background_search_view"
-                    android:queryHint="@string/search_view_query_hint"
                     android:searchIcon="@null"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -49,17 +49,18 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingTop="@dimen/small_padding">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/small_padding"
-                        android:layout_marginBottom="@dimen/medium_padding"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="@dimen/tiny_padding"
                         android:layout_weight="1"
                         android:background="@drawable/background_mode_switch"
                         android:orientation="horizontal"
-                        android:paddingLeft="@dimen/large_padding">
+                        android:paddingStart="@dimen/large_padding">
 
                         <TextView
                             android:id="@+id/modeSwitchChinese"
@@ -67,15 +68,15 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="中文  (0)" />
+                            android:text="@string/chinese_mode_switch_initial_value" />
 
                         <TextView
                             android:id="@+id/modeSwitchEnglish"
                             style="@style/ModeSwitchButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:minWidth="120dp"
-                            android:text="ENGLISH (0)"
+                            android:minWidth="112dp"
+                            android:text="@string/english_mode_switch_initial_value"
                             tools:text="ENGLISH (999+)" />
 
                     </LinearLayout>
@@ -83,7 +84,9 @@
                     <ImageButton
                         android:id="@+id/buttonHandwriting"
                         style="@style/HandwritingButton"
+                        android:layout_gravity="center_horizontal"
                         android:layout_weight="0"
+                        android:contentDescription="@string/handwriting_button_description"
                         app:srcCompat="@drawable/ic_hand" />
 
                 </LinearLayout>

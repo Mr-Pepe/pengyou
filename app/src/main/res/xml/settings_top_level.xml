@@ -12,7 +12,8 @@
     <Preference
         app:key="about"
         app:title="About this app"
-        app:iconSpaceReserved="false"/>
+        app:iconSpaceReserved="false"
+        app:fragment="null"/>
 
 
 </PreferenceScreen>

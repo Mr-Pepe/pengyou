@@ -16,10 +16,14 @@ class HeadwordColoringSettingsFragment: SettingsBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.settingsToolbar.title = getString(R.string.headword_coloring)
+
+        view.settingsToolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.headword_coloring_settings, rootKey)
+        setPreferencesFromResource(R.xml.settings_headword_coloring, rootKey)
 
         val resetToDefaultButton = findPreference<Preference>("headword_colors_to_default")
         resetToDefaultButton?.setOnPreferenceClickListener {
@@ -33,7 +37,7 @@ class HeadwordColoringSettingsFragment: SettingsBaseFragment() {
                     commit()
                 }
 
-                setPreferencesFromResource(R.xml.headword_coloring_settings, rootKey)
+                setPreferencesFromResource(R.xml.settings_headword_coloring, rootKey)
             }
 
             true

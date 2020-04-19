@@ -1,12 +1,11 @@
 <resources>
     <string name="app_name">Pengyou</string>
-    <string name="title_home_activity">Home</string>
-    <string name="title_dictionary_activity">Dictionary</string>
     <string name="title_settings_fragment">Settings</string>
-    <string name="title_activity_word_view">WordViewActivity</string>
-    <string name="search_view_query_hint">Search Dictionary</string>
     <string name="no_definition_found">"No definition found, but this entry might be used in other words."</string>
     <string name="search_history">com.mrpepe.pengyou.search_history</string>
+    <string name="no_results_found">No results found</string>
+    <string name="none">None</string>
+    <string name="double_tap_to_clear">Double-tap to clear</string>
 
     <!-- Word view tabs   -->
     <string name="definition_tab">DEFINITION</string>
@@ -22,20 +21,20 @@
     <string name="button_play_pause">Pause animation</string>
     <string name="button_next">Next stroke</string>
     <string name="button_reset">RESET</string>
-    <string name="button_full">FULL</string>
     <string name="button_outline_show">Show outline</string>
     <string name="button_outline_hide">Hide outline</string>
     <string name="button_quiz">Quiz</string>
-    <string name="switch_language_button_title">Switch Language</string>
     <string name="copy_to_clipboard_button_title">Copy to Clipboard</string>
     <string name="no_strokes_found">No stroke order diagram found for:\u0020</string>
 
-    <string name="search_results">SEARCH RESULTS:\u0020</string>
     <string name="history">HISTORY:\u0020</string>
-    <string name="no_history">NO HISTORY AVAILABLE</string>
+    <string name="no_history">No history available</string>
     <string name="clear_history">CLEAR HISTORY</string>
     <string name="no_appearance_in_other_words">\u0020DOES NOT APPEAR IN OTHER WORDS</string>
     <string name="appears_in_other_words">WORDS CONTAINING:\u0020</string>
+    <string name="chinese_mode_switch_initial_value">中文 (0)</string>
+    <string name="english_mode_switch_initial_value">ENGLISH (0)</string>
+    <string name="handwriting_button_description">Switch to handwriting mode</string>
 
     <!--  Settings  -->
     <string name="appearance_settings_title">Appearance</string>
@@ -45,8 +44,8 @@
         <string name="chinese_mode">Chinese mode</string>
             <string name="chinese_mode_simplified">Simplified</string>
             <string name="chinese_mode_traditional">Traditional</string>
-            <string name="chinese_mode_simplified_traditional">Simplified | Traditional</string>
-            <string name="chinese_mode_traditional_simplified">Traditional | Simplified</string>
+            <string name="chinese_mode_simplified_traditional">Simplified (Traditional)</string>
+            <string name="chinese_mode_traditional_simplified">Traditional (Simplified)</string>
         <string name="theme">Theme</string>
             <string name="theme_light">Light</string>
             <string name="theme_dark">Dark</string>
@@ -59,5 +58,32 @@
             <string name="fourth_tone">Fourth tone</string>
             <string name="fifth_tone">Fifth tone</string>
             <string name="colorpicker_default">Reset to default</string>
+        <string name="stroke_order_diagram_background">Stroke order diagram background</string>
+            <string name="stroke_order_diagram_background_outline">Bounding Box</string>
+            <string name="stroke_order_diagram_background_diagonals">Diagonals</string>
+            <string name="stroke_order_diagram_background_cross">Cross</string>
+
+    <string name="about_app"><![CDATA[
+        Pengyou is an open-source app that helps you learn Chinese.
+        Open-source means that you can get involved to improve the app! Just head over to the
+        project\'s <a href="https://github.com/Mr-Pepe/pengyou">Github page</a> and start submitting
+        bug reports and feature requests or contribute code yourself. <br/><br/>
+
+        Pengyou heavily depends on open-source projects that make data like stroke orders
+        and the dictionary itself accessible to everybody. For a full list of used data sources
+        have a look <a href="https://github.com/Mr-Pepe/pengyou_data_generator">here</a>. <br/><br/>
+
+        The stroke order diagrams make use of the <a href="https://hanziwriter.org/">HanziWriter
+        </a> project. <br/><br/>
+
+        The handwriting recognition makes use of the <a href="https://gugray.github.io/hanzi_lookup/">Hanzi lookup</a> project. <br/><br/>
+
+        Evelyn Li did an awesome job designing the app icon and user interface. Check out <a
+        href="https://www.instagram.com/evelyncplum/">her Instagram page</a> to see more of her
+        work. <br/><br/>
+
+        No user data gets collected.
+    ]]></string>
+    <string name="about_app_positive_button">Got it!</string>
 
 </resources>

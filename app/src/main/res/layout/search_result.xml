@@ -11,13 +11,20 @@
     app:cardElevation="1dp"
     app:cardMaxElevation="0dp"
     app:cardUseCompatPadding="true"
-    app:contentPaddingLeft="@dimen/medium_padding"
-    app:contentPaddingRight="@dimen/medium_padding"
     app:layout_insetEdge="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background_search_result"
+        android:orientation="vertical"></LinearLayout>
 
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginStart="@dimen/medium_padding"
+        android:layout_marginEnd="@dimen/medium_padding"
+        android:layout_marginBottom="@dimen/small_padding"
         android:shrinkColumns="0"
         android:stretchColumns="0">
 
@@ -30,10 +37,11 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
+                <com.mrpepe.pengyou.LayoutedTextView
                     android:id="@+id/searchResultHeadword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/tiny_padding"
                     android:textSize="24sp"
                     tools:text="Headword" />
 
@@ -51,10 +59,8 @@
                 android:id="@+id/searchResultHsk"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="7dp"
                 android:background="@drawable/background_hsk_tag"
-                android:paddingStart="@dimen/tiny_padding"
-                android:paddingEnd="@dimen/tiny_padding"
-                android:layout_marginTop="@dimen/small_padding"
                 android:textAlignment="viewEnd"
                 android:textSize="14sp"
                 tools:text="HSK 6" />
@@ -74,7 +80,7 @@
                 android:minLines="1"
                 android:paddingBottom="2dp"
                 android:scrollbars="none"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 tools:text="DefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitionsDefinitions" />
 
         </TableRow>

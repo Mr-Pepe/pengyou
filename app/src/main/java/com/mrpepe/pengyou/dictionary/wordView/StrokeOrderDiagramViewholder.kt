@@ -1,7 +1,6 @@
 package com.mrpepe.pengyou.dictionary.wordView
 
 import android.graphics.Color
-import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
@@ -13,8 +12,11 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.beust.klaxon.JsonObject
 import com.beust.klaxon.Parser
-import com.mrpepe.pengyou.*
+import com.mrpepe.pengyou.MainApplication
+import com.mrpepe.pengyou.R
 import com.mrpepe.pengyou.dictionary.StrokeOrder
+import com.mrpepe.pengyou.getThemeColor
+import com.mrpepe.pengyou.runJavaScript
 import kotlinx.android.synthetic.main.stroke_order_diagram.view.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -183,7 +185,7 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
                     MainScope().launch {
                         webView.runJavaScript("showCharacter()")
                     }
-
+                    currentStroke = nStrokes
                 } else {
                     block = false
                     currentStroke++
@@ -249,27 +251,17 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
 
         @JavascriptInterface
         fun getStrokeColor(): String {
-            val typedValue = TypedValue()
-            MainApplication.homeActivity.theme.resolveAttribute(R.attr.colorOnBackground, typedValue, true)
-
-            return String.format("#%06X", (0xFFFFFF and typedValue.data))
+            return String.format("#%06X", (0xFFFFFF and getThemeColor(R.attr.strokeOrderDiagramStrokeColor)))
         }
 
         @JavascriptInterface
         fun getOutlineColor(): String {
-            val typedValue = TypedValue()
-            MainApplication.homeActivity.theme.resolveAttribute(R.attr.colorOnBackground, typedValue, true)
-
-            return when(MainApplication.homeActivity.isNightMode()) {
-                true -> String.format("#%06X", 0xFFFFFF and Color.GRAY)
-                false -> String.format("#%06X", 0xFFFFFF and Color.LTGRAY)
-            }
+            return String.format("#%06X", (0xFFFFFF and getThemeColor(R.attr.strokeOrderControlButtonsDisabledColor)))
         }
 
         @JavascriptInterface
         fun strokeComplete() {
             Timer().schedule(timerTask { completedStroke.postValue(true) }, 10)
-
         }
 
         @JavascriptInterface
@@ -285,6 +277,17 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
         @JavascriptInterface
         fun showCharacterFinished() {
             Timer().schedule(timerTask { showCharacterFinished.postValue(true) }, 100)
+        }
+
+        @JavascriptInterface
+        fun quizFinished() {
+
+            Timer().schedule(timerTask {
+                showCharacterRequest = true
+                completedStroke.postValue(true)
+                isQuizzing.postValue(false)
+                fragment.togglePaging()
+            }, 10)
         }
     }
 

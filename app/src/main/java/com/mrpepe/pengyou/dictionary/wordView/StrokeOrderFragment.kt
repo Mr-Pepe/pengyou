@@ -18,15 +18,12 @@ import me.relex.circleindicator.CircleIndicator2
 
 
 class StrokeOrderFragment : Fragment() {
-    private lateinit var model: WordViewViewModel
+    private lateinit var wordViewViewModel: WordViewViewModel
 
     private lateinit var strokeOrderDiagramList: RecyclerView
     private lateinit var adapter: StrokeOrderDiagramAdapter
     private lateinit var layoutManager: StrokeOrderFragmentListLayoutManager
     private lateinit var strokeOrderPageIndicatorView: CircleIndicator2
-
-    private var indicatorCount = 0
-    private var currenPosition = 0
 
     private lateinit var toggleHorizontalPagingListener: ToggleHorizontalPagingListener
 
@@ -46,7 +43,7 @@ class StrokeOrderFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         parentFragment?.let {
-            model = ViewModelProvider(it).get(WordViewViewModel::class.java)
+            wordViewViewModel = ViewModelProvider(it).get(WordViewViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
     }
 
@@ -100,20 +97,22 @@ class StrokeOrderFragment : Fragment() {
         }
 
 
-        model.strokeOrders.observe(viewLifecycleOwner, Observer {strokeOrders ->
+        wordViewViewModel.strokeOrders.observe(viewLifecycleOwner, Observer { strokeOrders ->
 
             val filteredStrokeOrders = mutableListOf<StrokeOrder>()
 
+            wordViewViewModel.indicatorCount = 0
+
             strokeOrders.forEachIndexed { iCharacter, strokeOrder ->
-                if (model.entry.value!!.simplified[iCharacter].toString() !in listOf("，")){
+                if (wordViewViewModel.entry.value!!.simplified[iCharacter].toString() !in listOf("，")){
                     filteredStrokeOrders.add(strokeOrder)
-                    indicatorCount++
+                    wordViewViewModel.indicatorCount++
                 }
             }
 
-            strokeOrderPageIndicatorView.createIndicators(indicatorCount, 0)
+            strokeOrderPageIndicatorView.createIndicators(wordViewViewModel.indicatorCount, wordViewViewModel.currentPosition)
 
-            if (indicatorCount <= 1) {
+            if (wordViewViewModel.indicatorCount <= 1) {
                 strokeOrderPageIndicatorView.visibility = View.INVISIBLE
             }
 
@@ -126,12 +125,12 @@ class StrokeOrderFragment : Fragment() {
     private fun getCurrentDiagram(): StrokeOrderDiagramViewholder? {
         val position = layoutManager.findFirstCompletelyVisibleItemPosition()
         if (position != RecyclerView.NO_POSITION) {
-            currenPosition = position
+            wordViewViewModel.currentPosition = position
 
-            strokeOrderPageIndicatorView.animatePageSelected(currenPosition)
+            strokeOrderPageIndicatorView.animatePageSelected(wordViewViewModel.currentPosition)
         }
-        return when (strokeOrderDiagramList.findViewHolderForAdapterPosition(currenPosition) != null) {
-            true -> strokeOrderDiagramList.findViewHolderForAdapterPosition(currenPosition) as StrokeOrderDiagramViewholder
+        return when (strokeOrderDiagramList.findViewHolderForAdapterPosition(wordViewViewModel.currentPosition) != null) {
+            true -> strokeOrderDiagramList.findViewHolderForAdapterPosition(wordViewViewModel.currentPosition) as StrokeOrderDiagramViewholder
             false -> null
         }
     }
@@ -143,10 +142,24 @@ class StrokeOrderFragment : Fragment() {
     }
 
     private fun updateButtonStates() {
+        when (getCurrentDiagram()?.buttonPlayEnabled) {
+            false -> {
+                buttonPlay?.isEnabled = false
+                buttonPlay?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsDisabledColor),
+                                           PorterDuff.Mode.SRC_IN)
+            }
+            true -> {
+                buttonPlay?.isEnabled = true
+                buttonPlay?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsEnabledColor),
+                                           PorterDuff.Mode.SRC_IN)
+            }
+        }
+
         when (getCurrentDiagram()?.buttonPlayIsPlay ) {
             false -> {
                 buttonPlay?.setImageResource(R.drawable.ic_pause)
                 buttonPlay?.contentDescription = getString(R.string.button_play_pause)
+                buttonPlay?.setColorFilter(getThemeColor(R.attr.colorAccent), PorterDuff.Mode.SRC_IN)
             }
             true -> {
                 buttonPlay?.setImageResource(R.drawable.ic_play)
@@ -154,35 +167,24 @@ class StrokeOrderFragment : Fragment() {
             }
         }
 
-        when (getCurrentDiagram()?.buttonPlayEnabled) {
-            false -> {
-                buttonPlay?.isEnabled = false
-                buttonPlay?.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
-            }
-            true -> {
-                buttonPlay?.isEnabled = true
-                buttonPlay?.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
-            }
-        }
-
         when (getCurrentDiagram()?.buttonNextEnabled) {
             false -> {
-                buttonNext?.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonNext?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsDisabledColor), PorterDuff.Mode.SRC_IN)
                 buttonNext?.isEnabled = false
             }
             true -> {
-                buttonNext?.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonNext?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsEnabledColor), PorterDuff.Mode.SRC_IN)
                 buttonNext?.isEnabled = true
             }
         }
 
         when (getCurrentDiagram()?.buttonQuizEnabled) {
             false -> {
-                buttonQuiz?.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonQuiz?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsDisabledColor), PorterDuff.Mode.SRC_IN)
                 buttonQuiz?.isEnabled = false
             }
             true -> {
-                buttonQuiz?.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonQuiz?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsEnabledColor), PorterDuff.Mode.SRC_IN)
                 buttonQuiz?.isEnabled = true
             }
         }
@@ -200,22 +202,22 @@ class StrokeOrderFragment : Fragment() {
 
         when (getCurrentDiagram()?.buttonOutlineEnabled) {
             false -> {
-                buttonOutline?.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonOutline?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsDisabledColor), PorterDuff.Mode.SRC_IN)
                 buttonOutline?.isEnabled = false
             }
             true -> {
-                buttonOutline?.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonOutline?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsEnabledColor), PorterDuff.Mode.SRC_IN)
                 buttonOutline?.isEnabled = true
             }
         }
 
         when (getCurrentDiagram()?.buttonResetEnabled) {
             false -> {
-                buttonReset?.setColorFilter(getControlDisabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonReset?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsDisabledColor), PorterDuff.Mode.SRC_IN)
                 buttonReset?.isEnabled = false
             }
             true -> {
-                buttonReset?.setColorFilter(getControlEnabledColor(), PorterDuff.Mode.SRC_IN)
+                buttonReset?.setColorFilter(getThemeColor(R.attr.strokeOrderControlButtonsEnabledColor), PorterDuff.Mode.SRC_IN)
                 buttonReset?.isEnabled = true
             }
         }
@@ -226,6 +228,7 @@ class StrokeOrderFragment : Fragment() {
             }
             true -> {
                 buttonQuiz?.setImageResource(R.drawable.ic_cancel)
+                buttonQuiz?.setColorFilter(getThemeColor(R.attr.colorAccent), PorterDuff.Mode.SRC_IN)
             }
         }
     }

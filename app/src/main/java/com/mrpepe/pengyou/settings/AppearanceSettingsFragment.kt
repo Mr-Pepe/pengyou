@@ -10,10 +10,14 @@ class AppearanceSettingsFragment: SettingsBaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         view.settingsToolbar.title = getString(R.string.appearance_settings_title)
+
+        view.settingsToolbar.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        addPreferencesFromResource(R.xml.theme_settings)
-        addPreferencesFromResource(R.xml.appearance_settings)
+        addPreferencesFromResource(R.xml.settings_theme)
+        addPreferencesFromResource(R.xml.settings_appearance)
     }
 }

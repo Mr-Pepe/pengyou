@@ -1,13 +1,9 @@
 package com.mrpepe.pengyou.dictionary.wordView
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.mrpepe.pengyou.*
@@ -65,35 +61,10 @@ class WordViewFragment : DictionaryBaseFragment(),
         wordViewToolbar.setOnMenuItemClickListener { item ->
             when (item?.itemId) {
                 R.id.copyToClipboard -> {
-                    var indicator = "(${getString(R.string.chinese_mode_simplified)})"
-                    val headword = when (MainApplication.chineseMode) {
-                        in listOf(ChineseMode.simplified, ChineseMode.simplifiedTraditional) -> {
-                            wordViewViewModel.entry.value?.simplified
+                    wordViewViewModel.entry.value?.let { entry ->
+                        activity?.let { activity ->
+                            copyHeadwordToClipboard(activity, entry)
                         }
-                        in listOf(ChineseMode.traditional, ChineseMode.traditionalSimplified) -> {
-                            indicator = "(${getString(R.string.chinese_mode_traditional)})"
-                            wordViewViewModel.entry.value?.traditional
-                        }
-                        else -> ""
-                    }
-
-                    val clipboard = activity?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip = ClipData.newPlainText("Headword", headword)
-
-                    clipboard.setPrimaryClip(clip)
-
-                    if (MainApplication.chineseMode in listOf(ChineseMode.simplifiedTraditional, ChineseMode.traditionalSimplified)) {
-                        Toast.makeText(
-                            activity,
-                            "Copied $headword $indicator to clipboard",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        Toast.makeText(
-                            activity,
-                            "Copied $headword to clipboard",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     }
 
                     true
@@ -113,7 +84,16 @@ class WordViewFragment : DictionaryBaseFragment(),
     }
 
     private fun setHeadwordPinyinAndHsk(entry: Entry) {
-        wordViewHeadword.text = HeadwordFormatter().format(entry, MainApplication.chineseMode)
+        wordViewHeadword.text = HeadwordFormatter().format(entry, MainApplication.chineseMode, false)
+
+        // Put alternative headword on new line so it's not broken up in the middle
+        if (wordViewHeadword.lineCount > 1 &&
+            (MainApplication.chineseMode == ChineseMode.traditionalSimplified ||
+             MainApplication.chineseMode == ChineseMode.simplifiedTraditional)) {
+
+            wordViewHeadword.text = HeadwordFormatter().format(entry, MainApplication.chineseMode, true)
+        }
+
         wordViewPinyin.text = PinyinConverter().getFormattedPinyin(entry.pinyin, MainApplication.pinyinMode)
 
         when (entry.hsk) {

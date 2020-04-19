@@ -5,9 +5,11 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Rect
 import android.os.Bundle
-import android.util.Log
+import android.text.method.LinkMovementMethod
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -20,6 +22,7 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.mrpepe.pengyou.dictionary.search.DictionarySearchViewModel
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.dialog_about_app.view.*
 
 class HomeActivity : BaseActivity(),
     PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
@@ -66,9 +69,6 @@ class HomeActivity : BaseActivity(),
             } catch (e: Resources.NotFoundException) {
                 destination.id.toString()
             }
-
-//            Toast.makeText(this@HomeActivity, "Navigated to $dest", Toast.LENGTH_SHORT).show()
-            Log.d("HomeActivity", "Navigated to $dest")
         }
 
         MainApplication.pinyinMode =
@@ -118,7 +118,7 @@ class HomeActivity : BaseActivity(),
         bottomNav?.setOnNavigationItemSelectedListener { item ->
             when (item.title) {
                 getString(R.string.bottom_navigation_view_dictionary) -> {
-                    dictionarySearchViewModel.searchQuery = ""
+                    dictionarySearchViewModel.searchQuery.value = ""
                     findNavController(R.id.mainContainer).navigate(R.id.globalOpenDictionaryAction)
                 }
                 getString(R.string.bottom_navigation_view_settings) -> {
@@ -157,6 +157,18 @@ class HomeActivity : BaseActivity(),
         when (pref?.key) {
             "appearance" -> findNavController(R.id.mainContainer).navigate(R.id.actionTopLevelSettingsToAppearanceSettings)
             "headword_coloring" -> findNavController(R.id.mainContainer).navigate(R.id.actionAppearanceSettingsToHeadwordColoringSettings)
+            "about" -> {
+                val aboutAppView = layoutInflater.inflate(R.layout.dialog_about_app, null)
+                val aboutAppDialog = AlertDialog.Builder(this)
+                aboutAppDialog.setView(aboutAppView)
+                aboutAppView.textView.movementMethod = LinkMovementMethod.getInstance()
+                aboutAppView.textView.text = HtmlCompat.fromHtml(getString(R.string.about_app),
+                                                                 HtmlCompat.FROM_HTML_MODE_LEGACY)
+                aboutAppDialog.setTitle(getString(R.string.app_name))
+                aboutAppDialog.setPositiveButton(getString(R.string.about_app_positive_button)) { dialog, _ -> dialog
+                    .dismiss() }
+                aboutAppDialog.show()
+            }
             else -> {}
         }
         

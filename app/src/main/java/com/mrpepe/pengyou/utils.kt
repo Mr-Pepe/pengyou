@@ -1,6 +1,8 @@
 package com.mrpepe.pengyou
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.SystemClock
@@ -10,11 +12,14 @@ import android.text.Spanned
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.Navigation
@@ -26,7 +31,6 @@ import com.mrpepe.pengyou.dictionary.EntryDAO
 import com.mrpepe.pengyou.dictionary.wordView.WordViewFragmentDirections
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-
 
 class DefinitionFormatter {
 
@@ -88,13 +92,24 @@ class DefinitionFormatter {
                                 SpannableString(simplified)
 
                             ChineseMode.simplifiedTraditional -> {
-                                SpannableString("$simplified|$traditional")
+                                if (simplified == traditional) {
+                                    SpannableString(simplified)
+                                }
+                                else {
+                                    SpannableString("$simplified|$traditional")
+                                }
+
                             }
                             ChineseMode.traditional -> {
                                 SpannableString(traditional)
                             }
                             ChineseMode.traditionalSimplified -> {
-                                SpannableString("$traditional|$simplified")
+                                if (simplified == traditional) {
+                                    SpannableString(traditional)
+                                }
+                                else {
+                                    SpannableString("$traditional|$simplified")
+                                }
                             }
                             else -> SpannableString("")
                         }
@@ -382,7 +397,8 @@ class PinyinConverter {
 
 class HeadwordFormatter {
 
-    fun format(entry: Entry, mode: String): SpannableStringBuilder {
+    fun format(entry: Entry, mode: String, useLineBreak: Boolean): SpannableStringBuilder {
+        val ratio = 0.8F
         val headwordText = SpannableStringBuilder()
         val simplified = HeadwordFormatter().paintHeadword(entry.simplified, entry.pinyin)
         val traditional = HeadwordFormatter().paintHeadword(entry.traditional, entry.pinyin)
@@ -391,10 +407,28 @@ class HeadwordFormatter {
             headwordText.append(simplified)
         else if (mode == ChineseMode.traditional || mode == ChineseMode.traditionalSimplified)
             headwordText.append(traditional)
-        if (mode == ChineseMode.simplifiedTraditional)
-            headwordText.append(" | ").append(traditional)
-        else if (mode == ChineseMode.traditionalSimplified)
-            headwordText.append(" | ").append(simplified)
+        if (entry.simplified != entry.traditional &&
+            (mode == ChineseMode.simplifiedTraditional ||
+             mode == ChineseMode.traditionalSimplified)) {
+
+            val oldLength = headwordText.length
+
+            if (useLineBreak) {
+                headwordText.append("\n")
+            }
+            else {
+                headwordText.append(" ")
+            }
+
+            if (mode == ChineseMode.simplifiedTraditional) {
+                headwordText.append("(").append(traditional).append(")")
+                headwordText.setSpan(RelativeSizeSpan(ratio), oldLength, headwordText.length, 0)
+            }
+            else if (mode == ChineseMode.traditionalSimplified) {
+                headwordText.append("(").append(simplified).append(")")
+                headwordText.setSpan(RelativeSizeSpan(ratio), oldLength, headwordText.length, 0)
+            }
+        }
 
         return headwordText
     }
@@ -460,18 +494,11 @@ class HeadwordFormatter {
 
 }
 
-fun getControlEnabledColor(): Int {
-    return when (MainApplication.homeActivity.isNightMode()) {
-        true -> MainApplication.getContext().getColor(R.color.darkThemeControlColorEnabled)
-        false -> MainApplication.getContext().getColor(R.color.lightThemeControlColorEnabled)
-    }
-}
+fun getThemeColor(attr: Int): Int {
+    val typedValue = TypedValue()
+    MainApplication.homeActivity.theme.resolveAttribute(attr, typedValue, true)
 
-fun getControlDisabledColor(): Int {
-    return when (MainApplication.homeActivity.isNightMode()) {
-        true -> MainApplication.getContext().getColor(R.color.darkThemeControlColorDisabled)
-        false -> MainApplication.getContext().getColor(R.color.lightThemeControlColorDisabled)
-    }
+    return typedValue.data
 }
 
 fun String.countSurrogatePairs() = withIndex().count {
@@ -572,5 +599,60 @@ object SearchHistory {
                 commit()
             }
         }
+    }
+}
+
+fun copyHeadwordToClipboard(activity: Activity, entry: Entry) {
+    var indicator = "(${activity.getString(R.string.chinese_mode_simplified)})"
+    val headword = when (MainApplication.chineseMode) {
+        in listOf(ChineseMode.simplified, ChineseMode.simplifiedTraditional) -> {
+            entry.simplified
+        }
+        in listOf(ChineseMode.traditional, ChineseMode.traditionalSimplified) -> {
+            indicator = "(${activity.getString(R.string.chinese_mode_traditional)})"
+            entry.traditional
+        }
+        else -> ""
+    }
+
+    val clipboard = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip = ClipData.newPlainText("Headword", headword)
+
+    clipboard.setPrimaryClip(clip)
+
+    if (MainApplication.chineseMode in listOf(ChineseMode.simplifiedTraditional,
+                                              ChineseMode.traditionalSimplified)) {
+        Toast.makeText(
+            activity,
+            "Copied $headword $indicator to clipboard",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+    else {
+        Toast.makeText(
+            activity,
+            "Copied $headword to clipboard",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+}
+
+class LayoutedTextView(context : Context, attributeSet : AttributeSet): androidx.appcompat.widget.AppCompatTextView
+    (context, attributeSet) {
+
+    private var onLayoutListener: OnLayoutListener? = null
+
+    interface OnLayoutListener {
+        fun onLayouted(view: TextView)
+    }
+
+    fun setOnLayoutListener(listener: OnLayoutListener) {
+        onLayoutListener = listener
+    }
+
+    override fun onLayout(changed : Boolean, left : Int, top : Int, right : Int, bottom : Int) {
+        super.onLayout(changed, left, top, right, bottom)
+
+        onLayoutListener?.onLayouted(this)
     }
 }

@@ -137,7 +137,6 @@ class HandwritingFragment : Fragment() {
             }
             else {
                 Timer().schedule(timerTask { searchRequest.postValue(true) }, 500)
-
             }
         })
 
@@ -175,18 +174,21 @@ class HandwritingFragment : Fragment() {
             searchRequest.value = true
         })
 
-        clear_board_button.setOnClickListener {
+        draw_board.setOnDoubleClickListener(View.OnClickListener {
             if (draw_board.isClear) {
                 dictionarySearchFragment.deleteLastCharacterOfQuery()
             }
             draw_board.clearCanvas()
-        }
-
-        search_button.setOnClickListener { dictionarySearchFragment.submitQueryFromDrawboard() }
+        })
 
         searchRequest.observe(viewLifecycleOwner, Observer {
-             if (canSearch && strokes.isNotEmpty()) {
-                webView.runJavaScript("search()")
+             if (canSearch) {
+                 if (strokes.isNotEmpty()) {
+                     webView.runJavaScript("search()")
+                 }
+                 else {
+                     adapter.setProposedCharacters(listOf())
+                 }
              }
         })
     }

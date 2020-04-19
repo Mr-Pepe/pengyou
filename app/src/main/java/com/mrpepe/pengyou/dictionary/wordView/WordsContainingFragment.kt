@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.mrpepe.pengyou.R
+import com.mrpepe.pengyou.copyHeadwordToClipboard
 import com.mrpepe.pengyou.dictionary.Entry
 import com.mrpepe.pengyou.dictionary.search.SearchResultAdapter
 import kotlinx.android.synthetic.main.fragment_search_result_list.view.*
@@ -45,7 +46,7 @@ class WordsContainingFragment : Fragment() {
 
         resultCount.setPadding(
             resources.getDimension(R.dimen.medium_padding).toInt(),
-            resources.getDimension(R.dimen.large_padding).toInt(),
+            resources.getDimension(R.dimen.medium_padding).toInt(),
             resources.getDimension(R.dimen.small_padding).toInt(),
             resources.getDimension(R.dimen.small_padding).toInt())
 
@@ -56,9 +57,8 @@ class WordsContainingFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val adapter =
-            SearchResultAdapter{ entry: Entry ->
-                entryClicked(entry)
-            }
+            SearchResultAdapter({ entry : Entry -> entryClicked(entry) },
+                                    { entry : Entry -> entryLongClicked(entry) })
 
         searchResultList.layoutManager = LinearLayoutManager(activity)
         searchResultList.adapter = adapter
@@ -68,7 +68,7 @@ class WordsContainingFragment : Fragment() {
                 compareBy({it.hsk}, {it.wordLength}, {it.priority})
             ) ?: listOf())
             resultCount.text = when(wordsContaining.size) {
-                0 -> (model.entry.value?.simplified ?: "") + getString(R.string.no_appearance_in_other_words)
+                0 -> getString(R.string.no_appearance_in_other_words)
                 else -> getString(R.string.appears_in_other_words) + wordsContaining.size.toString()
             }
         })
@@ -82,4 +82,13 @@ class WordsContainingFragment : Fragment() {
 
         findNavController().navigate(WordViewFragmentDirections.globalOpenWordViewAction(entry))
     }
+
+    private fun entryLongClicked(entry : Entry): Boolean {
+        activity?.let { activity ->
+            copyHeadwordToClipboard(activity, entry)
+        }
+
+        return true
+    }
+
 }

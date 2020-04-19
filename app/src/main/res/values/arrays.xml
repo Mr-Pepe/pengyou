@@ -25,6 +25,20 @@
         <item>@string/chinese_mode_traditional_simplified</item>
     </string-array>
 
+    <string-array name="preferences_stroke_order_background_names">
+        <item>@string/stroke_order_diagram_background_outline</item>
+        <item>@string/stroke_order_diagram_background_cross</item>
+        <item>@string/stroke_order_diagram_background_diagonals</item>
+    </string-array>
+
+    <string-array name="preferences_stroke_order_background_values">
+        <item>@string/stroke_order_diagram_background_outline</item>
+        <item>@string/stroke_order_diagram_background_cross</item>
+        <item>@string/stroke_order_diagram_background_diagonals</item>
+    </string-array>
+
+    <string-array name="preferences_stroke_order_background_default_values" />
+
     <string-array name="preferences_theme">
         <item>@string/theme_light</item>
         <item>@string/theme_dark</item>
