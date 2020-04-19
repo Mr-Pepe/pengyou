@@ -256,7 +256,7 @@ class StrokeOrderDiagramViewholder(itemView: View) : RecyclerView.ViewHolder(ite
 
         @JavascriptInterface
         fun getOutlineColor(): String {
-            return String.format("#%06X", (0xFFFFFF and getThemeColor(R.attr.strokeOrderControlButtonsEnabledColor)))
+            return String.format("#%06X", (0xFFFFFF and getThemeColor(R.attr.strokeOrderControlButtonsDisabledColor)))
         }
 
         @JavascriptInterface
